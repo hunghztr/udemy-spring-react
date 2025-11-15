@@ -1,0 +1,77 @@
+package com.jwhisper.udemy.model;
+
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.FieldDefaults;
+
+@Entity
+@Table(name = "courses")
+@Data
+@EqualsAndHashCode(callSuper = false)
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Course extends DefaultModel {
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  String id;
+  @Column(columnDefinition = "DECIMAL(10,2)")
+  double price;
+  int discount;
+  String name;
+  int sold;
+  int star;
+  @Column(columnDefinition = "TEXT")
+  String description;
+  @Column(columnDefinition = "TEXT")
+  String requirement;
+  String language;
+  double hour;
+  int totalSection;
+  String imagePath;
+  String previewPath;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "author_id")
+  User author;
+
+  @JsonIgnore
+  @ManyToMany(fetch = FetchType.LAZY, mappedBy = "courses")
+  List<Cart> carts;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+  List<Learning> learnings;
+  @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+  List<Rating> ratings;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+  List<Coupon> coupons;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+  List<Category> categories;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+  List<Section> sections;
+
+  @JsonIgnore
+  @ManyToMany(mappedBy = "courses", fetch = FetchType.LAZY)
+  List<Order> orders;
+}
