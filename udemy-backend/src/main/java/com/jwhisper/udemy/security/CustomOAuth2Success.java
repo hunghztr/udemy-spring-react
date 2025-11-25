@@ -1,0 +1,62 @@
+package com.jwhisper.udemy.security;
+
+import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jwhisper.udemy.helper.ApiResponse;
+import com.jwhisper.udemy.service.AuthService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
+
+@Component
+public class CustomOAuth2Success implements AuthenticationSuccessHandler {
+  private final ObjectMapper objectMapper;
+  private final AuthService authService;
+  @Value("${whisper.jwt.refresh-token-validity-in-seconds}")
+  private long refreshTokenExpiration;
+
+  public CustomOAuth2Success(ObjectMapper objectMapper, AuthService authService) {
+    this.objectMapper = objectMapper;
+    this.authService = authService;
+  }
+
+  @Override
+  @Transactional
+  public void onAuthenticationSuccess(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      Authentication authentication)
+      throws IOException {
+
+    OAuth2User oauthUser = (OAuth2User) authentication.getPrincipal();
+
+    String email = oauthUser.getAttribute("email");
+    var loginResponse = this.authService.setUpLoginResponse(email);
+    ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", loginResponse.getResponse().getRefreshToken())
+        .httpOnly(true)
+        .path("/")
+        .maxAge(this.refreshTokenExpiration)
+        .build();
+    response.addHeader("Set-Cookie", refreshCookie.toString());
+    loginResponse.setCookie(refreshCookie);
+    // format api response
+    ApiResponse<Object> apiResponse = new ApiResponse<>();
+    apiResponse.setData(loginResponse.getResponse());
+    apiResponse.setMessage("Đăng nhập thành công");
+    apiResponse.setStatus(200);
+    // Trả về JSON
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+    this.objectMapper.writeValue(response.getWriter(), apiResponse);
+  }
+
+}

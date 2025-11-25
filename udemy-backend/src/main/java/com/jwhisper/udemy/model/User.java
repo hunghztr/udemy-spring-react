@@ -3,9 +3,12 @@ package com.jwhisper.udemy.model;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jwhisper.udemy.helper.constant.LoginMethod;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,9 +34,9 @@ public class User extends DefaultModel {
   String id;
   String username;
   String password;
-  private String fullname;
-  private String email;
-  private String phone;
+  String fullname;
+  @Enumerated(EnumType.STRING)
+  LoginMethod method;
   String avatarPath;
   @Column(columnDefinition = "TEXT")
   String description;
