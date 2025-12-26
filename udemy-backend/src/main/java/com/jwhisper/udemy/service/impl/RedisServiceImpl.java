@@ -24,7 +24,7 @@ public class RedisServiceImpl implements RedisService {
   public void storeRefreshToken(String username, String token, long ttlSeconds) {
     this.redisTemplate
         .opsForValue()
-        .set(REFRESH_PREFIX + username, token, ttlSeconds, TimeUnit.SECONDS);
+        .set(REFRESH_PREFIX + token, username, ttlSeconds, TimeUnit.SECONDS);
   }
 
   @Override
@@ -100,6 +100,11 @@ public class RedisServiceImpl implements RedisService {
   @Override
   public void deleteResetToken(String email) {
     this.redisTemplate.delete(RESET_PREFIX + email);
+  }
+
+  @Override
+  public String getUsernameByRefreshToken(String refreshToken) {
+    return this.redisTemplate.opsForValue().get(REFRESH_PREFIX + refreshToken);
   }
 
 }

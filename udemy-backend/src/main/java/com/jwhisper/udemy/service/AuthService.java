@@ -7,6 +7,7 @@ import com.jwhisper.udemy.dto.auth.LoginRequest;
 import com.jwhisper.udemy.dto.auth.LoginResponse;
 import com.jwhisper.udemy.dto.auth.RegisterRequest;
 import com.jwhisper.udemy.helper.expception.ErrorException;
+import com.jwhisper.udemy.projection.user.UserDetail;
 
 public interface AuthService {
   LoginResponse setUpLoginResponse(String username);
@@ -22,5 +23,9 @@ public interface AuthService {
   String isValidOtp(String otp, String email) throws ErrorException;
 
   void changePassword(String mail, String resetToken, String password) throws ErrorException;
+
+  UserDetail getCurrentUser() throws ErrorException;
+
+  String refreshToken(String refreshToken) throws ErrorException;
 
 }

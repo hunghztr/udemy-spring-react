@@ -31,7 +31,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jwhisper.udemy.helper.constant.LoginMethod;
 import com.jwhisper.udemy.helper.expception.CustomAuthenticationEntryPoint;
 import com.jwhisper.udemy.model.Role;
@@ -55,16 +54,14 @@ public class SecurityConfiguration {
   private final RedisService redisService;
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
-  private final ObjectMapper objectMapper;
   private final AuthService authService;
 
   public SecurityConfiguration(RedisService redisService,
       UserRepository userRepository, RoleRepository roleRepository,
-      ObjectMapper objectMapper, @Lazy AuthService authService) {
+      @Lazy AuthService authService) {
     this.redisService = redisService;
     this.userRepository = userRepository;
     this.roleRepository = roleRepository;
-    this.objectMapper = objectMapper;
     this.authService = authService;
   }
 
@@ -178,6 +175,6 @@ public class SecurityConfiguration {
 
   @Bean
   public AuthenticationSuccessHandler oAuth2SuccessHandler() {
-    return new CustomOAuth2Success(objectMapper, authService);
+    return new CustomOAuth2Success(authService);
   }
 }

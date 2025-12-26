@@ -18,6 +18,7 @@ import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.helper.mapper.AuthMapper;
 import com.jwhisper.udemy.model.Role;
 import com.jwhisper.udemy.model.User;
+import com.jwhisper.udemy.projection.user.UserDetail;
 import com.jwhisper.udemy.repository.RoleRepository;
 import com.jwhisper.udemy.repository.UserRepository;
 import com.jwhisper.udemy.security.SecurityHelper;
@@ -81,7 +82,7 @@ public class AuthServiceImpl implements AuthService {
     LoginResponse loginResponse = this.setUpLoginResponse(request.getUsername());
     // set cookies
     ResponseCookie cookie = ResponseCookie
-        .from("refresh_token", loginResponse.getResponse().getRefreshToken())
+        .from("refresh_token", loginResponse.getRefreshToken())
         .httpOnly(true)
         .secure(true)
         .path("/")
@@ -94,18 +95,15 @@ public class AuthServiceImpl implements AuthService {
   @Override
   public LoginResponse setUpLoginResponse(String username) {
     LoginResponse response = new LoginResponse();
-    LoginResponse.Response res = new LoginResponse.Response();
-    response.setResponse(res);
     Optional<User> currentUserDB = this.userRepository.findByUsername(username);
     if (currentUserDB.isPresent()) {
-      response.getResponse().setUser(authMapper.toUserToken(currentUserDB.get()));
       // create access token
       String accessToken = this.securityHelper.generateToken(currentUserDB.get(), "access_token");
-      response.getResponse().setAccessToken(accessToken);
+      response.setAccessToken(accessToken);
 
       // create refresh token
       String refreshToken = this.securityHelper.generateToken(currentUserDB.get(), "refresh_token");
-      response.getResponse().setRefreshToken(refreshToken);
+      response.setRefreshToken(refreshToken);
       // update user redis
       this.redisService.storeRefreshToken(username, refreshToken, refreshTokenExpiration);
     }
@@ -170,5 +168,29 @@ public class AuthServiceImpl implements AuthService {
     this.redisService.deleteOtp(email);
     this.redisService.deleteRefreshToken(email);
     this.redisService.deleteResetToken(email);
+  }
+
+  @Override
+  public UserDetail getCurrentUser() throws ErrorException {
+    String username = this.securityHelper.getCurrentUsername();
+    UserDetail userDetail = this.userRepository.findProjectByUsername(username);
+    if (userDetail == null) {
+      throw new ErrorException("Người dùng không tồn tại");
+    }
+    return userDetail;
+  }
+
+  @Override
+  public String refreshToken(String refreshToken) throws ErrorException {
+    String username = this.redisService.getUsernameByRefreshToken(refreshToken);
+    if (username == null) {
+      throw new ErrorException("token không hợp lệ");
+    }
+    Optional<User> userOpt = this.userRepository.findByUsername(username);
+    if (userOpt.isPresent()) {
+      String accessToken = this.securityHelper.generateToken(userOpt.get(), "access_token");
+      return accessToken;
+    }
+    throw new ErrorException("Người dùng không tồn tại");
   }
 }

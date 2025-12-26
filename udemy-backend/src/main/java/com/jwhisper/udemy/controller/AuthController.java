@@ -10,6 +10,7 @@ import com.jwhisper.udemy.dto.auth.MailRequest;
 import com.jwhisper.udemy.dto.auth.RegisterRequest;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
 import com.jwhisper.udemy.helper.expception.ErrorException;
+import com.jwhisper.udemy.projection.user.UserDetail;
 import com.jwhisper.udemy.service.AuthService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,6 +23,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
@@ -44,8 +46,25 @@ public class AuthController {
   @ApiMessage("Đăng nhập thành công")
   public ResponseEntity<?> login(@RequestBody @Valid LoginRequest request) {
     LoginResponse response = this.authService.login(request);
+    StringResult result = new StringResult();
+    result.setResult(response.getAccessToken());
     return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, response.getCookie().toString())
-        .body(response.getResponse());
+        .body(result);
+  }
+
+  @GetMapping("/me")
+  public ResponseEntity<?> me() throws ErrorException {
+    UserDetail detail = this.authService.getCurrentUser();
+    return ResponseEntity.ok().body(detail);
+  }
+
+  @PostMapping("/auth/refresh-token")
+  public ResponseEntity<?> refreshToken(@CookieValue(name = "refresh_token", defaultValue = "none") String refreshToken)
+      throws ErrorException {
+    String accessToken = this.authService.refreshToken(refreshToken);
+    StringResult result = new StringResult();
+    result.setResult(accessToken);
+    return ResponseEntity.ok().body(result);
   }
 
   @PostMapping("/auth/logout")

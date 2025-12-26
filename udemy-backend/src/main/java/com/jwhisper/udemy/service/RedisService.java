@@ -22,4 +22,6 @@ public interface RedisService {
   String getResetToken(String email);
 
   void deleteResetToken(String email);
+
+  String getUsernameByRefreshToken(String refreshToken);
 }

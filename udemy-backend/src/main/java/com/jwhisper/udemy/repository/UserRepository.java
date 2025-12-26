@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.jwhisper.udemy.model.User;
+import com.jwhisper.udemy.projection.user.UserDetail;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
@@ -14,4 +15,6 @@ public interface UserRepository extends JpaRepository<User, String> {
   Optional<User> findByUsername(String username);
 
   boolean existsByUsername(String username);
+
+  UserDetail findProjectByUsername(String username);
 }

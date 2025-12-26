@@ -9,14 +9,8 @@ import lombok.experimental.FieldDefaults;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LoginResponse {
-  Response response;
+  String accessToken;
+  String refreshToken;
   ResponseCookie cookie;
 
-  @Data
-  @FieldDefaults(level = AccessLevel.PRIVATE)
-  public static class Response {
-    String accessToken;
-    String refreshToken;
-    UserToken user;
-  }
 }

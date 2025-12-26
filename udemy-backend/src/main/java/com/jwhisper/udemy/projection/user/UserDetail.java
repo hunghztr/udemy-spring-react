@@ -9,11 +9,7 @@ public interface UserDetail {
 
   String getFullname();
 
-  String getEmail();
-
   String getAvatarPath();
-
-  String getDescription();
 
   @Value("#{target.role.name}")
   String getRoleName();
