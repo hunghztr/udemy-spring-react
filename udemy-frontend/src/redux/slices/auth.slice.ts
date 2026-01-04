@@ -24,13 +24,16 @@ export const authSlice = createSlice({
     .addCase(loginWithInfo.fulfilled,(state,action) =>{
       state.accessToken = action.payload.accessToken;
       state.isAuthenticated = true;
+      state.isInittialized = true;
     })
     .addCase(refreshToken.fulfilled,(state,action) =>{
       state.accessToken = action.payload.accessToken;
       state.isAuthenticated = true;
+      state.isInittialized = true;
     })
     .addCase(refreshToken.rejected,(state) =>{
       state.isAuthenticated = false;
+      state.isInittialized = true;
     })
     .addCase(logOut.fulfilled,(state) =>{
       state.accessToken = "";
@@ -39,6 +42,6 @@ export const authSlice = createSlice({
   }
 })
 
-export const { setInitialized } = authSlice.actions
+export const {  } = authSlice.actions
 
 export default authSlice.reducer

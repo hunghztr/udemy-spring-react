@@ -15,7 +15,7 @@ import OAuth2Callback from "./utils/oauth2Callback.tsx";
 import ForgotPasswordPage from "./screens/forgot.password.page.tsx";
 import AdminHomePage from "./screens/admin/admin.home.page.tsx";
 import AdminLayout from "./components/layout/admin/admin.layout.tsx";
-import AuthInitializer from "./components/layout/auth.initializer.tsx";
+import AuthInitializer from "./utils/auth.initializer.tsx";
 import ProtectedLayout from "./components/layout/protected.layout.tsx";
 const router = createBrowserRouter([
   {

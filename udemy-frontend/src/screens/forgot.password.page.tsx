@@ -2,7 +2,7 @@ import {useState } from 'react';
 import VerifyMail from '../components/auth/verify-mail.form'
 import OtpForm from '../components/auth/otp.form';
 import { useAppSelector } from '../redux/hook';
-import Loading from '../components/layout/loading';
+import Loading from '../components/loading';
 import ChangePasswordForm from '../components/auth/change-password.form';
 
 

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import LoginForm from "../components/auth/login.form";
 import RegisterForm from "../components/auth/register.form";
 import { useAppSelector } from "../redux/hook";
-import Loading from "../components/layout/loading";
+import Loading from "../components/loading";
 
 export default function AuthPage() {
   const [mode, setMode] = useState<"login" | "register">("login");

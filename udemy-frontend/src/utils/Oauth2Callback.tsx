@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../redux/hook";
-import Loading from "../components/layout/loading";
+import Loading from "../components/loading";
 import { useEffect } from "react";
 import { refreshToken } from "../redux/thunks/auth.thunk";
 import { useNavigate } from "react-router-dom";

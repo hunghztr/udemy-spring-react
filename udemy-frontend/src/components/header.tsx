@@ -9,10 +9,10 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import ExploreIcon from "@mui/icons-material/Explore";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../redux/hook";
-import { persistor } from "../../redux/store";
-import { logOut } from "../../redux/thunks/auth.thunk";
-import { showToast } from "../../utils/toast";
+import { useAppDispatch, useAppSelector } from "../redux/hook";
+import { persistor } from "../redux/store";
+import { logOut } from "../redux/thunks/auth.thunk";
+import { showToast } from "../utils/toast";
 
 export default function Header() {
   const user = useAppSelector(state => state.user);

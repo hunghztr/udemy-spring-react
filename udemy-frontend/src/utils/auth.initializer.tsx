@@ -1,7 +1,6 @@
 import { useEffect } from "react";
-import { useAppDispatch } from "../../redux/hook";
-import {logOut, refreshToken } from "../../redux/thunks/auth.thunk";
-import { setInitialized } from "../../redux/slices/auth.slice";
+import { useAppDispatch } from "../redux/hook";
+import {logOut, refreshToken } from "../redux/thunks/auth.thunk";
 
 export default function AuthInitializer({
   children,
@@ -14,9 +13,6 @@ export default function AuthInitializer({
     .unwrap()
     .catch(() => {
       dispatch(logOut());
-    })
-    .finally(() => {
-      dispatch(setInitialized(true));
     });
 }, []);
 
