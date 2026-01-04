@@ -16,13 +16,13 @@ public interface AuthService {
 
   LoginResponse login(LoginRequest request) throws BadCredentialsException;
 
-  ResponseCookie logout(String accessToken);
+  ResponseCookie logout(String accessToken,String resetToken);
 
   void isValidMail(String mail) throws ErrorException;
 
-  String isValidOtp(String otp, String email) throws ErrorException;
+  ResponseCookie isValidOtp(String otp, String email) throws ErrorException;
 
-  void changePassword(String mail, String resetToken, String password) throws ErrorException;
+  void changePassword( String resetToken, String password) throws ErrorException;
 
   UserDetail getCurrentUser() throws ErrorException;
 

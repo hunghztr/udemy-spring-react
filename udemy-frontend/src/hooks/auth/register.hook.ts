@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { register } from "../../redux/thunks/auth.thunk";
-import { toast } from "react-toastify";
+
+import { showToast } from "../../utils/toast";
 
 export const useRegisterHook = (onSwitchMode: () => void) =>{
 const dispatch = useAppDispatch();
@@ -11,7 +12,7 @@ const dispatch = useAppDispatch();
   const confirmRef = useRef<HTMLInputElement>(null);
 
   const [error, setError] = useState("");
-  const serverError = useAppSelector((state) => state.ui.error);
+  const serverError = useAppSelector((state) => state.ui.errors.registerError);
    const handleRegisterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -34,7 +35,7 @@ const dispatch = useAppDispatch();
     try {
       await dispatch(register({ username, password, fullname })).unwrap();
       onSwitchMode();
-      toast.success("Đăng kí thành công");
+      showToast("Đăng kí thành công");
     } catch (err) {
       const errAxios = err as string;
       console.log(errAxios);

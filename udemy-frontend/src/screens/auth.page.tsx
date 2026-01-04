@@ -87,15 +87,8 @@ export default function AuthPage() {
         >
           <AnimatePresence mode="wait">
             {isLoading ? (
-              // <motion.div
-              //   key="loading"
-              //   initial={{ opacity: 0 }}
-              //   animate={{ opacity: 1 }}
-              //   exit={{ opacity: 0 }}
-              //   style={{ position: "absolute", width: "100%" }}
-              // >
               <Loading />
-            ) : // </motion.div>
+            ) : 
             mode === "login" ? (
               <motion.div
                 key="login"

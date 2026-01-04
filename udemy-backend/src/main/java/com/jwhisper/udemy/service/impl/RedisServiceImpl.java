@@ -2,6 +2,7 @@ package com.jwhisper.udemy.service.impl;
 
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 @Service
 public class RedisServiceImpl implements RedisService {
   private final String REFRESH_PREFIX = "refresh:";
+  private final String USER_PREFIX = "user:";
   private final String BLACKLIST_PREFIX = "blacklist:";
   private final String OTP_PREFIX = "otp:";
   private final String RESET_PREFIX = "reset:";
@@ -25,6 +27,7 @@ public class RedisServiceImpl implements RedisService {
     this.redisTemplate
         .opsForValue()
         .set(REFRESH_PREFIX + token, username, ttlSeconds, TimeUnit.SECONDS);
+        this.redisTemplate.opsForSet().add(USER_PREFIX+username, token);
   }
 
   @Override
@@ -35,8 +38,10 @@ public class RedisServiceImpl implements RedisService {
   }
 
   @Override
-  public void deleteRefreshToken(String username) {
-    this.redisTemplate.delete(REFRESH_PREFIX + username);
+  public void deleteRefreshToken(String refreshToken) {
+    String username = this.redisTemplate.opsForValue().get(REFRESH_PREFIX+refreshToken);
+    this.redisTemplate.delete(REFRESH_PREFIX + refreshToken);
+    this.redisTemplate.opsForSet().remove(USER_PREFIX+username,refreshToken);
   }
 
   @Override
@@ -76,7 +81,7 @@ public class RedisServiceImpl implements RedisService {
   @Override
   public String createResetToken(String email, long ttlSeconds) {
     String token = generateSecureToken();
-    this.redisTemplate.opsForValue().set(RESET_PREFIX + email, token, ttlSeconds, TimeUnit.SECONDS);
+    this.redisTemplate.opsForValue().set(RESET_PREFIX + token, email, ttlSeconds, TimeUnit.SECONDS);
     return token;
   }
 
@@ -91,20 +96,29 @@ public class RedisServiceImpl implements RedisService {
   }
 
   @Override
-  public String getResetToken(String email) {
+  public String getUsernameByResetToken(String token) {
     return this.redisTemplate
         .opsForValue()
-        .get(RESET_PREFIX + email);
+        .get(RESET_PREFIX + token);
   }
 
   @Override
-  public void deleteResetToken(String email) {
-    this.redisTemplate.delete(RESET_PREFIX + email);
+  public void deleteResetToken(String token) {
+    this.redisTemplate.delete(RESET_PREFIX + token);
   }
 
   @Override
   public String getUsernameByRefreshToken(String refreshToken) {
     return this.redisTemplate.opsForValue().get(REFRESH_PREFIX + refreshToken);
+  }
+
+  @Override
+  public void deleteRefreshTokenByUsername(String username) {
+      Set<String> tokens = this.redisTemplate.opsForSet().members(USER_PREFIX+username);
+      if(tokens != null && !tokens.isEmpty()){
+        tokens.forEach(t -> this.redisTemplate.delete(REFRESH_PREFIX+t));
+        this.redisTemplate.delete(USER_PREFIX+username);
+      }
   }
 
 }

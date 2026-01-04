@@ -5,7 +5,9 @@ public interface RedisService {
 
   String getRefreshToken(String username);
 
-  void deleteRefreshToken(String username);
+  void deleteRefreshToken(String refreshToken);
+  
+  void deleteRefreshTokenByUsername(String username);
 
   void addBlacklistToken(String jwt, long ttlSeconds);
 
@@ -19,9 +21,9 @@ public interface RedisService {
 
   String createResetToken(String email, long ttlSeconds);
 
-  String getResetToken(String email);
+  String getUsernameByResetToken(String token);
 
-  void deleteResetToken(String email);
+  void deleteResetToken(String token);
 
   String getUsernameByRefreshToken(String refreshToken);
 }

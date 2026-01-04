@@ -1,6 +1,7 @@
 package com.jwhisper.udemy.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
+@RequestMapping("/api/v1")
 class HelloController {
 
   @GetMapping("/hello")

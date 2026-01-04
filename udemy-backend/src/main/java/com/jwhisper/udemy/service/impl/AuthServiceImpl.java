@@ -112,9 +112,8 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
-  public ResponseCookie logout(String accessToken) {
-    String username = this.securityHelper.getCurrentUsername();
-    this.redisService.deleteRefreshToken(username);
+  public ResponseCookie logout(String accessToken,String refreshToken) {
+    this.redisService.deleteRefreshToken(refreshToken);
     this.redisService.addBlacklistToken(accessToken, accessTokenExpiration);
     return ResponseCookie
         .from("refresh_token", "")
@@ -141,33 +140,40 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
-  public String isValidOtp(String otp, String email) throws ErrorException {
+  public ResponseCookie isValidOtp(String otp, String email) throws ErrorException {
     var row = this.redisService.getOtp(email);
     if (!otp.equals(row))
       throw new ErrorException("Mã otp không chính xác");
     this.redisService.deleteOtp(email);
     var optionalUser = this.userRepository.findByUsername(email);
     if (optionalUser.isPresent()) {
-      return this.redisService.createResetToken(email, 300);
+      String resetToken = this.redisService.createResetToken(email, 300);
+      return ResponseCookie
+        .from("reset_token", resetToken)
+        .httpOnly(true)
+        .secure(true)
+        .path("/")
+        .maxAge(300)
+        .build();
     }
     return null;
   }
 
   @Override
-  public void changePassword(String email, String token, String password) throws ErrorException {
-    String resetToken = this.redisService.getResetToken(email);
-    if (resetToken == null || !resetToken.equals(token)) {
+  public void changePassword( String token, String password) throws ErrorException {
+    String username = this.redisService.getUsernameByResetToken(token);
+    if (username == null) {
       throw new ErrorException("Token không hợp lệ hoặc đã hết hạn");
     }
-    var optionalUser = this.userRepository.findByUsername(email);
+    var optionalUser = this.userRepository.findByUsername(username);
     if (!optionalUser.isPresent())
       throw new ErrorException("Người dùng không tồn tại");
     User user = optionalUser.get();
     user.setPassword(this.passwordEncoder.encode(password));
     this.userRepository.save(user);
-    this.redisService.deleteOtp(email);
-    this.redisService.deleteRefreshToken(email);
-    this.redisService.deleteResetToken(email);
+    this.redisService.deleteOtp(username);
+    this.redisService.deleteRefreshTokenByUsername(username);
+    this.redisService.deleteResetToken(token);
   }
 
   @Override

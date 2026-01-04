@@ -20,18 +20,6 @@ export const login = createAsyncThunk(
   }
 );
 
-export const getInfo = createAsyncThunk(
-  'auths/getInfo',
-  async (_, thunkApi) => {
-    try {
-      const res: IApiResponse<IUserToken> = await api.get("/me");
-      return res;
-    } catch (err: unknown) {
-      const errAxios = err as AxiosError<IApiResponse<string>>;
-      return thunkApi.rejectWithValue(errAxios.response?.data.message || "Get info failed");
-    }
-  }
-);
 
 export const loginWithInfo = createAsyncThunk(
   'auths/loginWithInfo',
@@ -44,6 +32,7 @@ export const loginWithInfo = createAsyncThunk(
         `Bearer ${tokenResponse.data.result}`;
 
       const res: IApiResponse<IUserToken> = await api.get("/me");
+      console.log(res)
       return {
         user: res.data,
         accessToken: tokenResponse.data.result
@@ -55,19 +44,6 @@ export const loginWithInfo = createAsyncThunk(
   }
 );
 
-export const loginGoogleWithInfo = createAsyncThunk(
-  'auths/loginGoogleWithInfo',
-  async (accessToken: string, thunkApi) => {
-    try {
-      api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-      const res: IApiResponse<IUserToken> = await api.get("/me");
-      return { user: res.data, accessToken };
-    } catch (err: unknown) {
-      const errAxios = err as AxiosError<IApiResponse<string>>;
-      return thunkApi.rejectWithValue(errAxios.response?.data.message || "Google login failed");
-    }
-  }
-);
 
 export const register = createAsyncThunk(
   'auths/register',
@@ -83,24 +59,82 @@ export const register = createAsyncThunk(
   }
   }
 )
-export const refreskToken = createAsyncThunk(
+export const refreshToken = createAsyncThunk(
   'auths/refreshToken',
   async (_,thunkApi) =>{
     try{
-    const tokenRes : IApiResponse<IResult> = await api.post("/auth/refresh-token",
-      {
-        input : localStorage.getItem("username")
-      });
+    const tokenRes : IApiResponse<IResult> = await api.post("/auth/refresh-token");
     const accessToken = tokenRes.data.result;
     api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
     const userTokenRes : IApiResponse<IUserToken> = await api.get("/me");
-    const userToken = userTokenRes.data;
+    const user = userTokenRes.data;
     return {
-      accessToken,userToken
+      accessToken,user
     }
     }catch(err){
       const errAxios = err as AxiosError<IApiResponse<string>>;
       return thunkApi.rejectWithValue(errAxios.response?.data.message || "Invalid token"); 
     }
+  }
+)
+export const logOut = createAsyncThunk(
+  'auths/logOut',
+  async (_,thunkApi) =>{
+    try{
+    await api.post("/logout");
+    const user : IUserToken = {
+      id : '',
+      username:'',
+      fullname:'',
+      avatarPath:'',
+      roleName:''
+    }
+    return {
+      user
+    }
+  }catch(err){
+    const errAxios = err as AxiosError<IApiResponse<string>>;
+    return thunkApi.rejectWithValue(errAxios.response?.data.message || "Logout failed");
+  }
+  }
+)
+export const verifyMail = createAsyncThunk(
+  'auths/verify-mail',
+  async ({email} :{email : string},thunkApi) =>{
+    try{
+      await api.post("/auth/verify-mail",{
+        email
+      });
+      localStorage.setItem("username",email);
+    }catch(err){
+      const errAxios = err as AxiosError<IApiResponse<string>>;
+      return thunkApi.rejectWithValue(errAxios.response?.data.message || "Verify mail failed");
+    }
+  }
+)
+export const verifyOtp = createAsyncThunk(
+  'auths/verify-otp',
+  async ({email,value} : {email : string,value : string},thunkApi) =>{
+    try{
+      await api.post("/auth/verify-otp",{
+        email,value
+      })
+  }catch(err){
+    const errAxios = err as AxiosError<IApiResponse<string>>;
+    return thunkApi.rejectWithValue(errAxios.response?.data.message || "Verify otp failed");
+  }
+  }
+)
+export const changePassword = createAsyncThunk(
+  '/auths/changePass',
+  async ({value} : {value : string},thunkApi) => {
+      try{
+        await api.post("/auth/change-password",{
+          value
+        });
+      }catch(err){
+        const errAxios = err as AxiosError<IApiResponse<string>>;
+        return thunkApi.rejectWithValue(errAxios.response?.data.message || "change pass failed");
+      }
   }
 )

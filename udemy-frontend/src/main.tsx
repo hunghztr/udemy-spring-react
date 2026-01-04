@@ -3,14 +3,20 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./components/layout/layout.tsx";
 import AuthPage from "./screens/auth.page.tsx";
-import OAuth2Callback from "./utils/Oauth2Callback.tsx";
 import { Provider } from "react-redux";
-import { store } from "./redux/store.ts";
+import { persistor, store } from "./redux/store.ts";
 import { ToastContainer } from "react-toastify";
 import { ThemeProvider } from "@emotion/react";
 import theme from "./theme/theme.ts";
 import { CssBaseline } from "@mui/material";
 import HomePage from "./screens/home.page.tsx";
+import { PersistGate } from "redux-persist/integration/react";
+import OAuth2Callback from "./utils/oauth2Callback.tsx";
+import ForgotPasswordPage from "./screens/forgot.password.page.tsx";
+import AdminHomePage from "./screens/admin/admin.home.page.tsx";
+import AdminLayout from "./components/layout/admin/admin.layout.tsx";
+import AuthInitializer from "./components/layout/auth.initializer.tsx";
+import ProtectedLayout from "./components/layout/protected.layout.tsx";
 const router = createBrowserRouter([
   {
     element: <Layout />,
@@ -23,21 +29,53 @@ const router = createBrowserRouter([
         path: "/auth",
         element: <AuthPage />,
       },
+      {
+        path: "/forgot-password",
+        element: <ForgotPasswordPage />
+      }
     ],
   },
   {
     element: <OAuth2Callback />,
     path: "/oauth2/callback",
   },
+  // protected
+  {
+    element: <ProtectedLayout />,
+    children: [
+      {
+        element: <AdminLayout />,
+        children: [
+          {
+            path: "/admin",
+            element: <AdminHomePage />,
+          },
+        ],
+      },
+    ],
+  },
 ]);
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <RouterProvider router={router} />
-        <CssBaseline />
-      </ThemeProvider>
-      <ToastContainer />
+      <PersistGate persistor={persistor}>
+        <AuthInitializer >
+          <ThemeProvider theme={theme}>
+            <RouterProvider router={router} />
+        
+            <ToastContainer
+            position="top-center"
+            closeButton={false}
+            hideProgressBar
+            toastStyle={{
+              background: "transparent",
+              boxShadow: "none",
+              padding: 0,
+            }} />
+            <CssBaseline />
+          </ThemeProvider>
+        </AuthInitializer>
+      </PersistGate>
     </Provider>
   </StrictMode>
 );

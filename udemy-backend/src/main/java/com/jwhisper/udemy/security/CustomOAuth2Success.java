@@ -37,13 +37,13 @@ public class CustomOAuth2Success implements AuthenticationSuccessHandler {
 
     String email = oauthUser.getAttribute("email");
     var loginResponse = this.authService.setUpLoginResponse(email);
-    ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", loginResponse.getRefreshToken())
+    ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", loginResponse.getRefreshToken())
         .httpOnly(true)
         .path("/")
         .maxAge(this.refreshTokenExpiration)
         .build();
     response.addHeader("Set-Cookie", refreshCookie.toString());
-    response.sendRedirect("localhost:5173" + "/oauth/success");
+    response.sendRedirect("http://localhost:5173" + "/oauth2/callback");
   }
 
 }

@@ -23,6 +23,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -53,12 +54,14 @@ public class AuthController {
   }
 
   @GetMapping("/me")
+  @ApiMessage("Lấy dữ liệu thành công")
   public ResponseEntity<?> me() throws ErrorException {
     UserDetail detail = this.authService.getCurrentUser();
     return ResponseEntity.ok().body(detail);
   }
 
   @PostMapping("/auth/refresh-token")
+  @ApiMessage("Lấy token thành công")
   public ResponseEntity<?> refreshToken(@CookieValue(name = "refresh_token", defaultValue = "none") String refreshToken)
       throws ErrorException {
     String accessToken = this.authService.refreshToken(refreshToken);
@@ -67,14 +70,16 @@ public class AuthController {
     return ResponseEntity.ok().body(result);
   }
 
-  @PostMapping("/auth/logout")
+  @PostMapping("/logout")
   @ApiMessage("Đăng xuất thành công")
   public ResponseEntity<?> logout(
-      // @RequestHeader(value = "Authorization", required = false) String
-      // authorization
-      @RequestBody String accessToken) {
-
-    ResponseCookie cookie = this.authService.logout(accessToken);
+      @RequestHeader(value = "Authorization", required = false) String
+      authorization, @CookieValue(name = "refresh_token",defaultValue = "none") String refreshToken){
+  String accessToken = null;
+  if (authorization != null && authorization.startsWith("Bearer ")) {
+    accessToken = authorization.substring(7);
+  }
+    ResponseCookie cookie = this.authService.logout(accessToken,refreshToken);
 
     return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(true);
   }
@@ -89,16 +94,16 @@ public class AuthController {
   @PostMapping("/auth/verify-otp")
   @ApiMessage("Xác thực otp thành công")
   public ResponseEntity<?> validOtp(@RequestBody MailRequest request) throws ErrorException {
-    String resetToken = this.authService.isValidOtp(request.getValue(), request.getEmail());
-    StringResult resetTokenResult = new StringResult();
-    resetTokenResult.setResult(resetToken);
-    return ResponseEntity.ok().body(resetTokenResult);
+    ResponseCookie cookie = this.authService.isValidOtp(request.getValue(), request.getEmail());
+    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,cookie.toString()).body(true);
   }
 
   @PostMapping("/auth/change-password")
   @ApiMessage("Đổi mật khẩu thành công")
-  public ResponseEntity<?> changePassword(@RequestBody MailRequest request) throws ErrorException {
-    this.authService.changePassword(request.getEmail(), request.getResetToken(), request.getValue());
+  public ResponseEntity<?> changePassword(@RequestBody MailRequest request,
+    @CookieValue(name = "reset_token",defaultValue = "none") String resetToken
+  ) throws ErrorException {
+    this.authService.changePassword(resetToken, request.getValue());
     return ResponseEntity.ok().body(true);
   }
 

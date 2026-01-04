@@ -1,51 +1,53 @@
 import axios from "axios";
+import { store } from "../redux/store";
+import { logOut } from "../redux/thunks/auth.thunk";
 import { PUBLIC_ENDPOINTS } from "../constants/public.endpoint";
-import type { IToken } from "../type/token.module";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
   withCredentials: true,
 });
 
-
+/**
+ * ======================
+ * REQUEST INTERCEPTOR
+ * ======================
+ * - Gắn accessToken cho PRIVATE API
+ */
 api.interceptors.request.use(
-  (config) => {
-    if (PUBLIC_ENDPOINTS.some(url => config.url?.includes(url))) {
-      return config;
+  config => {
+    const isPublic = PUBLIC_ENDPOINTS.some(url =>
+      config.url?.includes(url)
+    );
+
+    if (!isPublic) {
+      const accessToken = store.getState().auth.accessToken;
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      }
+    }else{
+      delete config.headers.Authorization;
     }
 
     return config;
   },
-  (error) => Promise.reject(error)
+  error => Promise.reject(error)
 );
 
-
+/**
+ * ======================
+ * RESPONSE INTERCEPTOR
+ * ======================
+ * - 401 = token invalid / expired / revoked
+ * - Logout luôn
+ */
 api.interceptors.response.use(
-  (response) => response.data,
-  async (error) => {
-    const originalRequest = error.config;
+  response => response.data,
+  error => {
+    const status = error.response?.status;
 
-    if (PUBLIC_ENDPOINTS.some(url => originalRequest.url?.includes(url))) {
-      return Promise.reject(error);
-    }
-
-
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      try {
-        const result : IToken = await api.post("/auth/refresh-token");
-        const newAccessToken = result.accessToken;
-
-        api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
-        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-
-        return api(originalRequest);
-
-      } catch (refreshErr) {
-        console.error("Refresh token failed:", refreshErr);
-        return Promise.reject(refreshErr);
-      }
+    if (status === 401) {
+      store.dispatch(logOut());
     }
 
     return Promise.reject(error);

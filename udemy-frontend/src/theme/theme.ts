@@ -14,6 +14,7 @@ const theme = createTheme({
       main: "#ffffff"
     }
   },
+  cssVariables : true
 });
 
 export default theme;

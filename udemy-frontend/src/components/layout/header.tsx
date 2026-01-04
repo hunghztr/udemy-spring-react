@@ -8,9 +8,22 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ExploreIcon from "@mui/icons-material/Explore";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../redux/hook";
+import { persistor } from "../../redux/store";
+import { logOut } from "../../redux/thunks/auth.thunk";
+import { showToast } from "../../utils/toast";
 
 export default function Header() {
+  const user = useAppSelector(state => state.user);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const handleLogOut = async () =>{
+    await persistor.purge();
+    dispatch(logOut());
+    navigate("/auth");
+    showToast("Đăng xuất thành công");
+  }
   return (
     <AppBar
       position="static"
@@ -125,22 +138,39 @@ export default function Header() {
             Dạy trên Udemy
           </Button>
 
-          {/* Login */}
-          <Link to="/auth">
-            <Button
-              variant="outlined"
-              color="primary"
-              size="small"
-              sx={{
-                minWidth: { xs: 60, md: 80 },
-                px: { xs: 1, md: 2 },
-                fontSize: { xs: "11px", md: "14px" },
-                whiteSpace: "nowrap",
-              }}
-            >
-              Login
-            </Button>
-          </Link>
+          {user.id ? (
+  <Button
+    variant="outlined"
+    color="error"
+    size="small"
+    sx={{
+      minWidth: { xs: 60, md: 80 },
+      px: { xs: 1, md: 2 },
+      fontSize: { xs: "11px", md: "14px" },
+      whiteSpace: "nowrap",
+    }}
+    onClick={handleLogOut}
+  >
+    Logout
+  </Button>
+) : (
+  <Link to="/auth">
+    <Button
+      variant="outlined"
+      color="primary"
+      size="small"
+      sx={{
+        minWidth: { xs: 60, md: 80 },
+        px: { xs: 1, md: 2 },
+        fontSize: { xs: "11px", md: "14px" },
+        whiteSpace: "nowrap",
+      }}
+    >
+      Login
+    </Button>
+  </Link>
+)}
+
         </Box>
       </Toolbar>
     </AppBar>
