@@ -12,7 +12,7 @@ import { verifyMail } from "../../redux/thunks/auth.thunk";
 export default function VerifyMail({setMode} : {setMode : (value : "mail"|"otp"|"change") => void}) {
   const [email, setEmail] = React.useState("");
   const [error, setError] = React.useState<string>("");
-  const serverError = useAppSelector(state => state.ui.errors.mailError);
+  const serverError = useAppSelector(state => state.error.errors['auths/verify-mail']);
   const dispatch = useAppDispatch();
   const handleSubmit = async (e : any) => {
     e.preventDefault();

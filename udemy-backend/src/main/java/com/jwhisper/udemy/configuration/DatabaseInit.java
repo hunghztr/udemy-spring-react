@@ -59,6 +59,7 @@ public class DatabaseInit implements CommandLineRunner {
     if (countUser == 0) {
       User user = new User();
       user.setUsername("admin@gmail.com");
+      user.setFullname("admin");
       user.setPassword(passwordEncoder.encode("1"));
       user.setRole(roles.get(0));
       userRepository.save(user);

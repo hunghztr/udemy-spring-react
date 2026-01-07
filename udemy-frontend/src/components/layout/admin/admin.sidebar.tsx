@@ -24,7 +24,7 @@ export default function AdminSidebar() {
   const location = useLocation();
   const dispatch = useAppDispatch();
   const theme = useTheme();
-  const roleName = useAppSelector(state => state.user.roleName);
+  const roleName = useAppSelector(state => state.currentUser.roleName);
   useEffect(() =>{
     if(roleName === '') {
         navigate("/auth")
@@ -61,12 +61,16 @@ export default function AdminSidebar() {
         color: theme.palette.primary.contrastText,
         display: "flex",
         flexDirection: "column",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        zIndex: 1200,  
       }}
     >
       {/* Header */}
       <Box sx={{ p: 2 }}>
         <Typography variant="h6" fontWeight="bold">
-          ADMIN PANEL
+          TRANG QUẢN TRỊ
         </Typography>
       </Box>
 

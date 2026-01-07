@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { loginWithInfo, logOut, refreshToken } from '../thunks/auth.thunk';
-import type { IToken } from '../../type/user.module';
+import type { IToken } from '../../type/auth.module';
 
 
 // Define the initial state using that type

@@ -8,12 +8,7 @@ const api = axios.create({
   withCredentials: true,
 });
 
-/**
- * ======================
- * REQUEST INTERCEPTOR
- * ======================
- * - Gắn accessToken cho PRIVATE API
- */
+
 api.interceptors.request.use(
   config => {
     const isPublic = PUBLIC_ENDPOINTS.some(url =>
@@ -34,13 +29,6 @@ api.interceptors.request.use(
   error => Promise.reject(error)
 );
 
-/**
- * ======================
- * RESPONSE INTERCEPTOR
- * ======================
- * - 401 = token invalid / expired / revoked
- * - Logout luôn
- */
 api.interceptors.response.use(
   response => response.data,
   error => {

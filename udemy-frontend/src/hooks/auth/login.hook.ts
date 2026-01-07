@@ -9,9 +9,9 @@ export const useLoginHook = () =>{
   const navigate = useNavigate();
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const serverError = useAppSelector(state => state.ui.errors.loginError);
+  const serverError = useAppSelector(state => state.error.errors['auths/loginWithInfo']);
   const [error, setError] = useState<string>();
-  const roleName = useAppSelector(state => state.user.roleName);
+  const roleName = useAppSelector(state => state.currentUser.roleName);
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

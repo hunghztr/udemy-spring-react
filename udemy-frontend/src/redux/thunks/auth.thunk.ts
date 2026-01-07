@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import type { ILogin, IRegister, IResult, IUserToken } from "../../type/user.module";
+import type { ILogin, IRegister, IResult, IUserToken } from "../../type/auth.module";
 import api from "../../api/api";
 import type { IApiResponse } from "../../type/api.response";
 import type { AxiosError } from "axios";

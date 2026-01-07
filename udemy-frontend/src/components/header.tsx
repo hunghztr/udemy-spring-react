@@ -15,7 +15,7 @@ import { logOut } from "../redux/thunks/auth.thunk";
 import { showToast } from "../utils/toast";
 
 export default function Header() {
-  const user = useAppSelector(state => state.user);
+  const user = useAppSelector(state => state.currentUser);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const handleLogOut = async () =>{

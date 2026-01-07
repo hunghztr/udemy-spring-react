@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import type { IUserToken } from '../../type/user.module';
+import type { IUserToken } from '../../type/auth.module';
 import {  loginWithInfo, logOut, refreshToken } from '../thunks/auth.thunk';
 
 
@@ -22,7 +22,7 @@ const mapActionToState = (state : IUserToken,action : {payload : {user : IUserTo
       state.roleName = user.roleName;
 }
 export const userSlice = createSlice({
-  name: 'user',
+  name: 'currentUser',
   initialState,
   reducers: {
   },

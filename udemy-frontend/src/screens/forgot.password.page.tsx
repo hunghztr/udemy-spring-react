@@ -8,8 +8,8 @@ import ChangePasswordForm from '../components/auth/change-password.form';
 
 export default function ForgotPasswordPage() {
   const [mode,setMode] = useState<"mail"|"otp"|"change">("mail")
-  const isLoading = useAppSelector(state => state.ui.isLoading);
-  if(isLoading) return <Loading />
+  const isLoading = useAppSelector(state => state.loading.pendingCount);
+  if(isLoading > 0) return <Loading />
   return (
     <div>
       {

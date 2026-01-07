@@ -1,21 +1,22 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { persistReducer, persistStore } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-
+import loadingReducer from './slices/loading.slice'
 import authReducer from './slices/auth.slice'
-import uiReducer from './slices/ui.slice'
-import userReducer from './slices/user.slice'
+import currentUserReducer from './slices/current.user.slice'
+import errorReducer from './slices/error.slice'
 
 const userPersistConfig = {
-  key: 'user',
+  key: 'currentUser',
   storage,
   whitelist: ['id', 'username', 'fullname', 'roleName', 'avatarPath'],
 }
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  ui: uiReducer,
-  user: persistReducer(userPersistConfig, userReducer),
+  currentUser: persistReducer(userPersistConfig, currentUserReducer),
+  loading: loadingReducer,
+  error: errorReducer
 })
 
 export const store = configureStore({

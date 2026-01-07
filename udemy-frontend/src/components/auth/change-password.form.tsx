@@ -17,7 +17,7 @@ export default function ChangePasswordForm() {
   const [error, setError] = React.useState<string>("");
     const navigate = useNavigate();
   const serverError = useAppSelector(
-    (state) => state.ui.errors.changePassError
+    (state) => state.error.errors['/auths/changePass']
   );
 
   const dispatch = useAppDispatch();

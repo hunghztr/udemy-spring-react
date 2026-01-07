@@ -1,25 +1,21 @@
-export interface IResult {
-  result: string;
+export interface IUserResponse{
+    id : string,
+    username : string,
+    fullname : string,
+    roleName : string
 }
-export interface IUserToken{
-  id : string;
-  username: string;
-  fullname: string;
-  roleName: string;
-  avatarPath: string;
+export interface IUser{
+    id? : string,
+    username: string,
+    password: string,
+    fullname: string,
+    role: {
+        id: string,
+    }
 }
-export interface ILogin{
-  username : string;
-  password : string;
-}
-
-export interface IRegister{
-  username : string;
-  password : string;
-  fullname : string;
-}
-export interface IToken{
-  accessToken : string;
-  isAuthenticated : boolean;
-  isInittialized : boolean;
+export interface IUserDetailResponse{
+    id: string,
+    username: string,
+    fullname: string,
+    roleName: string
 }

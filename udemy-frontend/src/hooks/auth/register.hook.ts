@@ -12,7 +12,7 @@ const dispatch = useAppDispatch();
   const confirmRef = useRef<HTMLInputElement>(null);
 
   const [error, setError] = useState("");
-  const serverError = useAppSelector((state) => state.ui.errors.registerError);
+  const serverError = useAppSelector((state) => state.error.errors['auths/register']);
    const handleRegisterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

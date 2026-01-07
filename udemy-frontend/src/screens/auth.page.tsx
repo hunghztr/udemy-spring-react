@@ -9,7 +9,7 @@ import Loading from "../components/loading";
 export default function AuthPage() {
   const [mode, setMode] = useState<"login" | "register">("login");
   const isShortScreen = useMediaQuery("(max-height: 500px)");
-  const isLoading = useAppSelector((state) => state.ui.isLoading);
+  const isLoading = useAppSelector((state) => state.loading.pendingCount);
 
   const formVariants = {
     initial: { opacity: 0, x: 50 },
@@ -86,7 +86,7 @@ export default function AuthPage() {
           }}
         >
           <AnimatePresence mode="wait">
-            {isLoading ? (
+            {isLoading > 0 ? (
               <Loading />
             ) : 
             mode === "login" ? (

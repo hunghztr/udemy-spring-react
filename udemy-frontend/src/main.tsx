@@ -17,6 +17,8 @@ import AdminHomePage from "./screens/admin/admin.home.page.tsx";
 import AdminLayout from "./components/layout/admin/admin.layout.tsx";
 import AuthInitializer from "./utils/auth.initializer.tsx";
 import ProtectedLayout from "./components/layout/protected.layout.tsx";
+import UserManagement from "./screens/admin/user.management.tsx";
+import CourseManagement from "./screens/admin/course.management.tsx";
 const router = createBrowserRouter([
   {
     element: <Layout />,
@@ -50,6 +52,14 @@ const router = createBrowserRouter([
             path: "/admin",
             element: <AdminHomePage />,
           },
+          {
+            path: "/admin/users",
+            element: <UserManagement />
+          },
+          {
+            path: "/admin/courses",
+            element: <CourseManagement />
+          }
         ],
       },
     ],

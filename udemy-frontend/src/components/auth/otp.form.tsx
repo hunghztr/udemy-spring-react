@@ -12,7 +12,7 @@ const OTP_LENGTH = 6;
 export default function OtpForm({ setMode }: Props) {
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
-  const error = useAppSelector(state => state.ui.errors.otpError);
+  const error = useAppSelector(state => state.error.errors['auths/verify-otp']);
   const dispatch = useAppDispatch();
   const handleChange = (value: string, index: number) => {
     if (!/^\d?$/.test(value)) return;
