@@ -32,10 +32,6 @@ public class GlobalException {
       status = HttpStatus.UNAUTHORIZED; // 401
       apiResponse.setMessage("Sai tài khoản hoặc mật khẩu");
     }
-    else if (ex instanceof org.springframework.web.server.ResponseStatusException rse) {
-        status = HttpStatus.valueOf(rse.getStatusCode().value());
-        apiResponse.setMessage(rse.getReason());
-    }
     apiResponse.setStatus(status.value());
     apiResponse.setSuccess(false);
     return ResponseEntity.status(status).body(apiResponse);

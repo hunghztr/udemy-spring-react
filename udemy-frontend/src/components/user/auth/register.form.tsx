@@ -1,5 +1,5 @@
 import { Box, Button, Link, TextField, Typography } from "@mui/material";
-import { useRegisterHook } from "../../hooks/auth/register.hook";
+import { useRegisterHook } from "../../../hooks/auth/register.hook";
 
 export default function RegisterForm({
   onSwitchMode,

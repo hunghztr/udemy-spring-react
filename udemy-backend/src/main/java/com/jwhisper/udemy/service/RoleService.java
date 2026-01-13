@@ -7,5 +7,5 @@ import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.projection.role.RoleProject;
 
 public interface RoleService {
-    Pagination<RoleProject> getAll(Pageable pageable) throws ErrorException;
+    Pagination<RoleProject> getAll(Pageable pageable, boolean isActive, String keyword) throws ErrorException;
 }

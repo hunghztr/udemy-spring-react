@@ -1,96 +1,39 @@
-import {
-  Box,
-  Typography,
-  Paper,
-  Alert,
-  Stack,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  TableContainer,
-  Tooltip,
-  Chip,
-  IconButton,
-  Button,
-  ToggleButton,
-  ToggleButtonGroup,
-} from "@mui/material";
+import {Box,Typography,Paper,Alert,Stack,Table,
+  TableHead,TableRow,TableCell,TableBody,TableContainer,
+  Tooltip,Chip,IconButton,} from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import PaginationComponent from "../../components/pagination.component";
-import { useUserHook } from "../../hooks/admin/user.hook";
+import PaginationComponent from "../../components/admin/layout/pagination.component";
 import Loading from "../../components/loading";
-import AddIcon from "@mui/icons-material/Add";
+
 import EditIcon from "@mui/icons-material/Edit";
 import BlockIcon from "@mui/icons-material/Block";
-import UserCreateDialog from "../../components/user/admin/user.create.dialog";
-import UserUpdateDialog from "../../components/user/admin/user.update.dialog";
-import { useEffect, useState } from "react";
-import { useSaveUserHook } from "../../hooks/admin/save.user.hook";
+import UserCreateDialog from "../../components/admin/user/user.create.dialog";
+import UserUpdateDialog from "../../components/admin/user/user.update.dialog";
+import UserHeader from "../../components/admin/layout/management.header";
+import { useFetchHook } from "../../hooks/admin/fetch.hook";
+import { useState } from "react";
+import type { IUserResponse } from "../../type/user.module";
+import { useActionHook } from "../../hooks/admin/action.hook";
+import { activateUser, disableUser, getAllUsers } from "../../redux/thunks/admin/user.thunk";
 
 export default function UserManagement() {
-  const {
-    loading,
-    error,
-    users,
-    meta,
-    page,
-    setPage,
-    openCreate,
-    setOpenCreate,
-    openUpdate,
-    setOpenUpdate,
-    setRefreshFlag,
-    active,
-    handleToggle
-  } = useUserHook();
+  // fetch hook
+  const {data,page,active,handleToggle,keyword,setKeyword
+    ,loading,error,setPage,meta,fetchData
+  } = useFetchHook<IUserResponse>({errorName:"users/getAll",thunkMethod:getAllUsers});
 
-  const { handleDisableUser, success, setSuccess,handleEnableUser } = useSaveUserHook();
-  const [selectedUserId, setSelectedUserId] = useState<string>("");
-
-  useEffect(() => {
-    if (success) {
-      setRefreshFlag(true);
-      setSuccess(false);
-    }
-  }, [success]);
+  // action hook
+  const {handleDisable,handleEnable} = 
+  useActionHook<boolean>({errorNameDisable:"users/disable",errorNameEnable:"users/activate",
+    thunkMethodDisable:disableUser,thunkMethodEnable:activateUser});
+  const [selectedDataId, setSelectedDataId] = useState<string>("");
+  const [openCreate,setOpenCreate] = useState<boolean>(false);
+  const [openUpdate,setOpenUpdate] = useState<boolean>(false);
   return (
     <Box>
       {/* ===== Header ===== */}
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
-      >
-        <Typography variant="h5" fontWeight="bold">
-          Quản lý người dùng
-        </Typography>
-
-        <Stack direction="row" spacing={1} alignItems="center">
-          <ToggleButtonGroup
-            size="small"
-            value={active}
-            exclusive
-            onChange={handleToggle}
-          >
-            <ToggleButton value={true}>Đang hoạt động</ToggleButton>
-            <ToggleButton value={false} color="warning">
-              Ngừng hoạt động
-            </ToggleButton>
-          </ToggleButtonGroup>
-
-          {/* ➕ Add */}
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => setOpenCreate(true)}
-          >
-            Thêm mới
-          </Button>
-        </Stack>
-      </Stack>
+      <UserHeader active={active} handleToggle={handleToggle} setOpenCreate={setOpenCreate}
+      keyword={keyword} setKeyword={setKeyword} />
 
       {/* ===== Table ===== */}
       <Paper sx={{ p: 2, minHeight: 240 }}>
@@ -109,8 +52,8 @@ export default function UserManagement() {
         {/* ✅ Data */}
         {loading.pendingCount === 0 &&
           !error &&
-          users &&
-          users.length > 0 && (
+          data &&
+          data.length > 0 && (
             <>
               <TableContainer
                 component={Paper}
@@ -135,7 +78,7 @@ export default function UserManagement() {
                   </TableHead>
 
                   <TableBody>
-                    {users.map((user) => (
+                    {data.map((user) => (
                       <TableRow
                         key={user.id}
                         hover
@@ -189,7 +132,7 @@ export default function UserManagement() {
                                 size="small"
                                 color="primary"
                                 onClick={() => {
-                                  setSelectedUserId(user.id);
+                                  setSelectedDataId(user.id);
                                   setOpenUpdate(true);
                                 }}
                               >
@@ -204,7 +147,10 @@ export default function UserManagement() {
                                   size="small"
                                   color="warning"
                                   disabled={user.roleName === "ADMIN"}
-                                  onClick={() => handleDisableUser(user.id)}
+                                  onClick={async () => {
+                                    await handleDisable(user.id)
+                                    fetchData();
+                                  }}
                                 >
                                   <BlockIcon />
                                 </IconButton>
@@ -217,7 +163,10 @@ export default function UserManagement() {
                                 <IconButton
                                   size="small"
                                   color="success"
-                                  onClick={() => handleEnableUser(user.id)}
+                                  onClick={async () => {
+                                    await handleEnable(user.id)
+                                    fetchData();
+                                  }}
                                 >
                                   <CheckCircleIcon />
                                 </IconButton>
@@ -232,29 +181,28 @@ export default function UserManagement() {
                 </Table>
               </TableContainer>
 
-              <PaginationComponent
+              
+            </>
+          )}
+          <PaginationComponent
                 meta={meta}
                 page={page}
                 setPage={setPage}
                 pendingCount={loading.pendingCount}
               />
-            </>
-          )}
       </Paper>
-
       {/* ===== Dialogs ===== */}
       <UserCreateDialog
-        setRefreshFlag={setRefreshFlag}
+        fetchData={fetchData}
         open={openCreate}
         onClose={() => setOpenCreate(false)}
       />
-
       <UserUpdateDialog
-        setRefreshFlag={setRefreshFlag}
+        fetchData={fetchData}
         open={openUpdate}
         onClose={() => setOpenUpdate(false)}
-        userId={selectedUserId}
-        setUserId={setSelectedUserId}
+        userId={selectedDataId}
+        setUserId={setSelectedDataId}
       />
     </Box>
   );

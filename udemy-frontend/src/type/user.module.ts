@@ -7,15 +7,9 @@ export interface IUserResponse{
 export interface IUser{
     id? : string,
     username: string,
-    password: string,
+    password?: string,
     fullname: string,
     role: {
         id: string,
     }
-}
-export interface IUserDetailResponse{
-    id: string,
-    username: string,
-    fullname: string,
-    roleName: string
 }

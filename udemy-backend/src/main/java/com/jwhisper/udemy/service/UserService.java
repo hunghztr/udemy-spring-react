@@ -9,7 +9,7 @@ import com.jwhisper.udemy.projection.user.UserProject;
 
 public interface UserService {
   User findOriginByUsername(String username);
-  Pagination<UserProject> getAll(Pageable pageable,boolean isActive) throws ErrorException;
+  Pagination<UserProject> getAll(Pageable pageable,boolean isActive,String keyword) throws ErrorException;
   boolean create(User user) throws ErrorException;
   boolean update(User user) throws ErrorException;
   boolean delete(String id) throws ErrorException;

@@ -17,10 +17,10 @@ public class RoleServiceImpl implements RoleService {
         this.roleRepository = roleRepository;
     }
     @Override
-    public Pagination<RoleProject> getAll(Pageable pageable) throws ErrorException {
+    public Pagination<RoleProject> getAll(Pageable pageable, boolean isActive, String keyword) throws ErrorException {
         Pagination<RoleProject> pagignation = new Pagination<>();
         Pagination.Meta meta = new Pagination.Meta();
-        Page<RoleProject> rolePage = this.roleRepository.findAllBy(pageable);
+        Page<RoleProject> rolePage = this.roleRepository.findAllByIsActiveAndNameContaining(isActive, keyword, pageable);
         if(rolePage.getContent() == null || rolePage.getContent().size() == 0){
             throw new ErrorException("Danh sách vai trò rỗng");
         }

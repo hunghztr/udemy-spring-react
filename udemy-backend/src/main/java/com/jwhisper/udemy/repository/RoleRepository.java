@@ -11,5 +11,5 @@ import com.jwhisper.udemy.projection.role.RoleProject;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, String> {
   Role findByName(String name);
-  Page<RoleProject> findAllBy(Pageable pageable);
+  Page<RoleProject> findAllByIsActiveAndNameContaining(Boolean isActive,String name, Pageable pageable);
 }

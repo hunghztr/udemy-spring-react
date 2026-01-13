@@ -6,8 +6,8 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../redux/hook";
-import { verifyMail } from "../../redux/thunks/auth.thunk";
+import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { verifyMail } from "../../../redux/thunks/auth.thunk";
 
 export default function VerifyMail({setMode} : {setMode : (value : "mail"|"otp"|"change") => void}) {
   const [email, setEmail] = React.useState("");

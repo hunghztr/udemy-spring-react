@@ -86,7 +86,7 @@ export default function AdminSidebar() {
           <ListItemIcon>
             <PeopleIcon />
           </ListItemIcon>
-          <ListItemText primary="Quản lý User" />
+          <ListItemText primary="Quản lý Người dùng" />
         </ListItemButton>
 
         <ListItemButton
@@ -98,6 +98,16 @@ export default function AdminSidebar() {
             <SchoolIcon />
           </ListItemIcon>
           <ListItemText primary="Quản lý Khóa học" />
+        </ListItemButton>
+        <ListItemButton
+          selected={location.pathname.startsWith("/admin/categories")}
+          onClick={() => navigate("/admin/categories")}
+          sx={menuItemStyle}
+        >
+          <ListItemIcon>
+            <PeopleIcon />
+          </ListItemIcon>
+          <ListItemText primary="Quản lý Danh mục" />
         </ListItemButton>
       </List>
 

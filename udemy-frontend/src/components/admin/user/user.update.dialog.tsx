@@ -7,38 +7,23 @@ import {
   Button,
   Stack,
   MenuItem,
+  Alert,
 } from "@mui/material";
 import { motion } from "framer-motion";
-import { useSaveUserHook } from "../../../hooks/admin/save.user.hook";
-import { useEffect } from "react";
+import { useUserFormHook } from "../../../hooks/admin/user/user.form.hook";
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  setRefreshFlag: (flag: boolean) => void;
+  userId: string;
+  setUserId: (id: string) => void;
+  fetchData: () => Promise<void>;
 }
 
-export default function UserCreateDialog({ open, onClose, setRefreshFlag }: Props) {
-  const {
-    username,
-    setUsername,
-    fullname,
-    setFullname,
-    password,
-    setPassword,
-    roleId,
-    setRoleId,
-    roleList,
-    handleSubmitCreate,
-    success,setSuccess
-  } = useSaveUserHook();
-  // set up khi thành công
-  useEffect(() => {
-    if(success){
-       setRefreshFlag(true)
-       setSuccess(prev => !prev);
-    };
-  }, [success]);
+export default function UserUpdateDialog({ open, onClose, userId, setUserId ,fetchData}: Props) {
+  const {username, setUsername, fullname, setFullname, roleId, setRoleId, roleList,
+    handleUpdateUser,errorUpdate} = useUserFormHook({userId});
+
   return (
     <Dialog
       open={open}
@@ -53,7 +38,7 @@ export default function UserCreateDialog({ open, onClose, setRefreshFlag }: Prop
         transition: { duration: 0.3, ease: "easeOut" },
       }}
     >
-      <DialogTitle>Thêm người dùng</DialogTitle>
+      <DialogTitle>Sửa người dùng</DialogTitle>
 
       <DialogContent>
         <Stack spacing={2} mt={1}>
@@ -69,15 +54,6 @@ export default function UserCreateDialog({ open, onClose, setRefreshFlag }: Prop
             label="Họ tên"
             value={fullname}
             onChange={(e) => setFullname(e.target.value)}
-            fullWidth
-            required
-          />
-
-          <TextField
-            label="Mật khẩu"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
             fullWidth
             required
           />
@@ -102,6 +78,9 @@ export default function UserCreateDialog({ open, onClose, setRefreshFlag }: Prop
               </MenuItem>
             ))}
           </TextField>
+          {errorUpdate && 
+          <Alert severity="error">{errorUpdate}</Alert>
+          }
         </Stack>
       </DialogContent>
 
@@ -109,13 +88,17 @@ export default function UserCreateDialog({ open, onClose, setRefreshFlag }: Prop
         <Button onClick={onClose}>Hủy</Button>
         <Button
           variant="contained"
-          onClick={() =>{
-            handleSubmitCreate();
-            onClose();
-        }}
-          disabled={!username || !password || !fullname}
+          onClick={async () =>{
+            const result = await handleUpdateUser(userId);
+            if(result){
+              setUserId("");
+              await fetchData();
+              onClose();
+            }
+            }}
+          disabled={!username || !fullname}
         >
-          Tạo
+          Sửa
         </Button>
       </DialogActions>
     </Dialog>

@@ -1,5 +1,5 @@
 import { Box, Pagination, Typography } from '@mui/material'
-import type { IMetaResponse } from '../type/pagination'
+import type { IMetaResponse } from '../../../type/pagination'
 
 export default function PaginationComponent({meta,page,setPage,pendingCount}:{
     meta : IMetaResponse,page : number,setPage : (value : number) => void, pendingCount : number

@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Layout from "./components/layout/layout.tsx";
+import Layout from "./components/user/layout/layout.tsx";
 import AuthPage from "./screens/auth.page.tsx";
 import { Provider } from "react-redux";
 import { persistor, store } from "./redux/store.ts";
@@ -14,11 +14,13 @@ import { PersistGate } from "redux-persist/integration/react";
 import OAuth2Callback from "./utils/oauth2Callback.tsx";
 import ForgotPasswordPage from "./screens/forgot.password.page.tsx";
 import AdminHomePage from "./screens/admin/admin.home.page.tsx";
-import AdminLayout from "./components/layout/admin/admin.layout.tsx";
+import AdminLayout from "./components/admin/layout/admin.layout.tsx";
 import AuthInitializer from "./utils/auth.initializer.tsx";
-import ProtectedLayout from "./components/layout/protected.layout.tsx";
-import UserManagement from "./screens/admin/user.management.tsx";
-import CourseManagement from "./screens/admin/course.management.tsx";
+import ProtectedLayout from "./components/admin/layout/protected.layout.tsx";
+import UserManagementPage from "./screens/admin/user.management.page.tsx";
+import CourseManagementPage from "./screens/admin/course.management.page.tsx";
+import CategoryManagementPage from "./screens/admin/category.management.page.tsx";
+
 const router = createBrowserRouter([
   {
     element: <Layout />,
@@ -54,11 +56,15 @@ const router = createBrowserRouter([
           },
           {
             path: "/admin/users",
-            element: <UserManagement />
+            element: <UserManagementPage />
           },
           {
             path: "/admin/courses",
-            element: <CourseManagement />
+            element: <CourseManagementPage />
+          },
+          {
+            path: "/admin/categories",
+            element: <CategoryManagementPage />
           }
         ],
       },

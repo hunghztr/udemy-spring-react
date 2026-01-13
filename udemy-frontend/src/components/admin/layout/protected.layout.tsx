@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useAppSelector } from "../../redux/hook";
-import Loading from "../loading";
+import { useAppSelector } from "../../../redux/hook";
+import Loading from "../../loading";
 
 export default function ProtectedLayout() {
   const { isAuthenticated, isInittialized } = useAppSelector(

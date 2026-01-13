@@ -1,6 +1,7 @@
 package com.jwhisper.udemy.controller.admin;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jwhisper.udemy.dto.Pagination;
@@ -17,18 +18,20 @@ import org.springframework.data.domain.Sort;
 
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/admin/roles")
 public class RoleController {
     private final RoleService roleService;
     public RoleController(RoleService roleService){
         this.roleService = roleService;
     }
 
-    @GetMapping("/roles")
+    @GetMapping()
     @ApiMessage("Lấy danh sách vai trò thành công")
     public ResponseEntity<?> getAll(@PageableDefault(page = 0,size = 10,sort = "createdAt",
-    direction = Sort.Direction.ASC) Pageable pageable) throws ErrorException {
-        Pagination<RoleProject> pagination = this.roleService.getAll(pageable);
+    direction = Sort.Direction.ASC) Pageable pageable,
+    @RequestParam("active") boolean isActive,
+    @RequestParam(name = "keyword", defaultValue = "") String keyword) throws ErrorException {
+        Pagination<RoleProject> pagination = this.roleService.getAll(pageable,isActive,keyword);
         return ResponseEntity.ok().body(pagination);
     }
     

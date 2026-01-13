@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../redux/hook";
-import { verifyOtp } from "../../redux/thunks/auth.thunk";
+import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { verifyOtp } from "../../../redux/thunks/auth.thunk";
 
 interface Props {
   setMode: (value: "mail" | "otp" | "change") => void;

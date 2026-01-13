@@ -1,6 +1,6 @@
 import axios from "axios";
 import { store } from "../redux/store";
-import { logOut } from "../redux/thunks/auth.thunk";
+import { logOut, refreshToken } from "../redux/thunks/auth.thunk";
 import { PUBLIC_ENDPOINTS } from "../constants/public.endpoint";
 
 const api = axios.create({
@@ -31,11 +31,19 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   response => response.data,
-  error => {
-    const status = error.response?.status;
+  async error => {
+    const originalRequest = error.config;
 
-    if (status === 401) {
-      store.dispatch(logOut());
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        const res = await store.dispatch(refreshToken()).unwrap();
+        originalRequest.headers.Authorization = `Bearer ${res.accessToken}`;
+        return api(originalRequest);
+      } catch (e) {
+        store.dispatch(logOut());
+      }
     }
 
     return Promise.reject(error);

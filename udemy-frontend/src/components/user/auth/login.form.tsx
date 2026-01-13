@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
-import { useLoginHook } from "../../hooks/auth/login.hook";
+import { useLoginHook } from "../../../hooks/auth/login.hook";
 
 export default function LoginForm({
   onSwitchMode,

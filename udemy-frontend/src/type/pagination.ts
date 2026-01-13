@@ -1,7 +1,8 @@
 export interface IPagination{
     page : number,
     size : number,
-    active? : boolean
+    active? : boolean,
+    keyword? : string
 }
 export interface IPaginationResponse<T>{
     elements : T[],

@@ -7,45 +7,26 @@ import {
   Button,
   Stack,
   MenuItem,
+  Alert,
 } from "@mui/material";
 import { motion } from "framer-motion";
-import { useSaveUserHook } from "../../../hooks/admin/save.user.hook";
-import { useEffect } from "react";
+
+import { useUserFormHook } from "../../../hooks/admin/user/user.form.hook";
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  userId: string;
-  setUserId: (id: string) => void;
-  setRefreshFlag: (flag: boolean) => void;
+  fetchData: () => Promise<void>;
 }
 
-export default function UserUpdateDialog({ open, onClose, userId, setUserId, setRefreshFlag }: Props) {
-  const {
-    username,
-    setUsername,
-    fullname,
-    setFullname,
-    roleId,
-    setRoleId,
-    roleList,
-    handleSubmitUpdate,
-    setSelectedUserId,
-    success,
-    setSuccess
-  } = useSaveUserHook();
-  // set id được chọn
-  useEffect(() =>{
-     setSelectedUserId(userId);
-  },[userId])
-  // set up khi thành công
-  useEffect(() =>{
-    if(success) {
-      setRefreshFlag(true);
-      setSuccess(prev => !prev);
-      setUserId("");
-    }
-  },[success])
+export default function UserCreateDialog({ open, onClose, fetchData }: Props) {
+//  const {username, setUsername, fullname, setFullname, password, setPassword, roleId, setRoleId, roleList,
+//     handleCreate,errorCreate} = useFormHook<boolean>({
+//      errorNameCreate:"users/create",
+//       thunkMethodCreate:createUser,
+//    });
+ const {username, setUsername, fullname, setFullname, password, setPassword, roleId, setRoleId, roleList,
+    handleCreateUser,errorCreate} = useUserFormHook({});
   return (
     <Dialog
       open={open}
@@ -60,7 +41,7 @@ export default function UserUpdateDialog({ open, onClose, userId, setUserId, set
         transition: { duration: 0.3, ease: "easeOut" },
       }}
     >
-      <DialogTitle>Sửa người dùng</DialogTitle>
+      <DialogTitle>Thêm người dùng</DialogTitle>
 
       <DialogContent>
         <Stack spacing={2} mt={1}>
@@ -76,6 +57,15 @@ export default function UserUpdateDialog({ open, onClose, userId, setUserId, set
             label="Họ tên"
             value={fullname}
             onChange={(e) => setFullname(e.target.value)}
+            fullWidth
+            required
+          />
+
+          <TextField
+            label="Mật khẩu"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             fullWidth
             required
           />
@@ -100,6 +90,9 @@ export default function UserUpdateDialog({ open, onClose, userId, setUserId, set
               </MenuItem>
             ))}
           </TextField>
+          {errorCreate && 
+          <Alert severity="error">{errorCreate}</Alert>
+          }
         </Stack>
       </DialogContent>
 
@@ -107,12 +100,17 @@ export default function UserUpdateDialog({ open, onClose, userId, setUserId, set
         <Button onClick={onClose}>Hủy</Button>
         <Button
           variant="contained"
-          onClick={() =>{
-            handleSubmitUpdate(); 
-            onClose();}}
-          disabled={!username || !fullname}
+          onClick={async () =>{
+            const result = await handleCreateUser();
+            if(result){
+              await fetchData();
+              onClose();
+            }
+            
+        }}
+          disabled={!username || !password || !fullname}
         >
-          Sửa
+          Tạo
         </Button>
       </DialogActions>
     </Dialog>

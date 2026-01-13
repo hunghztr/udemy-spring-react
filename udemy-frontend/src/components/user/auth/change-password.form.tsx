@@ -6,9 +6,9 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../redux/hook";
+import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import { useNavigate } from "react-router-dom";
-import { changePassword } from "../../redux/thunks/auth.thunk";
+import { changePassword } from "../../../redux/thunks/auth.thunk";
 import { toast } from "react-toastify";
 
 export default function ChangePasswordForm() {

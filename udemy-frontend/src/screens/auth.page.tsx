@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Box, Grid, useMediaQuery } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
-import LoginForm from "../components/auth/login.form";
-import RegisterForm from "../components/auth/register.form";
+import LoginForm from "../components/user/auth/login.form";
+import RegisterForm from "../components/user/auth/register.form";
 import { useAppSelector } from "../redux/hook";
 import Loading from "../components/loading";
 
