@@ -41,7 +41,7 @@ import com.jwhisper.udemy.security.CheckBlackListToken;
 import com.jwhisper.udemy.security.CustomOAuth2Success;
 import com.jwhisper.udemy.security.SecurityHelper;
 import com.jwhisper.udemy.service.AuthService;
-import com.jwhisper.udemy.service.RedisService;
+import com.jwhisper.udemy.service.AuthRedisService;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 
 @Configuration
@@ -51,12 +51,12 @@ public class SecurityConfiguration {
   @Value("${whisper.jwt.base64-secret}")
   private String jwtKey;
 
-  private final RedisService redisService;
+  private final AuthRedisService redisService;
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
   private final AuthService authService;
 
-  public SecurityConfiguration(RedisService redisService,
+  public SecurityConfiguration(AuthRedisService redisService,
       UserRepository userRepository, RoleRepository roleRepository,
       @Lazy AuthService authService) {
     this.redisService = redisService;
@@ -72,7 +72,9 @@ public class SecurityConfiguration {
 
   @Bean
   public String[] getWhiteList() {
-    return new String[] { "/oauth2/**", "/swagger-ui/**", "/v3/api-docs/**", "/api/v1/auth/**", "/hello" };
+    return new String[] { "/oauth2/**", "/swagger-ui/**", "/v3/api-docs/**", "/api/v1/auth/**",
+    "/api/v1/client/**" ,
+    "/hello" };
   }
 
   @Bean

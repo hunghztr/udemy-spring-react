@@ -38,6 +38,7 @@ public class Category extends DefaultModel {
   @OneToMany(mappedBy = "categoryParent", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   List<Category> categories;
 
+  @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "course_id")
   private Course course;

@@ -13,3 +13,10 @@ export interface IUser{
         id: string,
     }
 }
+
+export interface IProfile{
+    id?: string,
+    fullname: string,
+    description: string,
+    avatarPath: string
+}

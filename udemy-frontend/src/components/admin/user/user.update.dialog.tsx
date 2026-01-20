@@ -17,10 +17,9 @@ interface Props {
   onClose: () => void;
   userId: string;
   setUserId: (id: string) => void;
-  fetchData: () => Promise<void>;
 }
 
-export default function UserUpdateDialog({ open, onClose, userId, setUserId ,fetchData}: Props) {
+export default function UserUpdateDialog({ open, onClose, userId, setUserId }: Props) {
   const {username, setUsername, fullname, setFullname, roleId, setRoleId, roleList,
     handleUpdateUser,errorUpdate} = useUserFormHook({userId});
 
@@ -92,8 +91,9 @@ export default function UserUpdateDialog({ open, onClose, userId, setUserId ,fet
             const result = await handleUpdateUser(userId);
             if(result){
               setUserId("");
-              await fetchData();
-              onClose();
+              window.location.reload();
+              // await fetchData();
+              // onClose();
             }
             }}
           disabled={!username || !fullname}

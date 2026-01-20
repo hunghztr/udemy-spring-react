@@ -24,7 +24,7 @@ import com.jwhisper.udemy.repository.UserRepository;
 import com.jwhisper.udemy.security.SecurityHelper;
 import com.jwhisper.udemy.service.AuthService;
 import com.jwhisper.udemy.service.MailService;
-import com.jwhisper.udemy.service.RedisService;
+import com.jwhisper.udemy.service.AuthRedisService;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -33,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
   private final AuthMapper authMapper;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final SecurityHelper securityHelper;
-  private final RedisService redisService;
+  private final AuthRedisService redisService;
   @Value("${whisper.jwt.refresh-token-validity-in-seconds}")
   private long refreshTokenExpiration;
   @Value("${whisper.jwt.access-token-validity-in-seconds}")
@@ -44,7 +44,7 @@ public class AuthServiceImpl implements AuthService {
   public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
       AuthMapper authMapper, AuthenticationManagerBuilder authenticationManagerBuilder,
       SecurityHelper securityHelper,
-      MailService mailService, RoleRepository roleRepository, RedisService redisService) {
+      MailService mailService, RoleRepository roleRepository, AuthRedisService redisService) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
     this.authMapper = authMapper;

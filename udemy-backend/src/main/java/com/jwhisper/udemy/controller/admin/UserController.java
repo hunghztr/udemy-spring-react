@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.data.domain.Sort;
 
 import com.jwhisper.udemy.dto.Pagination;
+import com.jwhisper.udemy.dto.user.UserRequest;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
 import com.jwhisper.udemy.helper.expception.ErrorException;
-import com.jwhisper.udemy.model.User;
 import com.jwhisper.udemy.projection.user.UserProject;
 import com.jwhisper.udemy.service.UserService;
 
@@ -47,21 +47,21 @@ public class UserController {
     
     @PostMapping()
     @ApiMessage("Tạo mới người dùng thành công")
-    public ResponseEntity<?> create(@RequestBody User user) throws ErrorException {
+    public ResponseEntity<?> create(@RequestBody UserRequest user) throws ErrorException {
         boolean isCreated = this.userService.create(user);
         return ResponseEntity.ok().body(isCreated);
     }
     @GetMapping("/{id}")
     @ApiMessage("Lấy chi tiết người dùng thành công")
     public ResponseEntity<?> get(@PathVariable("id") String id) throws ErrorException {
-        UserProject userProject = this.userService.getDetail(id);
+        UserProject userProject = this.userService.get(id);
         return ResponseEntity.ok().body(userProject);
     }
     @PutMapping("/{id}")
     @ApiMessage("Cập nhật người dùng thành công")
-    public ResponseEntity<?> update(@PathVariable("id") String id, @RequestBody User entity) throws ErrorException {
-        entity.setId(id);
-        boolean isUpdated = this.userService.update(entity);
+    public ResponseEntity<?> update(@PathVariable("id") String id, @RequestBody UserRequest request) throws ErrorException {
+        request.setId(id);
+        boolean isUpdated = this.userService.update(request);
         return ResponseEntity.ok().body(isUpdated);
     }
     @PostMapping("/delete/{id}")

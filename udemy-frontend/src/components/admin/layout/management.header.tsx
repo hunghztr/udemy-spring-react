@@ -16,6 +16,7 @@ export default function ManagementHeader({
   setOpenCreate,
   keyword,
   setKeyword,
+  title
 }: {
   active: boolean;
   handleToggle: (
@@ -25,6 +26,7 @@ export default function ManagementHeader({
   setOpenCreate: React.Dispatch<React.SetStateAction<boolean>>;
   keyword: string;
   setKeyword: React.Dispatch<React.SetStateAction<string>>;
+  title: string;
 }) {
   return (
     <Stack
@@ -36,7 +38,7 @@ export default function ManagementHeader({
     >
       {/* ===== Title ===== */}
       <Typography variant="h5" fontWeight="bold">
-        Quản lý người dùng
+        {title}
       </Typography>
 
       {/* ===== Actions ===== */}
@@ -51,7 +53,7 @@ export default function ManagementHeader({
         <Box sx={{ minWidth: 180, flexGrow: 1 }}>
           <TextField
             size="small"
-            placeholder="Tìm username hoặc họ tên..."
+            placeholder="Tìm kiếm..."
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
             fullWidth

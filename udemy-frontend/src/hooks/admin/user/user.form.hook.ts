@@ -3,6 +3,7 @@ import type { IRoleResponse } from "../../../type/role.module";
 import { getAllRoles } from "../../../redux/thunks/admin/role.thunk";
 import { useFormHook } from "../form.hook";
 import { createUser, getUserDetail, updateUser } from "../../../redux/thunks/admin/user.thunk";
+import type { IUser } from "../../../type/user.module";
 
 interface IUseFormHookProps{
     userId?: string;
@@ -24,7 +25,7 @@ export const useUserFormHook =  ({userId}
         thunkMethodUpdate:updateUser,
     });
     const handleCreateUser = async () =>{
-        const res = await handleCreate({username,password,fullname,role:{id:roleId}});
+        const res = await handleCreate<IUser>({username,password,fullname,role:{id:roleId}});
         if(res){
             setUsername("");
             setFullname("");
@@ -33,7 +34,7 @@ export const useUserFormHook =  ({userId}
         return res;
     }
     const handleUpdateUser = async (id : string) =>{
-        const res = await handleUpdate({id,username,fullname,role:{id:roleId}});
+        const res = await handleUpdate<IUser>({id,username,fullname,role:{id:roleId}});
         if(res){
             setUsername("");
             setFullname("");

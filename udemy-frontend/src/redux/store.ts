@@ -5,7 +5,7 @@ import loadingReducer from './slices/loading.slice'
 import authReducer from './slices/auth.slice'
 import currentUserReducer from './slices/current.user.slice'
 import errorReducer from './slices/error.slice'
-
+import fileReducer from './slices/file.slice'
 const userPersistConfig = {
   key: 'currentUser',
   storage,
@@ -16,7 +16,8 @@ const rootReducer = combineReducers({
   auth: authReducer,
   currentUser: persistReducer(userPersistConfig, currentUserReducer),
   loading: loadingReducer,
-  error: errorReducer
+  error: errorReducer,
+  fileProgress: fileReducer,
 })
 
 export const store = configureStore({

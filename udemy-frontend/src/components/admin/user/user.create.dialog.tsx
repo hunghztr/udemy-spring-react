@@ -16,15 +16,9 @@ import { useUserFormHook } from "../../../hooks/admin/user/user.form.hook";
 interface Props {
   open: boolean;
   onClose: () => void;
-  fetchData: () => Promise<void>;
 }
 
-export default function UserCreateDialog({ open, onClose, fetchData }: Props) {
-//  const {username, setUsername, fullname, setFullname, password, setPassword, roleId, setRoleId, roleList,
-//     handleCreate,errorCreate} = useFormHook<boolean>({
-//      errorNameCreate:"users/create",
-//       thunkMethodCreate:createUser,
-//    });
+export default function UserCreateDialog({ open, onClose }: Props) {
  const {username, setUsername, fullname, setFullname, password, setPassword, roleId, setRoleId, roleList,
     handleCreateUser,errorCreate} = useUserFormHook({});
   return (
@@ -103,8 +97,9 @@ export default function UserCreateDialog({ open, onClose, fetchData }: Props) {
           onClick={async () =>{
             const result = await handleCreateUser();
             if(result){
-              await fetchData();
-              onClose();
+              window.location.reload();
+              // await fetchData();
+              // onClose();
             }
             
         }}

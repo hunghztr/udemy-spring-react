@@ -9,8 +9,8 @@ const initialState: IUserToken = {
   username: "" as string,
   fullname: "" as string,
   roleName: "" as string,
-  avatarPath: "" as string
- 
+  avatarPath: "" as string,
+  description: "" as string,
 }
 
 const mapActionToState = (state : IUserToken,action : {payload : {user : IUserToken}}) =>{
@@ -20,6 +20,7 @@ const mapActionToState = (state : IUserToken,action : {payload : {user : IUserTo
       state.avatarPath = user.avatarPath;
       state.username = user.username;
       state.roleName = user.roleName;
+      state.description = user.description;
 }
 export const userSlice = createSlice({
   name: 'currentUser',

@@ -1,6 +1,5 @@
 import type { AsyncThunk } from "@reduxjs/toolkit";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
-import type { IUser } from "../../type/user.module";
 
 interface IUseFormHookProps<T>{
     userId?: string;
@@ -9,12 +8,12 @@ interface IUseFormHookProps<T>{
     errorNameGet?: string;
         thunkMethodCreate?: AsyncThunk<
             T,
-            IUser,
+            any,
             { rejectValue: string }
         >;
         thunkMethodUpdate?: AsyncThunk<
             T,
-            IUser,
+            any,
             { rejectValue: string }
         >;
 
@@ -29,17 +28,17 @@ export const useFormHook = <T> ({errorNameCreate,errorNameUpdate,errorNameGet,th
     const dispatch = useAppDispatch();
     
     // handle functions
-    const handleCreate = async (user : IUser) =>{
+    const handleCreate = async <T>(data : T) =>{
         try{
-            const res  = await dispatch(thunkMethodCreate!(user)).unwrap();
+            const res  = await dispatch(thunkMethodCreate!(data)).unwrap();
             return res;
         }catch(err){
             return null;
         }
     }
-    const handleUpdate = async (user : IUser) =>{
+    const handleUpdate = async <T>(data : T) =>{
         try{
-            const res = await dispatch(thunkMethodUpdate!(user)).unwrap();
+            const res = await dispatch(thunkMethodUpdate!(data)).unwrap();
             return res;
         }catch(err){
             return null;

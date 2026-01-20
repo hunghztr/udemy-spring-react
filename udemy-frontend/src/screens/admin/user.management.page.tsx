@@ -9,19 +9,18 @@ import EditIcon from "@mui/icons-material/Edit";
 import BlockIcon from "@mui/icons-material/Block";
 import UserCreateDialog from "../../components/admin/user/user.create.dialog";
 import UserUpdateDialog from "../../components/admin/user/user.update.dialog";
-import UserHeader from "../../components/admin/layout/management.header";
 import { useFetchHook } from "../../hooks/admin/fetch.hook";
 import { useState } from "react";
 import type { IUserResponse } from "../../type/user.module";
 import { useActionHook } from "../../hooks/admin/action.hook";
 import { activateUser, disableUser, getAllUsers } from "../../redux/thunks/admin/user.thunk";
+import ManagementHeader from "../../components/admin/layout/management.header";
 
 export default function UserManagement() {
   // fetch hook
   const {data,page,active,handleToggle,keyword,setKeyword
     ,loading,error,setPage,meta,fetchData
   } = useFetchHook<IUserResponse>({errorName:"users/getAll",thunkMethod:getAllUsers});
-
   // action hook
   const {handleDisable,handleEnable} = 
   useActionHook<boolean>({errorNameDisable:"users/disable",errorNameEnable:"users/activate",
@@ -32,9 +31,8 @@ export default function UserManagement() {
   return (
     <Box>
       {/* ===== Header ===== */}
-      <UserHeader active={active} handleToggle={handleToggle} setOpenCreate={setOpenCreate}
+      <ManagementHeader title={"Quản lí người dùng"} active={active} handleToggle={handleToggle} setOpenCreate={setOpenCreate}
       keyword={keyword} setKeyword={setKeyword} />
-
       {/* ===== Table ===== */}
       <Paper sx={{ p: 2, minHeight: 240 }}>
         {/* ⏳ Loading */}
@@ -43,12 +41,10 @@ export default function UserManagement() {
             <Loading />
           </Stack>
         )}
-
         {/* ❌ Error */}
         {loading.pendingCount === 0 && error && (
           <Alert severity="error">{error}</Alert>
         )}
-
         {/* ✅ Data */}
         {loading.pendingCount === 0 &&
           !error &&
@@ -76,7 +72,6 @@ export default function UserManagement() {
                       </TableCell>
                     </TableRow>
                   </TableHead>
-
                   <TableBody>
                     {data.map((user) => (
                       <TableRow
@@ -98,15 +93,12 @@ export default function UserManagement() {
                             </Typography>
                           </Tooltip>
                         </TableCell>
-
                         <TableCell>{user.username}</TableCell>
-
                         <TableCell>
                           {user.fullname || (
                             <Typography color="text.disabled">—</Typography>
                           )}
                         </TableCell>
-
                         {/* Role */}
                         <TableCell>
                           <Chip
@@ -118,7 +110,6 @@ export default function UserManagement() {
                             sx={{ fontWeight: 600 }}
                           />
                         </TableCell>
-
                         {/* Action */}
                         <TableCell align="center">
                           <Stack
@@ -139,7 +130,6 @@ export default function UserManagement() {
                                 <EditIcon />
                               </IconButton>
                             </Tooltip>
-
                             {/* 🚫 Disable khi đang Active */}
                             {active && (
                               <Tooltip title="Ngừng hoạt động">
@@ -156,7 +146,6 @@ export default function UserManagement() {
                                 </IconButton>
                               </Tooltip>
                             )}
-
                             {/* ✅ Enable khi đang Inactive */}
                             {!active && (
                               <Tooltip title="Kích hoạt lại">
@@ -172,7 +161,6 @@ export default function UserManagement() {
                                 </IconButton>
                               </Tooltip>
                             )}
-
                           </Stack>
                         </TableCell>
                       </TableRow>
@@ -180,8 +168,6 @@ export default function UserManagement() {
                   </TableBody>
                 </Table>
               </TableContainer>
-
-              
             </>
           )}
           <PaginationComponent
@@ -193,12 +179,10 @@ export default function UserManagement() {
       </Paper>
       {/* ===== Dialogs ===== */}
       <UserCreateDialog
-        fetchData={fetchData}
         open={openCreate}
         onClose={() => setOpenCreate(false)}
       />
       <UserUpdateDialog
-        fetchData={fetchData}
         open={openUpdate}
         onClose={() => setOpenUpdate(false)}
         userId={selectedDataId}

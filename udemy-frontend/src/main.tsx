@@ -20,6 +20,11 @@ import ProtectedLayout from "./components/admin/layout/protected.layout.tsx";
 import UserManagementPage from "./screens/admin/user.management.page.tsx";
 import CourseManagementPage from "./screens/admin/course.management.page.tsx";
 import CategoryManagementPage from "./screens/admin/category.management.page.tsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import InstructorLayout from "./components/instructor/layout/instructor.layout.tsx";
+import ProfileInstructorPage from "./screens/instructor/profile.instructor.page.tsx";
+import CourseInstructorPage from "./screens/instructor/course.instructor.page.tsx";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +48,7 @@ const router = createBrowserRouter([
     element: <OAuth2Callback />,
     path: "/oauth2/callback",
   },
+
   // protected
   {
     element: <ProtectedLayout />,
@@ -68,30 +74,55 @@ const router = createBrowserRouter([
           }
         ],
       },
+      {
+        element: <InstructorLayout />,
+        children: [
+          {
+            path: "/instructor/course",
+            element: <CourseInstructorPage />
+          },
+          {
+            path: "/instructor/profile",
+            element: <ProfileInstructorPage />
+          }
+        ]
+      }
     ],
   },
 ]);
+const query = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+      staleTime: 60 * 1000 * 5,
+      gcTime: 30 * 60 * 1000,
+    },
+  },
+});
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
+    <QueryClientProvider client={query}>
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <AuthInitializer >
           <ThemeProvider theme={theme}>
-            <RouterProvider router={router} />
-        
-            <ToastContainer
-            position="top-center"
-            closeButton={false}
-            hideProgressBar
-            toastStyle={{
-              background: "transparent",
-              boxShadow: "none",
-              padding: 0,
-            }} />
-            <CssBaseline />
+            <AuthInitializer >
+              <RouterProvider router={router} />
+              <ReactQueryDevtools initialIsOpen={false} />
+              <ToastContainer
+              position="top-center"
+              closeButton={false}
+              hideProgressBar
+              toastStyle={{
+                background: "transparent",
+                boxShadow: "none",
+                padding: 0,
+              }} />
+              <CssBaseline />
+            </AuthInitializer>
           </ThemeProvider>
-        </AuthInitializer>
       </PersistGate>
     </Provider>
+    </QueryClientProvider>
   </StrictMode>
 );

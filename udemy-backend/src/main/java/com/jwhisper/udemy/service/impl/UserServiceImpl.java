@@ -7,7 +7,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.jwhisper.udemy.dto.Pagination;
+import com.jwhisper.udemy.dto.user.ProfileRequest;
+import com.jwhisper.udemy.dto.user.UserRequest;
 import com.jwhisper.udemy.helper.expception.ErrorException;
+import com.jwhisper.udemy.helper.mapper.UserMapper;
 import com.jwhisper.udemy.model.User;
 import com.jwhisper.udemy.projection.user.UserProject;
 import com.jwhisper.udemy.repository.UserRepository;
@@ -19,9 +22,12 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
-
-  public UserServiceImpl(UserRepository userRepository) {
+  private final UserMapper userMapper;
+  public UserServiceImpl(UserRepository userRepository,
+      UserMapper userMapper
+  ) {
     this.userRepository = userRepository;
+    this.userMapper = userMapper;
   }
 
   @Override
@@ -38,7 +44,6 @@ public class UserServiceImpl implements UserService {
     Pagination<UserProject> pagignation = new Pagination<>();
     Pagination.Meta meta = new Pagination.Meta();
     Page<UserProject> userPage = this.userRepository.findAllByIsActiveAndUsernameContaining(isActive, keyword, pageable);
-    log.info(userPage.getContent().size()+"");
     if(userPage.getContent() == null || userPage.getContent().size() == 0)
       throw new ErrorException("Danh sách người dùng rỗng");
     pagignation.setElements(userPage.getContent());
@@ -51,33 +56,33 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean create(User user) throws ErrorException {
-    if(this.userRepository.existsByUsername(user.getUsername())){
+  public boolean create(UserRequest request) throws ErrorException {
+    if(this.userRepository.existsByUsername(request.getUsername())){
       throw new ErrorException("Người dùng đã tồn tại");
     }
-    this.userRepository.save(user);
+    this.userRepository.save(userMapper.toUser(request));
     return true;
   }
 
   @Override
-  public boolean update(User user) throws ErrorException {
-    if(this.userRepository.existsByUsernameAndIdNot(user.getUsername(), user.getId())){
+  public boolean update(UserRequest request) throws ErrorException {
+    if(this.userRepository.existsByUsernameAndIdNot(request.getUsername(), request.getId())){
       throw new ErrorException("Username đã có người dùng");
     }
-    Optional<User> optionalUser = this.userRepository.findById(user.getId());
+    Optional<User> optionalUser = this.userRepository.findById(request.getId());
     if(!optionalUser.isPresent() || !optionalUser.get().isActive()){
       throw new ErrorException("Người dùng không tồn tại hoặc đã bị vô hiệu hoá");
     }
     User selectedUser = optionalUser.get();
-      selectedUser.setUsername(user.getUsername());
-      selectedUser.setFullname(user.getFullname());
-      selectedUser.setRole(user.getRole());
+      selectedUser.setUsername(request.getUsername());
+      selectedUser.setFullname(request.getFullname());
+      selectedUser.setRole(request.getRole());
       this.userRepository.save(selectedUser);
       return true;
   }
 
   @Override
-  public UserProject getDetail(String id) throws ErrorException {
+  public UserProject get(String id) throws ErrorException {
     UserProject userProject = this.userRepository.findProjectById(id);
     if(userProject == null) throw new ErrorException("Người dùng không tồn tại");
     return userProject;
@@ -105,6 +110,20 @@ public class UserServiceImpl implements UserService {
     user.setActive(true);
     this.userRepository.save(user);
     return true;
+  }
+
+  @Override
+  public boolean updateProfile(ProfileRequest request) throws ErrorException {
+    Optional<User> optionalUser = this.userRepository.findById(request.getId());
+    if(!optionalUser.isPresent() || !optionalUser.get().isActive()){
+      throw new ErrorException("Người dùng không tồn tại hoặc đã bị vô hiệu hoá");
+    }
+    User selectedUser = optionalUser.get();
+      selectedUser.setFullname(request.getFullname());
+      selectedUser.setDescription(request.getDescription());
+      selectedUser.setAvatarPath(request.getAvatarPath());
+      this.userRepository.save(selectedUser);
+      return true;
   }
 
   

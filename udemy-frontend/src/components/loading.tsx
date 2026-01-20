@@ -14,11 +14,17 @@ const Loading: React.FC<LoadingProps> = ({
   return (
     <Box
       sx={{
-        height: "100vh",
+        position: "fixed",
+        inset: 0,
+        zIndex: 2000,
+
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
+
+        backgroundColor: "rgba(255,255,255,0.4)", // nhìn thấy phía sau
+        backdropFilter: "blur(4px)",              // blur UI phía sau
       }}
     >
       <CircularProgress size={size} sx={{ mb: 2 }} />

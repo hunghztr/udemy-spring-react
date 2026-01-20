@@ -1,12 +1,10 @@
-export interface IResult {
-  result: string;
-}
 export interface IUserToken{
   id : string;
   username: string;
   fullname: string;
   roleName: string;
   avatarPath: string;
+  description? : string;
 }
 export interface ILogin{
   username : string;

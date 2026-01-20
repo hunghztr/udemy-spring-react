@@ -11,6 +11,8 @@ public interface UserDetail {
 
   String getAvatarPath();
 
+  String getDescription();
+  
   @Value("#{target.role.name}")
   String getRoleName();
 }

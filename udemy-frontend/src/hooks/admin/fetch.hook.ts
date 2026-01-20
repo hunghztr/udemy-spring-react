@@ -30,6 +30,12 @@ export const useFetchHook = <T>({errorName,thunkMethod} : IUseFetchHookProps<T>)
     });
 
     // effect
+    useEffect(() =>{
+      if(error){
+        setMeta({...meta,elementTotals:0})
+      }
+    },[error])
+    
     const fetchData = useCallback(async () => {
     try {
         const res = await dispatch(thunkMethod({ page:page-1, size, active, keyword })).unwrap();
@@ -39,7 +45,6 @@ export const useFetchHook = <T>({errorName,thunkMethod} : IUseFetchHookProps<T>)
         setData(null);
     }
     }, [dispatch, thunkMethod, page, size, active, keyword]);
-
     useEffect(() => {
         fetchData();
     }, [fetchData]);

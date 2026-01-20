@@ -52,8 +52,12 @@ public class DatabaseInit implements CommandLineRunner {
       Role roleUser = new Role();
       roleUser.setName("USER");
       roleUser.setPermissions(userPermissions);
+      Role roleInstructor = new Role();
+      roleInstructor.setName("INSTRUCTOR");
+      roleInstructor.setPermissions(userPermissions);
       roles.add(roleAdmin);
       roles.add(roleUser);
+      roles.add(roleInstructor);
       roleRepository.saveAll(roles);
     }
     if (countUser == 0) {

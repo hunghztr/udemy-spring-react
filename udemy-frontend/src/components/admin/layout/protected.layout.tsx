@@ -1,6 +1,5 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAppSelector } from "../../../redux/hook";
-import Loading from "../../loading";
 
 export default function ProtectedLayout() {
   const { isAuthenticated, isInittialized } = useAppSelector(
@@ -10,7 +9,7 @@ export default function ProtectedLayout() {
 
   // Chưa xác định auth → chờ
   if (!isInittialized) {
-    return <Loading />
+    return null;
   }
 
   // Chưa login → đá về /auth

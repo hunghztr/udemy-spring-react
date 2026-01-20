@@ -70,7 +70,7 @@ public class AuthController {
     return ResponseEntity.ok().body(result);
   }
 
-  @PostMapping("/logout")
+  @PostMapping("/auth/logout")
   @ApiMessage("Đăng xuất thành công")
   public ResponseEntity<?> logout(
       @RequestHeader(value = "Authorization", required = false) String

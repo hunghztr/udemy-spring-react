@@ -29,7 +29,29 @@ export const getAll = <T>(
       }
     }
   );
+export const getAllNoPage = <T>(
+  name: string,
+  url: string,
+  emptyMsg = "Data is empty"
+) =>
+  createAsyncThunk(
+    name,
+    async (_, thunkApi) => {
+      try {
 
+        const response : IApiResponse<T> = await api.get(
+          `${url}`
+        );
+
+        return response.data; 
+      } catch (err) {
+        const axiosErr = err as AxiosError<IApiResponse<string>>;
+        return thunkApi.rejectWithValue(
+          axiosErr.response?.data.message || emptyMsg
+        );
+      }
+    }
+  );
 export const create = <TReq, TRes = boolean>(
   name: string,
   url: string,

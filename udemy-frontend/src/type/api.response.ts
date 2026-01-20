@@ -5,3 +5,6 @@ export interface IApiResponse<T> {
   data: T;
 }
 
+export interface IResult {
+  result: string;
+}

@@ -6,11 +6,11 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Service;
-import com.jwhisper.udemy.service.RedisService;
+import com.jwhisper.udemy.service.AuthRedisService;
 import org.springframework.data.redis.core.RedisTemplate;
 
 @Service
-public class RedisServiceImpl implements RedisService {
+public class AuthRedisServiceImpl implements AuthRedisService {
   private final String REFRESH_PREFIX = "refresh:";
   private final String USER_PREFIX = "user:";
   private final String BLACKLIST_PREFIX = "blacklist:";
@@ -18,7 +18,7 @@ public class RedisServiceImpl implements RedisService {
   private final String RESET_PREFIX = "reset:";
   private final RedisTemplate<String, String> redisTemplate;
 
-  public RedisServiceImpl(RedisTemplate<String, String> redisTemplate) {
+  public AuthRedisServiceImpl(RedisTemplate<String, String> redisTemplate) {
     this.redisTemplate = redisTemplate;
   }
 

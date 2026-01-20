@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import type { ILogin, IRegister, IResult, IUserToken } from "../../type/auth.module";
+import type { ILogin, IRegister, IUserToken } from "../../type/auth.module";
 import api from "../../api/api";
-import type { IApiResponse } from "../../type/api.response";
+import type { IApiResponse, IResult } from "../../type/api.response";
 import type { AxiosError } from "axios";
 
 export const login = createAsyncThunk(
@@ -81,7 +81,7 @@ export const logOut = createAsyncThunk(
   'auths/logOut',
   async (_,thunkApi) =>{
     try{
-    await api.post("/logout");
+    await api.post("/auth/logout");
     const user : IUserToken = {
       id : '',
       username:'',
@@ -89,6 +89,7 @@ export const logOut = createAsyncThunk(
       avatarPath:'',
       roleName:''
     }
+    delete api.defaults.headers.common['Authorization'];
     return {
       user
     }
