@@ -1,10 +1,9 @@
+import ChangePasswordForm from '@/components/auth/change-password.form';
+import OtpForm from '@/components/auth/otp.form';
+import VerifyMail from '@/components/auth/verify-mail.form';
+import Loading from '@/components/loading';
+import { useAppSelector } from '@/redux/hook';
 import {useState } from 'react';
-import VerifyMail from '../components/user/auth/verify-mail.form'
-import OtpForm from '../components/user/auth/otp.form';
-import { useAppSelector } from '../redux/hook';
-import Loading from '../components/loading';
-import ChangePasswordForm from '../components/user/auth/change-password.form';
-
 
 export default function ForgotPasswordPage() {
   const [mode,setMode] = useState<"mail"|"otp"|"change">("mail")

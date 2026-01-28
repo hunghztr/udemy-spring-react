@@ -1,6 +1,6 @@
+import { useAppDispatch } from "@/redux/hook";
+import { getMe, logOut, refreshToken } from "@/redux/thunks/auth.thunk";
 import { useEffect } from "react";
-import { useAppDispatch } from "../redux/hook";
-import {logOut, refreshToken } from "../redux/thunks/auth.thunk";
 
 export default function AuthInitializer({
   children,
@@ -8,13 +8,18 @@ export default function AuthInitializer({
   children: React.ReactNode;
 }) {
   const dispatch = useAppDispatch();
- useEffect(() => {
-  dispatch(refreshToken())
-    .unwrap()
-    .catch(() => {
-      dispatch(logOut());
-    });
-}, []);
+  useEffect(() => {
+      const initAuth = async () => {
+        try {
+          await dispatch(refreshToken()).unwrap();
+          await dispatch(getMe()).unwrap();
+        } catch (e) {
+          dispatch(logOut());
+        }
+      };
+
+      initAuth();
+    }, [dispatch]);
 
   return <>{children}</>;
 }

@@ -1,8 +1,8 @@
+import type { IMetaResponse } from '@/type/pagination'
 import { Box, Pagination, Typography } from '@mui/material'
-import type { IMetaResponse } from '../../../type/pagination'
 
-export default function PaginationComponent({meta,page,setPage,pendingCount}:{
-    meta : IMetaResponse,page : number,setPage : (value : number) => void, pendingCount : number
+export default function PaginationComponent({meta,page,setPage,isLoading}:{
+    meta : IMetaResponse,page : number,setPage : (value : number) => void, isLoading : boolean
 }) {
   return (
     <>
@@ -27,7 +27,7 @@ export default function PaginationComponent({meta,page,setPage,pendingCount}:{
   boundaryCount={1}    // số page ở đầu & cuối
   showFirstButton
   showLastButton
-    disabled={pendingCount > 0}
+    disabled={isLoading}
   />
 </Box>
 </>

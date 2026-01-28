@@ -1,6 +1,7 @@
+import type { IToken } from '@/type/auth.module';
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import { loginWithInfo, logOut, refreshToken } from '../thunks/auth.thunk';
-import type { IToken } from '../../type/auth.module';
+import { getMe, loginWithInfo, logOut, refreshToken } from '../thunks/auth.thunk';
+
 
 
 // Define the initial state using that type
@@ -28,12 +29,14 @@ export const authSlice = createSlice({
     })
     .addCase(refreshToken.fulfilled,(state,action) =>{
       state.accessToken = action.payload.accessToken;
-      state.isAuthenticated = true;
-      state.isInittialized = true;
     })
-    .addCase(refreshToken.rejected,(state) =>{
+    .addCase(getMe.rejected,(state) =>{
       state.isAuthenticated = false;
       state.isInittialized = true;
+    })
+    .addCase(getMe.fulfilled,(state) =>{
+        state.isAuthenticated = true;
+        state.isInittialized = true;
     })
     .addCase(logOut.fulfilled,(state) =>{
       state.accessToken = "";

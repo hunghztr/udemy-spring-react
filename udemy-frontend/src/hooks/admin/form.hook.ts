@@ -1,52 +1,34 @@
-import type { AsyncThunk } from "@reduxjs/toolkit";
-import { useAppDispatch, useAppSelector } from "../../redux/hook";
+import { useSave } from "@/query/use.crud.query";
 
-interface IUseFormHookProps<T>{
+
+interface IUseFormHookProps<Req>{
     userId?: string;
-    errorNameCreate?: string;
-    errorNameUpdate?: string;
-    errorNameGet?: string;
-        thunkMethodCreate?: AsyncThunk<
-            T,
-            any,
-            { rejectValue: string }
-        >;
-        thunkMethodUpdate?: AsyncThunk<
-            T,
-            any,
-            { rejectValue: string }
-        >;
-
+    mutationCreate: string;
+    mutationUpdate: string;
+    createData : (data : Req) => Promise<boolean>;
+    updateData : (data : Req) => Promise<boolean>;
 }
-export const useFormHook = <T> ({errorNameCreate,errorNameUpdate,errorNameGet,thunkMethodCreate,thunkMethodUpdate
-} : IUseFormHookProps<T>) =>{
+export const useFormHook = <Req> ({mutationCreate,mutationUpdate,createData,updateData
+} : IUseFormHookProps<Req>) =>{
     // state
-    const errorCreate = useAppSelector(state => state.error.errors[errorNameCreate || "global"]);
-    const errorUpdate = useAppSelector(state => state.error.errors[errorNameUpdate || "global"]);
-    const errorGet = useAppSelector(state => state.error.errors[errorNameGet || "global"]);
-    const loading = useAppSelector(state => state.loading);
-    const dispatch = useAppDispatch();
-    
+    const {error: errorCreate,isPending: isPendingCreate,mutateAsync: mutateAsyncCreate} =
+     useSave<boolean, Req>(
+        mutationCreate, createData
+    )
+    const {error: errorUpdate,isPending: isPendingUpdate,mutateAsync: mutateAsyncUpdate} =
+     useSave<boolean, Req>(
+        mutationUpdate, updateData
+    )
     // handle functions
     const handleCreate = async <T>(data : T) =>{
-        try{
-            const res  = await dispatch(thunkMethodCreate!(data)).unwrap();
-            return res;
-        }catch(err){
-            return null;
-        }
+        return await mutateAsyncCreate(data as unknown as Req);
     }
     const handleUpdate = async <T>(data : T) =>{
-        try{
-            const res = await dispatch(thunkMethodUpdate!(data)).unwrap();
-            return res;
-        }catch(err){
-            return null;
-        }
+        return await mutateAsyncUpdate(data as unknown as Req);
     }
 
     return {
-        errorCreate,errorUpdate,errorGet,loading,
-        handleCreate,handleUpdate,dispatch
+        errorCreate,errorUpdate,isPendingCreate,isPendingUpdate,
+        handleCreate,handleUpdate
     }
 }

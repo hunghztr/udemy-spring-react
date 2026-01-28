@@ -1,5 +1,7 @@
 package com.jwhisper.udemy.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -26,5 +28,6 @@ public class Coupon extends DefaultModel {
   int discount;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "course_id")
+  @JsonIgnore
   Course course;
 }

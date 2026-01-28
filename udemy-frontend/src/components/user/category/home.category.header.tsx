@@ -1,3 +1,7 @@
+import { getCategoriesParent } from "@/query/category/category.query";
+import { useGetAll } from "@/query/use.crud.query";
+import type { ICategoryParentResponse } from "@/type/category.module";
+import type { IPaginationResponse } from "@/type/pagination";
 import {
   Box,
   Stack,
@@ -5,15 +9,13 @@ import {
   useTheme,
 } from "@mui/material";
 import { useRef, useState } from "react";
-import type { ICategoryParentResponse } from "../../../type/category.module";
-import { useGetAll } from "../../../hooks/query/use.crud.query";
-import { getParents } from "../../../hooks/query/category/use.category.query";
+
 
 
 export default function HomeCategoryHeader() {
-  const { data, isLoading, error  } = useGetAll<ICategoryParentResponse[]>(
+  const { data, isLoading, error  } = useGetAll<IPaginationResponse<ICategoryParentResponse>>(
     "get-all-category-parents",
-    getParents
+    getCategoriesParent
   );
 
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -22,8 +24,8 @@ export default function HomeCategoryHeader() {
   // refs for arrow position
   const itemRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
-  const activeIndex = data?.findIndex((c) => c.id === activeId) ?? -1;
-  const activeCategory = data && activeIndex >= 0 ? data[activeIndex] : null;
+  const activeIndex = data?.elements.findIndex((c) => c.id === activeId) ?? -1;
+  const activeCategory = data && activeIndex >= 0 ? data.elements[activeIndex] : null;
 
   const arrowLeft =
     activeIndex >= 0 && itemRefs.current[activeIndex]
@@ -49,7 +51,7 @@ export default function HomeCategoryHeader() {
         >
           {/* ===== REAL DATA ===== */}
           {!isLoading &&
-            data?.map((c, idx) => {
+            data?.elements.map((c, idx) => {
               const isActive = activeId === c.id;
 
               return (

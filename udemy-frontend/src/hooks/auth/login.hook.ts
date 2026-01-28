@@ -1,7 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { useEffect, useRef, useState } from "react";
-import { loginWithInfo } from "../../redux/thunks/auth.thunk";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { loginWithInfo } from "@/redux/thunks/auth.thunk";
+import { clearAllErrors } from "@/redux/slices/error.slice";
+
+
 
 
 export const useLoginHook = () =>{
@@ -26,7 +29,7 @@ export const useLoginHook = () =>{
 
       try {
         await dispatch(loginWithInfo({ username: email, password })).unwrap();
-
+        await dispatch(clearAllErrors());
       
       } catch (err: unknown) {
         const axiosError = err as string;

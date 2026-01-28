@@ -78,7 +78,9 @@ public class CategoryServiceImpl implements CategoryService {
         }
         Category category = optional.get();
         category.setName(request.getName());
-        category.getCategoryParent().setId(request.getCategoryParent().getId());
+        Category parent = new Category();
+        parent.setId(request.getCategoryParent().getId());
+        category.setCategoryParent(parent);
         this.categoryRepository.save(category);
         this.homeRedisService.delete(this.KEY);
         return true;

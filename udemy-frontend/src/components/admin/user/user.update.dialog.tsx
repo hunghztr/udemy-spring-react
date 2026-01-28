@@ -1,3 +1,4 @@
+import { useUserFormHook } from "@/hooks/admin/user/user.form.hook";
 import {
   Dialog,
   DialogTitle,
@@ -10,7 +11,6 @@ import {
   Alert,
 } from "@mui/material";
 import { motion } from "framer-motion";
-import { useUserFormHook } from "../../../hooks/admin/user/user.form.hook";
 
 interface Props {
   open: boolean;
@@ -78,7 +78,7 @@ export default function UserUpdateDialog({ open, onClose, userId, setUserId }: P
             ))}
           </TextField>
           {errorUpdate && 
-          <Alert severity="error">{errorUpdate}</Alert>
+          <Alert severity="error">{errorUpdate.response?.data.message}</Alert>
           }
         </Stack>
       </DialogContent>

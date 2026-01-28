@@ -1,3 +1,4 @@
+import { useUserFormHook } from "@/hooks/admin/user/user.form.hook";
 import {
   Dialog,
   DialogTitle,
@@ -11,7 +12,6 @@ import {
 } from "@mui/material";
 import { motion } from "framer-motion";
 
-import { useUserFormHook } from "../../../hooks/admin/user/user.form.hook";
 
 interface Props {
   open: boolean;
@@ -85,7 +85,7 @@ export default function UserCreateDialog({ open, onClose }: Props) {
             ))}
           </TextField>
           {errorCreate && 
-          <Alert severity="error">{errorCreate}</Alert>
+          <Alert severity="error">{errorCreate.response?.data.message}</Alert>
           }
         </Stack>
       </DialogContent>

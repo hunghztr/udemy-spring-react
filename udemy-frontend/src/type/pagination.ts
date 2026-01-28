@@ -2,7 +2,8 @@ export interface IPagination{
     page : number,
     size : number,
     active? : boolean,
-    keyword? : string
+    keyword? : string,
+    filter? : string
 }
 export interface IPaginationResponse<T>{
     elements : T[],

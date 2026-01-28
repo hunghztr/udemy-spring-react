@@ -1,7 +1,7 @@
-import { useAppDispatch, useAppSelector } from "../redux/hook";
-import Loading from "../components/loading";
+import Loading from "@/components/loading";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { getMe, refreshToken } from "@/redux/thunks/auth.thunk";
 import { useEffect } from "react";
-import { refreshToken } from "../redux/thunks/auth.thunk";
 import { useNavigate } from "react-router-dom";
 
 export default function OAuth2Callback() {
@@ -10,7 +10,11 @@ export default function OAuth2Callback() {
   const navigate = useNavigate();
   useEffect(() =>{
     if(accessToken) navigate("/",{replace:true});
-    dispatch(refreshToken());
+    const refresh = async () =>{
+      await dispatch(refreshToken());
+      await dispatch(getMe());
+    }
+    refresh();
   },[dispatch,accessToken,navigate])
 
   return <Loading />;

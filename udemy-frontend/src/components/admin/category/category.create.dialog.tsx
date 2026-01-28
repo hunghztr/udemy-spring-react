@@ -1,14 +1,14 @@
+import { useCategoryFormHook } from '@/hooks/admin/category/category.form.hook';
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField } from '@mui/material';
 import { motion } from 'framer-motion';
-import { useCategoryFormHook } from '../../../hooks/admin/category/category.form.hook';
+
 interface Props {
   open: boolean;
   onClose: () => void;
 }
 export default function CategoryCreateDialog({ open, onClose } : Props) {
     const {name,setName,selectedCategoryId,setSelectedCategoryId,categoryList,
-        errorCreate,handleCreateCategory
-    } = useCategoryFormHook({});
+      errorCreate,handleCreateCategory} = useCategoryFormHook({});
   return (
     <Dialog
       open={open}
@@ -52,7 +52,7 @@ export default function CategoryCreateDialog({ open, onClose } : Props) {
             ))}
           </TextField>
           {errorCreate && 
-          <Alert severity="error">{errorCreate}</Alert>
+          <Alert severity="error">{errorCreate.response?.data.message}</Alert>
           }
         </Stack>
       </DialogContent>

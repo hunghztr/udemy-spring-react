@@ -1,11 +1,9 @@
 package com.jwhisper.udemy.service;
 
-import java.io.IOException;
-
-import org.springframework.web.multipart.MultipartFile;
+import java.util.Map;
 
 public interface CloudService {
-    String uploadAvatar(MultipartFile file,String userId) throws IOException;
-    String uploadVideo(MultipartFile file) throws IOException;
-    String uploadImage(MultipartFile file) throws IOException;
+    Map<String,Object> getSignature(String folder);
+    // StringResult uploadImage(MultipartFile file,String id,String folder) throws IOException;
+    // VideoResponse uploadVideo(MultipartFile file,String id,String folder) throws IOException;
 }

@@ -1,7 +1,7 @@
+import { PUBLIC_ENDPOINTS } from "@/constants/public.endpoint";
+import { store } from "@/redux/store";
+import { getMe, logOut, refreshToken } from "@/redux/thunks/auth.thunk";
 import axios from "axios";
-import { store } from "../redux/store";
-import { logOut, refreshToken } from "../redux/thunks/auth.thunk";
-import { PUBLIC_ENDPOINTS } from "../constants/public.endpoint";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
@@ -40,6 +40,7 @@ api.interceptors.response.use(
       try {
         const res = await store.dispatch(refreshToken()).unwrap();
         originalRequest.headers.Authorization = `Bearer ${res.accessToken}`;
+        await store.dispatch(getMe()).unwrap();
         return api(originalRequest);
       } catch (e) {
         store.dispatch(logOut());

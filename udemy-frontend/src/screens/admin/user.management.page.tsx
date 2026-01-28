@@ -2,29 +2,31 @@ import {Box,Typography,Paper,Alert,Stack,Table,
   TableHead,TableRow,TableCell,TableBody,TableContainer,
   Tooltip,Chip,IconButton,} from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import PaginationComponent from "../../components/admin/layout/pagination.component";
-import Loading from "../../components/loading";
-
 import EditIcon from "@mui/icons-material/Edit";
 import BlockIcon from "@mui/icons-material/Block";
-import UserCreateDialog from "../../components/admin/user/user.create.dialog";
-import UserUpdateDialog from "../../components/admin/user/user.update.dialog";
-import { useFetchHook } from "../../hooks/admin/fetch.hook";
+
 import { useState } from "react";
-import type { IUserResponse } from "../../type/user.module";
-import { useActionHook } from "../../hooks/admin/action.hook";
-import { activateUser, disableUser, getAllUsers } from "../../redux/thunks/admin/user.thunk";
-import ManagementHeader from "../../components/admin/layout/management.header";
+import { useFetchHook } from "@/hooks/admin/fetch.hook";
+import type { IUserResponse } from "@/type/user.module";
+import ManagementHeader from "@/components/admin/layout/management.header";
+import Loading from "@/components/loading";
+import PaginationComponent from "@/components/admin/layout/pagination.component";
+import UserCreateDialog from "@/components/admin/user/user.create.dialog";
+import UserUpdateDialog from "@/components/admin/user/user.update.dialog";
+import { disableUser, enableUser, getAllUsers } from "@/query/user/user.query";
+import { useActionHook } from "@/hooks/admin/action.hook";
+
 
 export default function UserManagement() {
   // fetch hook
   const {data,page,active,handleToggle,keyword,setKeyword
-    ,loading,error,setPage,meta,fetchData
-  } = useFetchHook<IUserResponse>({errorName:"users/getAll",thunkMethod:getAllUsers});
+    ,isLoading,fetchError,setPage,meta,refetch
+  } = useFetchHook<IUserResponse>({fetchMethod:getAllUsers,queryName:"users/fetch-all"});
   // action hook
-  const {handleDisable,handleEnable} = 
-  useActionHook<boolean>({errorNameDisable:"users/disable",errorNameEnable:"users/activate",
-    thunkMethodDisable:disableUser,thunkMethodEnable:activateUser});
+  const {handleDisable,handleEnable,isPendingDisable,isPendingEnable} = 
+  useActionHook({mutationDisable:"users/disable",mutationEnable:"users/enable",
+    disableMethod:disableUser,enableMethod:enableUser
+  });
   const [selectedDataId, setSelectedDataId] = useState<string>("");
   const [openCreate,setOpenCreate] = useState<boolean>(false);
   const [openUpdate,setOpenUpdate] = useState<boolean>(false);
@@ -36,18 +38,18 @@ export default function UserManagement() {
       {/* ===== Table ===== */}
       <Paper sx={{ p: 2, minHeight: 240 }}>
         {/* ⏳ Loading */}
-        {loading.pendingCount > 0 && (
+        {isLoading && (
           <Stack alignItems="center" py={4}>
             <Loading />
           </Stack>
         )}
         {/* ❌ Error */}
-        {loading.pendingCount === 0 && error && (
-          <Alert severity="error">{error}</Alert>
+        {fetchError && (
+          <Alert severity="error">{fetchError.response?.data.message}</Alert>
         )}
         {/* ✅ Data */}
-        {loading.pendingCount === 0 &&
-          !error &&
+        {!isLoading &&
+          !fetchError &&
           data &&
           data.length > 0 && (
             <>
@@ -58,6 +60,7 @@ export default function UserManagement() {
                   boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
                 }}
               >
+                
                 <Table>
                   <TableHead>
                     <TableRow sx={{ backgroundColor: "#fafafa" }}>
@@ -136,10 +139,10 @@ export default function UserManagement() {
                                 <IconButton
                                   size="small"
                                   color="warning"
-                                  disabled={user.roleName === "ADMIN"}
+                                  disabled={user.roleName === "ADMIN" || isPendingDisable}
                                   onClick={async () => {
                                     await handleDisable(user.id)
-                                    fetchData();
+                                    refetch();
                                   }}
                                 >
                                   <BlockIcon />
@@ -152,9 +155,10 @@ export default function UserManagement() {
                                 <IconButton
                                   size="small"
                                   color="success"
+                                  disabled={isPendingEnable}
                                   onClick={async () => {
                                     await handleEnable(user.id)
-                                    fetchData();
+                                    refetch();
                                   }}
                                 >
                                   <CheckCircleIcon />
@@ -174,7 +178,7 @@ export default function UserManagement() {
                 meta={meta}
                 page={page}
                 setPage={setPage}
-                pendingCount={loading.pendingCount}
+                isLoading={isLoading}
               />
       </Paper>
       {/* ===== Dialogs ===== */}

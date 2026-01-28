@@ -17,11 +17,11 @@ import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
-import { useProfileFormHook } from "../../hooks/user/profile.form.hook";
+import { useProfileFormHook } from "@/hooks/user/profile.form.hook";
 
 export default function ProfileInstructorPage() {
   const {editor,handleSubmit,fullname,setFullname,
-    preview,uploading,handleSelectAvatar,uploadPercent,
+    preview,isUploadingAvatar,isUploadingProfile,handleSelectAvatar,uploadPercent,
     isFocused,setIsFocused
   } = useProfileFormHook();
   if (!editor) return null;
@@ -46,13 +46,13 @@ export default function ProfileInstructorPage() {
           {/* ===== AVATAR ===== */}
           <Stack spacing={1}>
             <Stack direction="row" spacing={3} alignItems="center">
-              <Avatar src={preview || undefined} sx={{ width: 96, height: 96 }} />
+              <Avatar src={`${import.meta.env.VITE_CLOUDINARY_WATCH_IMG}/${preview}` || undefined} sx={{ width: 96, height: 96 }} />
 
               <Button
                 variant="outlined"
                 component="label"
                 startIcon={<PhotoCameraIcon />}
-                disabled={uploading}
+                disabled={isUploadingAvatar || isUploadingProfile}
               >
                 Chọn ảnh
                 <input
@@ -64,11 +64,11 @@ export default function ProfileInstructorPage() {
               </Button>
             </Stack>
 
-            {uploading && (
+            {isUploadingAvatar && (
               <Box>
-                <LinearProgress variant="determinate" value={uploadPercent} />
+                <LinearProgress variant="determinate" value={uploadPercent['avatar']} />
                 <Typography variant="caption">
-                  Đang upload: {uploadPercent}%
+                  Đang upload: {uploadPercent['avatar']}%
                 </Typography>
               </Box>
             )}
@@ -157,9 +157,9 @@ export default function ProfileInstructorPage() {
               type="submit"
               variant="contained"
               size="large"
-              disabled={uploading}
+              disabled={isUploadingAvatar || isUploadingProfile}
             >
-              {uploading ? "Đang xử lý..." : "Lưu thay đổi"}
+              {isUploadingAvatar || isUploadingProfile ? "Đang xử lý..." : "Lưu thay đổi"}
             </Button>
           </Box>
         </Stack>

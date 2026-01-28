@@ -18,11 +18,12 @@ import ExploreIcon from "@mui/icons-material/Explore";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 
 import { Link, useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../redux/hook";
-import { persistor } from "../../../redux/store";
-import { logOut } from "../../../redux/thunks/auth.thunk";
-import { showToast } from "../../../utils/toast";
+
 import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { persistor } from "@/redux/store";
+import { logOut } from "@/redux/thunks/auth.thunk";
+import { showToast } from "@/utils/toast";
 
 export default function Header() {
   const user = useAppSelector((state) => state.currentUser);
@@ -168,7 +169,7 @@ export default function Header() {
                 onClick={() => navigate("/instructor/profile")}
               >
                 <Avatar
-                  src={user.avatarPath}
+                  src={`${import.meta.env.VITE_CLOUDINARY_WATCH_IMG}/${user.avatarPath}`}
                   alt={user.username || "avatar"}
                   sx={{
                     width: 36,

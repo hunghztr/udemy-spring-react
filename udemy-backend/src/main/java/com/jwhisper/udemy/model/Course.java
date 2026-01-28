@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -68,7 +69,7 @@ public class Course extends DefaultModel {
   List<Category> categories;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "course", fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
   List<Section> sections;
 
   @JsonIgnore

@@ -1,27 +1,29 @@
 import { Alert, Box, Chip, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
-import ManagementHeader from "../../components/admin/layout/management.header";
-import { useFetchHook } from "../../hooks/admin/fetch.hook";
-import type { ICategoryResponse } from "../../type/category.module";
-import { activateCategory, disableCategory, getAllCategories } from "../../redux/thunks/admin/category.thunk";
-import { useActionHook } from "../../hooks/admin/action.hook";
 import { useState } from "react";
-import Loading from "../../components/loading";
 import EditIcon from "@mui/icons-material/Edit";
 import BlockIcon from "@mui/icons-material/Block";
-import PaginationComponent from "../../components/admin/layout/pagination.component";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CategoryCreateDialog from "../../components/admin/category/category.create.dialog";
-import CategoryUpdateDialog from "../../components/admin/category/category.update.dialog";
+import { useFetchHook } from "@/hooks/admin/fetch.hook";
+import type { ICategoryResponse } from "@/type/category.module";
+import { useActionHook } from "@/hooks/admin/action.hook";
+import ManagementHeader from "@/components/admin/layout/management.header";
+import Loading from "@/components/loading";
+import PaginationComponent from "@/components/admin/layout/pagination.component";
+import CategoryCreateDialog from "@/components/admin/category/category.create.dialog";
+import CategoryUpdateDialog from "@/components/admin/category/category.update.dialog";
+import { disableCategory, enableCategory, getAllCategories } from "@/query/category/category.query";
+
 
 export default function CategoryManagementPage() {
  // fetch hook
    const {data,page,active,handleToggle,keyword,setKeyword
-     ,loading,error,setPage,meta,fetchData
-   } = useFetchHook<ICategoryResponse>({errorName:"categories/getAll",thunkMethod:getAllCategories});
+     ,isLoading,fetchError,setPage,meta,refetch
+   } = useFetchHook<ICategoryResponse>({fetchMethod:getAllCategories,queryName:"categories/fetch-all"});
    // action hook
    const {handleDisable,handleEnable} = 
-   useActionHook<boolean>({errorNameDisable:"categories/disable",errorNameEnable:"categories/activate",
-     thunkMethodDisable:disableCategory,thunkMethodEnable:activateCategory});
+   useActionHook({mutationDisable:"users/disable",mutationEnable:"categories/enable",
+     disableMethod:disableCategory,enableMethod:enableCategory
+   });
    const [selectedDataId, setSelectedDataId] = useState<string>("");
    const [openCreate,setOpenCreate] = useState<boolean>(false);
    const [openUpdate,setOpenUpdate] = useState<boolean>(false);
@@ -33,18 +35,18 @@ export default function CategoryManagementPage() {
       {/* ===== Table ===== */}
       <Paper sx={{ p: 2, minHeight: 240 }}>
         {/* ⏳ Loading */}
-        {loading.pendingCount > 0 && (
+        {isLoading && (
           <Stack alignItems="center" py={4}>
             <Loading />
           </Stack>
         )}
         {/* ❌ Error */}
-        {loading.pendingCount === 0 && error && (
-          <Alert severity="error">{error}</Alert>
+        {fetchError && (
+          <Alert severity="error">{fetchError.response?.data.message}</Alert>
         )}
         {/* ✅ Data */}
-        {loading.pendingCount === 0 &&
-          !error &&
+        {!isLoading &&
+          !fetchError &&
           data &&
           data.length > 0 && (
             <>
@@ -128,7 +130,7 @@ export default function CategoryManagementPage() {
                                   color="warning"
                                   onClick={async () => {
                                     await handleDisable(c.id)
-                                    fetchData();
+                                    refetch();
                                   }}
                                 >
                                   <BlockIcon />
@@ -143,7 +145,7 @@ export default function CategoryManagementPage() {
                                   color="success"
                                   onClick={async () => {
                                     await handleEnable(c.id)
-                                    fetchData();
+                                    refetch();
                                   }}
                                 >
                                   <CheckCircleIcon />
@@ -163,7 +165,7 @@ export default function CategoryManagementPage() {
                 meta={meta}
                 page={page}
                 setPage={setPage}
-                pendingCount={loading.pendingCount}
+                isLoading={isLoading}
               />
       </Paper>
       {/* ===== Dialogs ===== */}

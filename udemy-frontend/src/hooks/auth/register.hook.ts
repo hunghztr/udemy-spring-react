@@ -1,8 +1,8 @@
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { register } from "@/redux/thunks/auth.thunk";
+import { showToast } from "@/utils/toast";
 import { useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../redux/hook";
-import { register } from "../../redux/thunks/auth.thunk";
 
-import { showToast } from "../../utils/toast";
 
 export const useRegisterHook = (onSwitchMode: () => void) =>{
 const dispatch = useAppDispatch();

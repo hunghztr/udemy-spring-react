@@ -2,6 +2,9 @@ package com.jwhisper.udemy.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,14 +31,16 @@ public class Lecture extends DefaultModel {
   String id;
   String name;
   @Column(columnDefinition = "DECIMAL(5,2)")
-  double hour;
+  double second;
   String path;
   boolean isFinished;
-
+  Integer position;
+  @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "section_id")
   Section section;
 
-  @OneToMany(mappedBy = "lecture", fetch = FetchType.LAZY)
+  @JsonIgnore
+  @OneToMany(mappedBy = "lecture", fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
   List<Comment> comments;
 }

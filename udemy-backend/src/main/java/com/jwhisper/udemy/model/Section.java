@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -33,11 +35,13 @@ public class Section extends DefaultModel {
   @Column(columnDefinition = "DECIMAL(5,2)")
   double hour;
 
+  @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "course_id")
   Course course;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "section", fetch = FetchType.LAZY)
+  @OrderBy("position ASC")
+  @OneToMany(mappedBy = "section", fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
   List<Lecture> lectures;
 }

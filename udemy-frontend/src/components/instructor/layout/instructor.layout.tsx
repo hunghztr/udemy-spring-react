@@ -2,25 +2,40 @@ import { Outlet } from "react-router-dom";
 import { Box } from "@mui/material";
 import InstructorSidebar from "./instructor.sidebar";
 
+const SIDEBAR_WIDTH = 260;
+
 export default function InstructorLayout() {
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#f7f9fa" }}>
-      
-      {/* SIDEBAR — tự animate width */}
-      <InstructorSidebar />
+    <Box sx={{ display: "flex", height: "100vh" }}>
+      {/* SIDEBAR */}
+      <Box
+        sx={{
+          width: SIDEBAR_WIDTH,
+          flexShrink: 0,
+          borderRight: "1px solid #eee",
+        }}
+      >
+        <InstructorSidebar />
+      </Box>
 
-      {/* CONTENT — luôn sát sidebar */}
+      {/* CONTENT - SCROLL CONTAINER */}
       <Box
         sx={{
           flex: 1,
-          p: 4,
-          overflowY: "auto",
-          transition: "all 0.25s ease",
+          height: "100vh",
+          overflow: "hidden", // chặn scroll window
         }}
       >
-        <Outlet />
+        <Box
+          sx={{
+            height: "100%",
+            overflowY: "auto", // scroll nằm ở đây
+            p: 4,
+          }}
+        >
+          <Outlet />
+        </Box>
       </Box>
-
     </Box>
   );
 }

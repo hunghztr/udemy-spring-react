@@ -1,45 +1,29 @@
-import type { AsyncThunk } from "@reduxjs/toolkit";
-import { useAppDispatch, useAppSelector } from "../../redux/hook";
+import { useSave } from "@/query/use.crud.query";
 
-interface IId{
-    id : string;
+interface IUseActionHookProps {
+    mutationEnable: string;
+    mutationDisable: string;
+    disableMethod: (id: string) => Promise<boolean>;
+    enableMethod: (id : string) => Promise<boolean>;
 }
-interface IUseActionHookProps<T> {
-    errorNameDisable: string;
-    errorNameEnable: string;
-    thunkMethodDisable: AsyncThunk<
-        T,
-        IId,
-        { rejectValue: string }
-    >;
-    thunkMethodEnable: AsyncThunk<
-        T,
-        IId,
-        { rejectValue: string }
-    >;
-}
-export const useActionHook = <T>({errorNameDisable,errorNameEnable,
-    thunkMethodDisable,thunkMethodEnable} : IUseActionHookProps<T>) =>{
+export const useActionHook = ({mutationDisable,mutationEnable,
+    disableMethod,enableMethod} : IUseActionHookProps) =>{
     // state
-    const loading = useAppSelector(state => state.loading);
-    const errorDisable = useAppSelector(state => state.error.errors[errorNameDisable || "global"]);
-    const errorEnable = useAppSelector(state => state.error.errors[errorNameEnable || "global"]);
-        
-    const dispatch = useAppDispatch();
+    const {mutateAsync:mutateDisable,isPending:isPendingDisable,error: errorDisable} = useSave<boolean,string>(
+        mutationDisable,
+        disableMethod
+    );
+    const {mutateAsync:mutateEnable,isPending:isPendingEnable,error: errorEnable} = useSave<boolean,string>(
+        mutationEnable,
+        enableMethod
+    )
+    
     // handle click
     const handleDisable = async (id:string) =>{
-        try{
-            await dispatch(thunkMethodDisable({id})).unwrap();
-        }catch(err){
-            // nothing
-        }
+         await mutateDisable(id);
     }
     const handleEnable = async (id:string) =>{
-        try{
-            await dispatch(thunkMethodEnable({id})).unwrap();
-        }catch(err){
-            // nothing
-        }
+         await mutateEnable(id);
     }
-    return {loading,errorDisable,errorEnable,handleDisable,handleEnable};
+    return {errorDisable,errorEnable,handleDisable,handleEnable,isPendingDisable,isPendingEnable};
 }

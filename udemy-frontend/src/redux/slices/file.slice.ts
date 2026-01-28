@@ -1,22 +1,22 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface FilesState {
-  uploadPercent: number;
+  uploadPercent: Record<string,number>;
 }
 
 const initialState: FilesState = {
-  uploadPercent: 0,
+  uploadPercent: {},
 };
 
 const filesSlice = createSlice({
   name: "files",
   initialState,
   reducers: {
-    setUploadPercent: (state, action: PayloadAction<number>) => {
-      state.uploadPercent = action.payload;
+    setUploadPercent: (state, action: PayloadAction<{id:string,percent:number}>) => {
+      state.uploadPercent[action.payload.id] = action.payload.percent;
     },
-    resetUpload: (state) => {
-      state.uploadPercent = 0;
+    resetUpload: (state,action) => {
+      delete state.uploadPercent[action.payload];
     },
   },
 

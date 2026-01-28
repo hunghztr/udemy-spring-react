@@ -1,68 +1,41 @@
 package com.jwhisper.udemy.service.impl;
 
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.jwhisper.udemy.service.CloudService;
 
 @Service
 public class CloudServiceImpl implements CloudService {
 
     private final Cloudinary cloudinary;
+    @Value("${cloudinary.api-key}")
+    private String apiKey;
 
+    @Value("${cloudinary.cloud-name}")
+    private String cloudName;
     public CloudServiceImpl(Cloudinary cloudinary) {
         this.cloudinary = cloudinary;
     }
 
     @Override
-    public String uploadAvatar(MultipartFile file, String userId) throws IOException {
-        String publicId = "avatar_" + userId;
-        @SuppressWarnings("unchecked")
-        Map<String,Object> uploadResult = (Map<String,Object>) cloudinary.uploader().upload(
-                file.getBytes(),
-                ObjectUtils.asMap(
-                        "folder", "avatars",
-                        "public_id", publicId,
-                        "overwrite", true,
-                        "resource_type", "image"
-                )
-        );
+    public Map<String, Object> getSignature(String folder) {
+        long timestamp = System.currentTimeMillis() / 1000;
 
-        return uploadResult.get("secure_url").toString();
+        Map<String, Object> params = new HashMap<>();
+        params.put("timestamp", timestamp);
+        params.put("folder", folder);
+        String signature = cloudinary.apiSignRequest(params, cloudinary.config.apiSecret);
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("timestamp", timestamp);
+        res.put("signature", signature);
+        res.put("apiKey", apiKey);
+        res.put("cloudName", cloudName);
+        res.put("folder",folder);
+        return res;
     }
 
-    @Override
-    public String uploadImage(MultipartFile file) throws IOException {
-
-        @SuppressWarnings("unchecked")
-        Map<String,Object> uploadResult = (Map<String,Object>)cloudinary.uploader().upload(
-                file.getBytes(),
-                ObjectUtils.asMap(
-                        "folder", "images",
-                        "resource_type", "image"
-                )
-        );
-
-        return uploadResult.get("secure_url").toString();
-    }
-
-    @Override
-    public String uploadVideo(MultipartFile file) throws IOException {
-
-        @SuppressWarnings("unchecked")
-        Map<String,Object> uploadResult = (Map<String,Object>)cloudinary.uploader().upload(
-                file.getBytes(),
-                ObjectUtils.asMap(
-                        "folder", "videos",
-                        "resource_type", "video"
-                )
-        );
-
-        return uploadResult.get("secure_url").toString();
-    }
 }

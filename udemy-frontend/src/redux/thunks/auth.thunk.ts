@@ -1,7 +1,8 @@
+import api from "@/api/api";
+import type { IApiResponse, IResult } from "@/type/api.response";
+import type { ILogin, IRegister, IUserToken } from "@/type/auth.module";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import type { ILogin, IRegister, IUserToken } from "../../type/auth.module";
-import api from "../../api/api";
-import type { IApiResponse, IResult } from "../../type/api.response";
+
 import type { AxiosError } from "axios";
 
 export const login = createAsyncThunk(
@@ -65,16 +66,23 @@ export const refreshToken = createAsyncThunk(
     try{
     const tokenRes : IApiResponse<IResult> = await api.post("/auth/refresh-token");
     const accessToken = tokenRes.data.result;
-    api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
-    const userTokenRes : IApiResponse<IUserToken> = await api.get("/me");
-    const user = userTokenRes.data;
+    //  api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    
     return {
-      accessToken,user
+      accessToken
     }
     }catch(err){
       const errAxios = err as AxiosError<IApiResponse<string>>;
       return thunkApi.rejectWithValue(errAxios.response?.data.message || "Invalid token"); 
     }
+  }
+)
+export const getMe = createAsyncThunk(
+  'auths/getMe',
+  async () =>{
+    const userTokenRes : IApiResponse<IUserToken> = await api.get("/me");
+    const user = userTokenRes.data;
+    return {user}
   }
 )
 export const logOut = createAsyncThunk(

@@ -4,16 +4,21 @@ import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutline
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined"; // ✅ PROFILE ICON
+
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 const menuItems = [
-  { label: "Courses", icon: <SchoolOutlinedIcon />, path: "/instructor/courses" },
+  { label: "Courses", icon: <SchoolOutlinedIcon />, path: "/instructor/course" },
   { label: "Communication", icon: <ChatBubbleOutlineOutlinedIcon />, path: "/instructor/communication" },
   { label: "Performance", icon: <BarChartOutlinedIcon />, path: "/instructor/performance" },
   { label: "Tools", icon: <BuildOutlinedIcon />, path: "/instructor/tools" },
   { label: "Resources", icon: <HelpOutlineOutlinedIcon />, path: "/instructor/resources" },
+
+  // ✅ NEW PROFILE MENU
+  { label: "Profile", icon: <PersonOutlineOutlinedIcon />, path: "/instructor/profile" },
 ];
 
 const MotionBox = motion(Box);
@@ -39,63 +44,62 @@ export default function InstructorSidebar() {
       }}
     >
       {/* ===== LOGO TEXT ===== */}
-        <Box
+      <Box
         sx={{
-            height: 56,
-            px: 2,
-            display: "flex",
-            alignItems: "center",
+          height: 56,
+          px: 2,
+          display: "flex",
+          alignItems: "center",
         }}
-        >
+      >
         <Link to="/" style={{ textDecoration: "none", color: "white" }}>
-            <Box
+          <Box
             sx={{
-                position: "relative",
-                display: "flex",
-                alignItems: "center",
-                height: 26,
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              height: 26,
             }}
-            >
-            {/* U — luôn cố định trong layout */}
+          >
+            {/* U */}
             <Typography
-                fontWeight={900}
-                fontSize={26}
-                lineHeight={1}
-                sx={{ zIndex: 1 ,ml: '8px'}}
+              fontWeight={900}
+              fontSize={26}
+              lineHeight={1}
+              sx={{ zIndex: 1, ml: "8px" }}
             >
-                U
+              U
             </Typography>
 
-            {/* DEMY — absolute, không ảnh hưởng layout */}
+            {/* DEMY */}
             <AnimatePresence>
-                {!collapsed && (
+              {!collapsed && (
                 <motion.span
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -8 }}
-                    transition={{ duration: 0.4 }}
-                    style={{
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -8 }}
+                  transition={{ duration: 0.4 }}
+                  style={{
                     position: "absolute",
-                    left: 30, // sát ngay sau chữ U
+                    left: 30,
                     top: 0,
                     whiteSpace: "nowrap",
-                    }}
+                  }}
                 >
-                    <Typography
+                  <Typography
                     fontWeight={900}
                     fontSize={26}
                     lineHeight={1}
                     letterSpacing={0.5}
-                    >
+                  >
                     DEMY
-                    </Typography>
+                  </Typography>
                 </motion.span>
-                )}
+              )}
             </AnimatePresence>
-            </Box>
+          </Box>
         </Link>
-        </Box>
-
+      </Box>
 
       {/* ===== MENU ===== */}
       <Stack spacing={0.5} sx={{ p: 1, flex: 1 }}>
@@ -122,7 +126,6 @@ export default function InstructorSidebar() {
             >
               <Box sx={{ minWidth: 24 }}>{item.icon}</Box>
 
-              {/* TEXT ANIMATION */}
               <AnimatePresence>
                 {!collapsed && (
                   <motion.div

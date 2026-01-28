@@ -1,7 +1,6 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, TextField } from "@mui/material";
 import { motion } from "framer-motion";
-import { useCategoryFormHook } from "../../../hooks/admin/category/category.form.hook";
-
+import { useCategoryFormHook } from "@/hooks/admin/category/category.form.hook";
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -10,8 +9,10 @@ interface Props {
 }
 
 export default function CategoryUpdateDialog({open,onClose,categoryId,setCategoryId} : Props) {
-  const {name, setName, selectedCategoryId, setSelectedCategoryId, categoryList,
-      handleUpdateCategory,errorUpdate} = useCategoryFormHook({categoryId});
+  const {name,setName,selectedCategoryId,setSelectedCategoryId,categoryList,errorUpdate,
+    handleUpdateCategory
+  }
+   = useCategoryFormHook({categoryId});
   
   return (
     <Dialog
@@ -57,7 +58,7 @@ export default function CategoryUpdateDialog({open,onClose,categoryId,setCategor
             ))}
           </TextField>
           {errorUpdate && 
-          <Alert severity="error">{errorUpdate}</Alert>
+          <Alert severity="error">{errorUpdate.response?.data.message}</Alert>
           }
         </Stack>
       </DialogContent>

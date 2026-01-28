@@ -5,5 +5,7 @@ export const PUBLIC_ENDPOINTS = [
   "/auth/refresh-token",
   "/auth/verify-mail",
   "/auth/verify-otp",
-  "/auth/change-password"
+  "/auth/change-password",
+  "/files/avatars",
+  "/files/videos"
 ];

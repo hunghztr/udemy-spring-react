@@ -2,19 +2,15 @@ package com.jwhisper.udemy.controller.instructor;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.jwhisper.udemy.dto.StringResult;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
 import com.jwhisper.udemy.service.CloudService;
-
-import java.io.IOException;
-
+import lombok.extern.slf4j.Slf4j;
+import java.util.Map;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
-
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/files")
 public class FileController {
@@ -23,14 +19,11 @@ public class FileController {
         this.cloudService = cloudService;
     }
 
-    @PostMapping("/avatars/{id}")
-    @ApiMessage("Tải file avatar lên thành công")
-    public ResponseEntity<?> uploadAvatar(@PathVariable("id") String id, 
-    MultipartFile file) throws IOException {
-        String avatarPath = this.cloudService.uploadAvatar(file, id);
-        StringResult result = new StringResult();
-        result.setResult(avatarPath);
-        return ResponseEntity.ok(result);
+    @GetMapping("/signature/{folder}")
+    @ApiMessage("Lấy chữ kí thành công")
+    public ResponseEntity<?> getSignature(@PathVariable("folder") String folder) {
+        Map<String,Object> signature = this.cloudService.getSignature(folder); 
+        return ResponseEntity.ok().body(signature);
     }
     
 }

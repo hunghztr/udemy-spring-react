@@ -9,7 +9,7 @@ import { ToastContainer } from "react-toastify";
 import { ThemeProvider } from "@emotion/react";
 import theme from "./theme/theme.ts";
 import { CssBaseline } from "@mui/material";
-import HomePage from "./screens/home.page.tsx";
+import HomePage from "./screens/user/home.page.tsx";
 import { PersistGate } from "redux-persist/integration/react";
 import OAuth2Callback from "./utils/oauth2Callback.tsx";
 import ForgotPasswordPage from "./screens/forgot.password.page.tsx";
@@ -25,6 +25,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import InstructorLayout from "./components/instructor/layout/instructor.layout.tsx";
 import ProfileInstructorPage from "./screens/instructor/profile.instructor.page.tsx";
 import CourseInstructorPage from "./screens/instructor/course.instructor.page.tsx";
+import CreateCoursePage from "./screens/instructor/create.course.page.tsx";
+import EditCoursePage from "./screens/instructor/edit.course.page.tsx";
 
 const router = createBrowserRouter([
   {
@@ -84,6 +86,14 @@ const router = createBrowserRouter([
           {
             path: "/instructor/profile",
             element: <ProfileInstructorPage />
+          },
+          {
+            path: "/instructor/create-course",
+            element: <CreateCoursePage />
+          },
+          {
+            path: "/instructor/edit-course/:id",
+            element: <EditCoursePage />
           }
         ]
       }

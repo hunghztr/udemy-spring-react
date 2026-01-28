@@ -12,10 +12,10 @@ import SchoolIcon from "@mui/icons-material/School";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
-import { logOut } from "../../../redux/thunks/auth.thunk";
 import { useTheme } from "@mui/material/styles";
 import { useEffect } from "react";
-import { showToast } from "../../../utils/toast";
+import { showToast } from "@/utils/toast";
+import { logOut } from "@/redux/thunks/auth.thunk";
 
 const SIDEBAR_WIDTH = 240;
 
