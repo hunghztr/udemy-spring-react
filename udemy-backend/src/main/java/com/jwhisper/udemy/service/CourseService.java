@@ -9,14 +9,18 @@ import com.jwhisper.udemy.dto.course.CourseDetailResponse;
 import com.jwhisper.udemy.dto.course.CourseRequest;
 import com.jwhisper.udemy.dto.course.CourseResponse;
 
-import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.model.Course;
+import com.jwhisper.udemy.projection.course.CourseProject;
 
 public interface CourseService {
-    CourseDetailResponse getDetail(String id) throws ErrorException;
-    // boolean isLectureUpdated(TwoListRequest<LectureRequest,String> request,String courseId);
-    // CourseDetailResponse updateSection(TwoListRequest<SectionRequest,String> request,String courseId);
-    boolean isDescriptionUpdated(CourseRequest request) throws ErrorException;
-    boolean isCreated(CourseRequest request) throws ErrorException;
-    Pagination<CourseResponse> getAllByAuthor(Specification<Course> spec, Pageable pageable) throws ErrorException;
+    boolean isPriceUpdated(CourseRequest request);
+    CourseDetailResponse getDetail(String id);
+    boolean isImageUpdate(CourseRequest request);
+    boolean isDescriptionUpdated(CourseRequest request) ;
+    boolean isCreated(CourseRequest request) ;
+    Pagination<CourseResponse> getAllByAuthor(Specification<Course> spec, Pageable pageable);
+    Pagination<CourseProject> getAll(Pageable pageable , boolean isActive,String keyword);
+    boolean delete(String id);
+    boolean active(String id);
+
 }

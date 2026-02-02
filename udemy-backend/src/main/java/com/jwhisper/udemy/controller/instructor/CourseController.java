@@ -11,7 +11,6 @@ import com.jwhisper.udemy.dto.course.LectureRequest;
 import com.jwhisper.udemy.dto.course.SectionRequest;
 import com.jwhisper.udemy.dto.course.SectionResponse;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
-import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.model.Course;
 import com.jwhisper.udemy.service.CourseService;
 import com.jwhisper.udemy.service.LectureService;
@@ -47,7 +46,7 @@ public class CourseController {
     }
     @PostMapping()
     @ApiMessage("Tạo mới khoá học thành công")
-    public ResponseEntity<?> create(@RequestBody CourseRequest request) throws ErrorException {
+    public ResponseEntity<?> create(@RequestBody CourseRequest request)  {
         boolean isCreated = this.courseService.isCreated(request);
         return ResponseEntity.ok().body(isCreated);
     }
@@ -56,21 +55,21 @@ public class CourseController {
     @ApiMessage("Lấy danh sách khoá học của giảng viên thành công")
     public ResponseEntity<?> getByAuthor(@Filter Specification<Course> spec,
        @PageableDefault(page = 0,size = 10,sort = "createdAt") Pageable pageable
-    ) throws ErrorException {
+    )  {
         Pagination<CourseResponse> pagination = this.courseService.getAllByAuthor(spec, pageable);
         return ResponseEntity.ok(pagination);
     }
     
     @GetMapping("/{id}")
     @ApiMessage("Lấy chi tiết khoá học thành công")
-    public ResponseEntity<?> get(@PathVariable("id") String id) throws ErrorException {
+    public ResponseEntity<?> get(@PathVariable("id") String id)  {
         CourseDetailResponse detailResponse = this.courseService.getDetail(id);
         return ResponseEntity.ok(detailResponse);
     }
     
     @PutMapping("/description/{id}")
     @ApiMessage("Cập nhật thông tin khoá học thành công")
-    public ResponseEntity<?> putDescription(@PathVariable("id") String id, @RequestBody CourseRequest entity) throws ErrorException {
+    public ResponseEntity<?> putDescription(@PathVariable("id") String id, @RequestBody CourseRequest entity)  {
         entity.setId(id);
         boolean isUpdated = this.courseService.isDescriptionUpdated(entity);
         return ResponseEntity.ok(isUpdated);
@@ -136,5 +135,18 @@ public class CourseController {
         SectionResponse sectionResponse = this.lectureService.reorder(requests, secitonId);
         return ResponseEntity.ok(sectionResponse);
     }
-    
+    @PutMapping("/update-image/{id}")
+    @ApiMessage("Cập nhật hình ảnh khoá học thành công")
+    public ResponseEntity<?> updateImage(@PathVariable("id") String id, @RequestBody CourseRequest request) {
+        request.setId(id);
+        boolean isUpdated = this.courseService.isImageUpdate(request);
+        return ResponseEntity.ok(isUpdated);
+    }
+    @PutMapping("/update-price/{id}")
+    @ApiMessage("Cập nhật giá tiền")
+    public ResponseEntity<?> updatePrice(@PathVariable("id") String id, @RequestBody CourseRequest request) {
+        request.setId(id);
+        boolean isUpdated = this.courseService.isPriceUpdated(request);
+        return ResponseEntity.ok(isUpdated);
+    }
 }

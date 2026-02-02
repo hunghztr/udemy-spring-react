@@ -1,6 +1,6 @@
 
 import api from "@/api/api";
-import { sliceFile } from "@/helpers/helper";
+import { sliceFile } from "@/helpers/format.time";
 import type { ISignatureResponse } from "@/type/api.response";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
@@ -15,12 +15,22 @@ export const getUploadSignature = async (folder:string) => {
   return res.data;
 };
 
+export const getUploadSignatureDestroy = async (publicId:string) => {
+  const res = await api.get(`/files/signature-destroy?publicId=${publicId}`);
+  return res.data;
+};
+
 export const useUploadSignature = () => {
   return useMutation({
     mutationFn: getUploadSignature,
   });
 };
 
+export const useUploadSignatureDestroy = () =>{
+  return useMutation({
+    mutationFn: getUploadSignatureDestroy
+  })
+}
 {/**
   upload thẳng lên cloud
    */}
@@ -99,7 +109,7 @@ export const uploadToCloudinaryChunk = async ({
 
     uploaded = end;
 
-    // ✅ chunk cuối
+    // chunk cuối
     if (end === total) {
       finalResponse = res.data;
     }
@@ -107,6 +117,31 @@ export const uploadToCloudinaryChunk = async ({
 
   return finalResponse;
 };
+
+export const destroyFromCloudinary = async ({
+  publicId,
+  sig,
+  resourceType = "image",
+}: {
+  publicId: string;
+  sig: ISignatureResponse;
+  resourceType?: "image" | "video" | "raw";
+}) => {
+  const formData = new FormData();
+  formData.append("public_id", publicId);
+  formData.append("api_key", sig.apiKey);
+  formData.append("timestamp", sig.timestamp);
+  formData.append("signature", sig.signature);
+
+  const url = `${import.meta.env.VITE_CLOUDINARY_UPLOAD}/${sig.cloudName}/${resourceType}/destroy`;
+
+  const res = await axios.post(url, formData);
+  return res.data;
+};
+export const destroyAllFromCloudinary = async (publicIds : string[]) =>{
+  const res = await api.post("/files/delete-files-by-ids",publicIds)
+  return res.data;
+}
 
 export const useCloudinaryUpload = () => {
   return useMutation({
@@ -119,3 +154,14 @@ export const useCloudinaryChunkUpload = () => {
     mutationFn: uploadToCloudinaryChunk,
   });
 };
+
+export const useCloudinaryDestroy= () =>{
+  return useMutation({
+    mutationFn: destroyFromCloudinary
+  })
+}
+export const useCloudinaryDestroyAll = () =>{
+  return useMutation({
+    mutationFn: destroyAllFromCloudinary
+  })
+}

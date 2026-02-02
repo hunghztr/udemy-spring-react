@@ -29,13 +29,12 @@ export const loginWithInfo = createAsyncThunk(
       // Call login
       const tokenResponse = await thunkApi.dispatch(login({ username, password })).unwrap();
 
-      api.defaults.headers.common['Authorization'] =
-        `Bearer ${tokenResponse.data.result}`;
+      // api.defaults.headers.common['Authorization'] =
+      //   `Bearer ${tokenResponse.data.result}`;
 
-      const res: IApiResponse<IUserToken> = await api.get("/me");
-      console.log(res)
+      // const res: IApiResponse<IUserToken> = await api.get("/me");
       return {
-        user: res.data,
+        // user: res.data,
         accessToken: tokenResponse.data.result
       };
     } catch (err: unknown) {
@@ -66,7 +65,6 @@ export const refreshToken = createAsyncThunk(
     try{
     const tokenRes : IApiResponse<IResult> = await api.post("/auth/refresh-token");
     const accessToken = tokenRes.data.result;
-    //  api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
     
     return {
       accessToken

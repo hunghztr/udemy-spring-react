@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.dto.category.CategoryParentResponse;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
-import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.service.CategoryService;
 
 @RestController
@@ -22,12 +21,13 @@ public class HomeController {
     public HomeController(CategoryService categoryService){
         this.categoryService = categoryService;
     }
+    
     @GetMapping("/categories/get-all-parents")
     @ApiMessage("Lấy danh sách danh mục cha thành công")
     public ResponseEntity<?> getAllParents(@PageableDefault(page = 0,size = 10,
         sort = "createdAt",direction = Sort.Direction.ASC) Pageable pageable,
         @RequestParam(name = "active",required = false) boolean isActive,
-    @RequestParam(name = "keyword",required = false) String keyword) throws ErrorException {
+    @RequestParam(name = "keyword",required = false) String keyword)  {
 
         Pagination<CategoryParentResponse> parents =
          this.categoryService.getAllParents(pageable,isActive);

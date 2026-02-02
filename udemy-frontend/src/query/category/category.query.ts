@@ -11,10 +11,11 @@ export const getCategoriesParent = async () =>{
 }
 
 export const getCategoriesNoPage = async () =>{
-        const res : IApiResponse<ICategoryParentResponse[]> =
-         await api.get("/admin/categories/no-page");
-         return res.data;
+        return getAllNoPage<ICategoryResponse[]>({
+            url:`/admin/categories/no-page`
+        })
 }
+
 
 export const updateCategory = (data : ICategory) =>{
     return update<ICategory>({

@@ -17,7 +17,7 @@ import { disableCategory, enableCategory, getAllCategories } from "@/query/categ
 export default function CategoryManagementPage() {
  // fetch hook
    const {data,page,active,handleToggle,keyword,setKeyword
-     ,isLoading,fetchError,setPage,meta,refetch
+     ,isLoading,setPage,meta,refetch
    } = useFetchHook<ICategoryResponse>({fetchMethod:getAllCategories,queryName:"categories/fetch-all"});
    // action hook
    const {handleDisable,handleEnable} = 
@@ -41,12 +41,11 @@ export default function CategoryManagementPage() {
           </Stack>
         )}
         {/* ❌ Error */}
-        {fetchError && (
-          <Alert severity="error">{fetchError.response?.data.message}</Alert>
+        {data?.length === 0 && (
+          <Alert severity="error">Danh sách danh mục rỗng</Alert>
         )}
         {/* ✅ Data */}
         {!isLoading &&
-          !fetchError &&
           data &&
           data.length > 0 && (
             <>

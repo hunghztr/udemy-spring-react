@@ -40,12 +40,10 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public Pagination<UserProject> getAll(Pageable pageable,boolean isActive,String keyword) throws ErrorException {
+  public Pagination<UserProject> getAll(Pageable pageable,boolean isActive,String keyword)  {
     Pagination<UserProject> pagignation = new Pagination<>();
     Pagination.Meta meta = new Pagination.Meta();
     Page<UserProject> userPage = this.userRepository.findAllByIsActiveAndUsernameContaining(isActive, keyword, pageable);
-    if(userPage.getContent() == null || userPage.getContent().size() == 0)
-      throw new ErrorException("Danh sách người dùng rỗng");
     pagignation.setElements(userPage.getContent());
     meta.setCurrentPage(userPage.getNumber());
     meta.setPageSize(userPage.getSize());
@@ -56,7 +54,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean create(UserRequest request) throws ErrorException {
+  public boolean create(UserRequest request)  {
     if(this.userRepository.existsByUsername(request.getUsername())){
       throw new ErrorException("Người dùng đã tồn tại");
     }
@@ -65,12 +63,12 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean update(UserRequest request) throws ErrorException {
+  public boolean update(UserRequest request)  {
     if(this.userRepository.existsByUsernameAndIdNot(request.getUsername(), request.getId())){
       throw new ErrorException("Username đã có người dùng");
     }
     Optional<User> optionalUser = this.userRepository.findById(request.getId());
-    if(!optionalUser.isPresent() || !optionalUser.get().isActive()){
+    if(!optionalUser.isPresent() || !optionalUser.get().getIsActive()){
       throw new ErrorException("Người dùng không tồn tại hoặc đã bị vô hiệu hoá");
     }
     User selectedUser = optionalUser.get();
@@ -82,40 +80,40 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserProject get(String id) throws ErrorException {
+  public UserProject get(String id)  {
     UserProject userProject = this.userRepository.findProjectById(id);
     if(userProject == null) throw new ErrorException("Người dùng không tồn tại");
     return userProject;
   }
 
   @Override
-  public boolean delete(String id) throws ErrorException {
+  public boolean delete(String id)  {
     var optionalUser = this.userRepository.findById(id);
-    if(!optionalUser.isPresent() || !optionalUser.get().isActive()){
+    if(!optionalUser.isPresent() || !optionalUser.get().getIsActive()){
         throw new ErrorException("Người dùng không tồn tại hoặc đã bị vô hiệu hoá");
     }
     User user = optionalUser.get();
-    user.setActive(false);
+    user.setIsActive(false);
     this.userRepository.save(user);
     return true;
   }
 
   @Override
-  public boolean active(String id) throws ErrorException {
+  public boolean active(String id)  {
     var optionalUser = this.userRepository.findById(id);
-    if(!optionalUser.isPresent() || optionalUser.get().isActive()){
+    if(!optionalUser.isPresent() || optionalUser.get().getIsActive()){
         throw new ErrorException("Người dùng không tồn tại hoặc đã chưa bị vô hiệu hoá");
     }
     User user = optionalUser.get();
-    user.setActive(true);
+    user.setIsActive(true);
     this.userRepository.save(user);
     return true;
   }
 
   @Override
-  public boolean updateProfile(ProfileRequest request) throws ErrorException {
+  public boolean updateProfile(ProfileRequest request)  {
     Optional<User> optionalUser = this.userRepository.findById(request.getId());
-    if(!optionalUser.isPresent() || !optionalUser.get().isActive()){
+    if(!optionalUser.isPresent() || !optionalUser.get().getIsActive()){
       throw new ErrorException("Người dùng không tồn tại hoặc đã bị vô hiệu hoá");
     }
     User selectedUser = optionalUser.get();

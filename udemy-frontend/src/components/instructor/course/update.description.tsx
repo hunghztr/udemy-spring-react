@@ -11,12 +11,13 @@ import {
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useMemo } from "react";
 
-type Props = {
+interface IProps {
   course: ICourseDetailResponse | null;
   refetch: () => Promise<any>;
-};
+  setDone?: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-export default function UpdateDescription({ course, refetch }: Props) {
+export default function UpdateDescription({ course, refetch }: IProps) {
   const {
     objectives,
     initialObjectives,

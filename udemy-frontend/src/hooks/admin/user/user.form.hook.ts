@@ -21,7 +21,7 @@ export const useUserFormHook =  ({userId}
     const {error:getError,data,isLoading:isLoadingUser} = useGetById<IUserResponse>(
         'users/get-by-id',getUserById,userId || ""
     )
-    const {error:roleError,data:roleData,isLoading:isLoadingRole} = useGetPaging<IRoleResponse,IPagination>(
+    const {data:roleData,isLoading:isLoadingRole} = useGetPaging<IRoleResponse,IPagination>(
         'roles/get-all',getAllRoles,{page:0,size:10,active:true,keyword:""}
     )
     useEffect(() =>{
@@ -65,6 +65,6 @@ export const useUserFormHook =  ({userId}
   
     return {
         username, setUsername, fullname, setFullname, password, setPassword, roleId, setRoleId, roleList,
-    handleCreateUser,handleUpdateUser,errorCreate,errorUpdate,getError,roleError
+    handleCreateUser,handleUpdateUser,errorCreate,errorUpdate,getError
     }
 }

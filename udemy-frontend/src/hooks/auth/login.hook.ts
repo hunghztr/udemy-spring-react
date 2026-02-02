@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { loginWithInfo } from "@/redux/thunks/auth.thunk";
+import { getMe, loginWithInfo } from "@/redux/thunks/auth.thunk";
 import { clearAllErrors } from "@/redux/slices/error.slice";
 
 
@@ -15,6 +15,7 @@ export const useLoginHook = () =>{
   const serverError = useAppSelector(state => state.error.errors['auths/loginWithInfo']);
   const [error, setError] = useState<string>();
   const roleName = useAppSelector(state => state.currentUser.roleName);
+
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -29,7 +30,8 @@ export const useLoginHook = () =>{
 
       try {
         await dispatch(loginWithInfo({ username: email, password })).unwrap();
-        await dispatch(clearAllErrors());
+        await dispatch(getMe());
+        dispatch(clearAllErrors());
       
       } catch (err: unknown) {
         const axiosError = err as string;

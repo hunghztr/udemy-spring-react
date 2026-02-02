@@ -13,7 +13,6 @@ import org.springframework.data.domain.Sort;
 import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.dto.user.UserRequest;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
-import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.projection.user.UserProject;
 import com.jwhisper.udemy.service.UserService;
 
@@ -40,39 +39,39 @@ public class UserController {
     public ResponseEntity<?> getAll(@PageableDefault(
         page = 0, size = 10,sort = "createdAt",direction = Sort.Direction.ASC
     ) Pageable pageable,@RequestParam("active") boolean isActive,
-    @RequestParam(name = "keyword", defaultValue = "") String keyword) throws ErrorException{
+    @RequestParam(name = "keyword", defaultValue = "") String keyword) {
         Pagination<UserProject> pagignation = this.userService.getAll(pageable,isActive,keyword);
         return ResponseEntity.ok().body(pagignation);
     }
     
     @PostMapping()
     @ApiMessage("Tạo mới người dùng thành công")
-    public ResponseEntity<?> create(@RequestBody UserRequest user) throws ErrorException {
+    public ResponseEntity<?> create(@RequestBody UserRequest user)  {
         boolean isCreated = this.userService.create(user);
         return ResponseEntity.ok().body(isCreated);
     }
     @GetMapping("/{id}")
     @ApiMessage("Lấy chi tiết người dùng thành công")
-    public ResponseEntity<?> get(@PathVariable("id") String id) throws ErrorException {
+    public ResponseEntity<?> get(@PathVariable("id") String id)  {
         UserProject userProject = this.userService.get(id);
         return ResponseEntity.ok().body(userProject);
     }
     @PutMapping("/{id}")
     @ApiMessage("Cập nhật người dùng thành công")
-    public ResponseEntity<?> update(@PathVariable("id") String id, @RequestBody UserRequest request) throws ErrorException {
+    public ResponseEntity<?> update(@PathVariable("id") String id, @RequestBody UserRequest request)  {
         request.setId(id);
         boolean isUpdated = this.userService.update(request);
         return ResponseEntity.ok().body(isUpdated);
     }
     @PostMapping("/delete/{id}")
     @ApiMessage("Xoá người dùng thành công")
-    public ResponseEntity<?> delete(@PathVariable("id") String id) throws ErrorException {
+    public ResponseEntity<?> delete(@PathVariable("id") String id)  {
         boolean isDeleted = this.userService.delete(id);
         return ResponseEntity.ok().body(isDeleted);
     }
     @PostMapping("/active/{id}")
     @ApiMessage("Kích hoạt người dùng thành công")
-    public ResponseEntity<?> active(@PathVariable("id") String id) throws ErrorException {
+    public ResponseEntity<?> active(@PathVariable("id") String id)  {
         boolean isActivated = this.userService.active(id);
         return ResponseEntity.ok().body(isActivated);
     }

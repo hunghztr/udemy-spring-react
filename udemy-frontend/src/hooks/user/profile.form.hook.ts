@@ -71,8 +71,7 @@ export const useProfileFormHook = () => {
       // 3. lưu url
       setAvatarPath(data.public_id);
     } catch (err) {
-      console.error(err);
-      alert("Upload avatar thất bại");
+      showToast(`${err}`,"error")
     }
   };
 
@@ -96,8 +95,7 @@ export const useProfileFormHook = () => {
           showToast("Cập nhật hồ sơ thành công");
         },
         onError: (err) => {
-          console.error(err);
-          alert("Cập nhật hồ sơ thất bại");
+          showToast(`Có vấn đề xảy ra: ${err.response?.data.message}`,"error");
         },
       }
     );

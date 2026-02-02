@@ -3,7 +3,6 @@ package com.jwhisper.udemy.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +13,7 @@ import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.dto.course.CourseDetailResponse;
 import com.jwhisper.udemy.dto.course.CourseRequest;
 import com.jwhisper.udemy.dto.course.CourseResponse;
-
+import com.jwhisper.udemy.helper.constant.CourseStatus;
 import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.helper.mapper.CategoryMapper;
 import com.jwhisper.udemy.helper.mapper.CourseMapper;
@@ -22,6 +21,7 @@ import com.jwhisper.udemy.model.Category;
 import com.jwhisper.udemy.model.Course;
 
 import com.jwhisper.udemy.model.User;
+import com.jwhisper.udemy.projection.course.CourseProject;
 import com.jwhisper.udemy.repository.CourseRepository;
 
 import com.jwhisper.udemy.repository.UserRepository;
@@ -49,7 +49,7 @@ public class CourseServiceImpl implements CourseService {
         this.courseMapper = courseMapper;
     }
     @Override
-    public boolean isCreated(CourseRequest request) throws ErrorException {
+    public boolean isCreated(CourseRequest request)  {
         if(this.courseRepository.existsByName(request.getName())){
             throw new ErrorException("Tên khoá học đã tồn tại");
         }
@@ -60,6 +60,8 @@ public class CourseServiceImpl implements CourseService {
         User author = new User();
         author.setId(user.getId());
         course.setAuthor(author);
+        course.setIsActive(false);
+        course.setStatus(CourseStatus.PENDING);
         List<Category> categories = new ArrayList<>();
         for(int i = 0 ; i < request.getCategoriesId().size() ; i++){
             Category category = new Category();
@@ -71,19 +73,15 @@ public class CourseServiceImpl implements CourseService {
         return true;
     }
     @Override
-    public Pagination<CourseResponse> getAllByAuthor(Specification<Course> spec, Pageable pageable)
-            throws ErrorException {
+    public Pagination<CourseResponse> getAllByAuthor(Specification<Course> spec, Pageable pageable){
         String username = securityHelper.getCurrentUsername();
-    var user = userRepository.findProjectByUsername(username);
-    Specification<Course> authorSpec = (root, query, cb) ->
+        var user = userRepository.findProjectByUsername(username);
+        Specification<Course> authorSpec = (root, query, cb) ->
             cb.equal(root.get("author").get("id"), user.getId());
 
-    Specification<Course> finalSpec =
+        Specification<Course> finalSpec =
             (spec == null) ? authorSpec : spec.and(authorSpec);
         Page<Course> pageCourses = this.courseRepository.findAll(finalSpec, pageable);
-        if(pageCourses.getContent() == null || pageCourses.getContent().size() == 0){
-            throw new ErrorException("Không có khoá học");
-        }
         Pagination<CourseResponse> pagination = new Pagination<>();
         Pagination.Meta meta = new Pagination.Meta();
         meta.setPageSize(pageable.getPageSize());
@@ -97,22 +95,34 @@ public class CourseServiceImpl implements CourseService {
         return pagination;
     }
     @Override
-    public CourseDetailResponse getDetail(String id) throws ErrorException {
-        String username = this.securityHelper.getCurrentUsername();
-        var user = this.userRepository.findProjectByUsername(username);
-        Optional<Course> optional = this.courseRepository.findByIdAndAuthorId(id,user.getId());
-        if(!optional.isPresent()) throw new ErrorException("Không tìm thấy khoá học");
-        CourseDetailResponse detailResponse = this.courseMapper.toCourseDetailResponse(optional.get());
+    public Pagination<CourseProject> getAll(Pageable pageable,boolean isActive, String keyword) {
+        Page<CourseProject> pageCourses = this.courseRepository.findAllByIsActiveAndNameContaining(isActive,keyword, pageable);
+        Pagination<CourseProject> pagination = new Pagination<>();
+        Pagination.Meta meta = new Pagination.Meta();
+        meta.setPageSize(pageable.getPageSize());
+        meta.setCurrentPage(pageable.getPageNumber());
+        meta.setPageTotals(pageCourses.getTotalPages());
+        meta.setElementTotals(pageCourses.getTotalElements());
+        pagination.setMeta(meta);
+        pagination.setElements(pageCourses.getContent());
+        return pagination;
+    }
+    @Override
+    public CourseDetailResponse getDetail(String id)  {
+        String permission = this.securityHelper.getCurrentPermission();
+        Course course = new Course();
+        if(permission.equals("ADMIN")){
+            course = this.courseRepository.findById(id)
+            .orElseThrow(() -> new ErrorException("Khoá học được lấy bởi admin không tồn tại"));
+        }else{
+            course = this.securityHelper.checkCourseUser(id);
+        }
+        CourseDetailResponse detailResponse = this.courseMapper.toCourseDetailResponse(course);
         return detailResponse;
     }
     @Override
-    public boolean isDescriptionUpdated(CourseRequest request) throws ErrorException {
-        String username = this.securityHelper.getCurrentUsername();
-        var user = this.userRepository.findProjectByUsername(username);
-        Optional<Course> optional = this.courseRepository.findByIdAndAuthorId(request.getId(), user.getId());
-        if(!optional.isPresent()) throw new ErrorException(("Không tìm thấy khoá học"));
-        Course course = optional.get();
-  
+    public boolean isDescriptionUpdated(CourseRequest request)  {
+        Course course = this.securityHelper.checkCourseUser(request.getId());
         course.setDescription(request.getDescription());
         course.setRequirement(request.getRequirement());
 
@@ -120,4 +130,44 @@ public class CourseServiceImpl implements CourseService {
 
         return true;
     }
+    @Override
+    public boolean isImageUpdate(CourseRequest request) {
+        Course course = this.securityHelper.checkCourseUser(request.getId());
+        course.setImagePath(request.getImagePath());
+        this.courseRepository.save(course);
+        return true;
+    }
+    @Override
+    public boolean isPriceUpdated(CourseRequest request) {
+        Course course = this.securityHelper.checkCourseUser(request.getId());
+        course.setPrice(request.getPrice());
+        this.courseRepository.save(course);
+        return true;
+    }
+    @Override
+    public boolean delete(String id)  {
+        var optional = this.courseRepository.findById(id);
+        if(!optional.isPresent() || !optional.get().getIsActive()){
+            throw new ErrorException("Khoá học không tồn tại hoặc đã bị vô hiệu hoá");
+        }
+        Course course = optional.get();
+        course.setIsActive(false);
+        course.setStatus(CourseStatus.REJECTED);
+        this.courseRepository.save(course);
+        return true;
+    }
+
+  @Override
+  public boolean active(String id)  {
+    var optional = this.courseRepository.findById(id);
+    if(!optional.isPresent() || optional.get().getIsActive()){
+        throw new ErrorException("Khoá học không tồn tại hoặc đã chưa bị vô hiệu hoá");
+    }
+    Course course = optional.get();
+    course.setIsActive(true);
+    course.setStatus(CourseStatus.PUBLISHED);
+    this.courseRepository.save(course);
+    return true;
+  }
+    
 }

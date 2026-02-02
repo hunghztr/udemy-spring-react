@@ -3,10 +3,13 @@ package com.jwhisper.udemy.model;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jwhisper.udemy.helper.constant.CourseStatus;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,19 +35,18 @@ public class Course extends DefaultModel {
   String id;
   @Column(columnDefinition = "DECIMAL(10,2)")
   double price;
-  int discount;
   String name;
+  @Enumerated(EnumType.STRING)
+  CourseStatus status;
   int sold;
   int star;
   @Column(columnDefinition = "TEXT")
   String description;
   @Column(columnDefinition = "TEXT")
   String requirement;
-  String language;
   double hour;
   int totalSection;
   String imagePath;
-  String previewPath;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "author_id")
@@ -61,7 +63,7 @@ public class Course extends DefaultModel {
   List<Rating> ratings;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "course", fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
   List<Coupon> coupons;
 
   @JsonIgnore

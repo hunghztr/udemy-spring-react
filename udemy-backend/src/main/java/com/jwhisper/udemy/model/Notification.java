@@ -24,6 +24,7 @@ public class Notification extends DefaultModel {
   String id;
   String title;
   String message;
+  String url;
   boolean isRead;
 
   @ManyToOne(fetch = FetchType.LAZY)

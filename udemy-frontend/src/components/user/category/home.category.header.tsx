@@ -13,7 +13,7 @@ import { useRef, useState } from "react";
 
 
 export default function HomeCategoryHeader() {
-  const { data, isLoading, error  } = useGetAll<IPaginationResponse<ICategoryParentResponse>>(
+  const { data, isLoading  } = useGetAll<IPaginationResponse<ICategoryParentResponse>>(
     "get-all-category-parents",
     getCategoriesParent
   );
@@ -33,7 +33,6 @@ export default function HomeCategoryHeader() {
         itemRefs.current[activeIndex]!.offsetWidth / 2
       : 0;
 
-  if (error) return null;
   return (
     <Box sx={{ position: "relative" }} onMouseLeave={() => setActiveId(null)}>
       {/* ===== TOP CATEGORY ===== */}

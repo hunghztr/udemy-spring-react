@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.dto.category.CategoryRequest;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
-import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.projection.category.CategoryProjection;
 import com.jwhisper.udemy.service.CategoryService;
 
@@ -36,46 +35,46 @@ public class CategoryController {
     public ResponseEntity<?> getAll(@PageableDefault(size = 10, page = 0,sort = "createdAt",
         direction = Sort.Direction.ASC
     ) Pageable pageable,@RequestParam("active") boolean isActive,
-    @RequestParam(name = "keyword", defaultValue = "") String keyword) throws ErrorException {
+    @RequestParam(name = "keyword", defaultValue = "") String keyword) {
         Pagination<CategoryProjection> pagination =
          this.categoryService.getAll(pageable, isActive, keyword);
         return ResponseEntity.ok().body(pagination);
     }
     @GetMapping("/no-page")
     @ApiMessage("Lấy danh sách danh mục thành công")
-    public ResponseEntity<?> getAllNoPage() throws ErrorException {
+    public ResponseEntity<?> getAllNoPage() {
         return ResponseEntity.ok().body(this.categoryService.getAllNoPage());
     }
     
     @PostMapping()
     @ApiMessage("Tạo mới danh mục thành công")
-    public ResponseEntity<?> create(@RequestBody CategoryRequest entity) throws ErrorException {
+    public ResponseEntity<?> create(@RequestBody CategoryRequest entity) {
         boolean isCreated = this.categoryService.create(entity);
         return ResponseEntity.ok().body(isCreated);
     }
     @PutMapping("/{id}")
     @ApiMessage("Cập nhật danh mục thành công")
-    public ResponseEntity<?> update(@PathVariable("id") String id, @RequestBody CategoryRequest request) throws ErrorException {
+    public ResponseEntity<?> update(@PathVariable("id") String id, @RequestBody CategoryRequest request)  {
         request.setId(id);
         boolean isUpdated = this.categoryService.update(request);
         return ResponseEntity.ok().body(isUpdated);
     }
     @GetMapping("/{id}")
     @ApiMessage("Lấy chi tiết danh mục thành công")
-    public ResponseEntity<?> get(@PathVariable("id") String id) throws ErrorException {
+    public ResponseEntity<?> get(@PathVariable("id") String id)  {
         CategoryProjection categoryProjection = this.categoryService.get(id);
         return ResponseEntity.ok(categoryProjection);
     }
     @PostMapping("/delete/{id}")
     @ApiMessage("Xoá danh mục thành công")
-    public ResponseEntity<?> delete(@PathVariable("id") String id) throws ErrorException {
+    public ResponseEntity<?> delete(@PathVariable("id") String id)  {
         boolean isDeleted = this.categoryService.delete(id);
         return ResponseEntity.ok(isDeleted);
     }
     
     @PostMapping("/active/{id}")
     @ApiMessage("Kích hoạt danh mục thành công")
-    public ResponseEntity<?> activate(@PathVariable("id") String id) throws ErrorException {
+    public ResponseEntity<?> activate(@PathVariable("id") String id)  {
         boolean isActivated = this.categoryService.activate(id);
         return ResponseEntity.ok().body(isActivated);
     }

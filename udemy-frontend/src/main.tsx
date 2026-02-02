@@ -27,6 +27,8 @@ import ProfileInstructorPage from "./screens/instructor/profile.instructor.page.
 import CourseInstructorPage from "./screens/instructor/course.instructor.page.tsx";
 import CreateCoursePage from "./screens/instructor/create.course.page.tsx";
 import EditCoursePage from "./screens/instructor/edit.course.page.tsx";
+import Demo from "./screens/demo.sse.page.tsx";
+import AdminNotificationPage from "./screens/admin/admin.notification.page.tsx";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +51,10 @@ const router = createBrowserRouter([
   {
     element: <OAuth2Callback />,
     path: "/oauth2/callback",
+  },
+  {
+    element:<Demo />,
+    path: "/test"
   },
 
   // protected
@@ -73,6 +79,10 @@ const router = createBrowserRouter([
           {
             path: "/admin/categories",
             element: <CategoryManagementPage />
+          },
+          {
+            path: "/admin/notifications",
+            element: <AdminNotificationPage />
           }
         ],
       },
@@ -100,7 +110,7 @@ const router = createBrowserRouter([
     ],
   },
 ]);
-const query = new QueryClient({
+export const query = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,

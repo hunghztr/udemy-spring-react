@@ -1,6 +1,7 @@
 import { createLecture, updateLectureName } from "@/query/course/course.query";
 import { useSave } from "@/query/use.crud.query";
 import type { ICourseDetailResponse, ILecture, ISectionResponse } from "@/type/course.module";
+import { showToast } from "@/utils/toast";
 import { useState } from "react";
 
 export const useFormLecture = (course:ICourseDetailResponse|null,
@@ -34,7 +35,7 @@ export const useFormLecture = (course:ICourseDetailResponse|null,
           setSections(prev => prev.map(s => s.id === res.id ? res : s));
         },
         onError:(err) =>{
-          alert(err);
+          showToast(`Có vấn đề xảy ra: ${err.response?.data.message}`,"error");
         }
       })
       setNewLectureTitle("");
@@ -48,7 +49,7 @@ export const useFormLecture = (course:ICourseDetailResponse|null,
             setSections(prev => prev.map(s => s.id === sectionId? res:s))
         },
         onError:(err) =>{
-            alert(err);
+            showToast(`Có vấn đề xảy ra: ${err.response?.data.message}`,"error");
         }
         })
     }

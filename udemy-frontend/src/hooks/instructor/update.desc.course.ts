@@ -85,8 +85,8 @@ const removeRequirement = (index: number) => {
           setInitialRequirements(requirements);
           refetch();
         },
-        onError: () => {
-          showToast("Có vấn đề xảy ra");
+        onError: (err) => {
+          showToast(`Có vấn đề xảy ra: ${err.response?.data.message}`,"error");
         },
       }
     );

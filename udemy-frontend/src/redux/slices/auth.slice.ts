@@ -40,6 +40,7 @@ export const authSlice = createSlice({
     })
     .addCase(logOut.fulfilled,(state) =>{
       state.accessToken = "";
+      state.isInittialized = true;
       state.isAuthenticated = false;
     })
   }

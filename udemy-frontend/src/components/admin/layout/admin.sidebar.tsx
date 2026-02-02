@@ -5,7 +5,6 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
-  Divider,
 } from "@mui/material";
 import PeopleIcon from "@mui/icons-material/People";
 import SchoolIcon from "@mui/icons-material/School";
@@ -13,9 +12,10 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import { useTheme } from "@mui/material/styles";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { showToast } from "@/utils/toast";
 import { logOut } from "@/redux/thunks/auth.thunk";
+import NotificationBadge from "@/components/notification/badge";
 
 const SIDEBAR_WIDTH = 240;
 
@@ -25,6 +25,8 @@ export default function AdminSidebar() {
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const roleName = useAppSelector(state => state.currentUser.roleName);
+  const {items} = useAppSelector(state => state.notifications);
+  const unReadCount = useMemo(() =>  items.filter(i => !i.read).length,[items]);
   useEffect(() =>{
     if(roleName === '') {
         navigate("/auth")
@@ -40,25 +42,25 @@ export default function AdminSidebar() {
   };
 
   const menuItemStyle = {
-    color: theme.palette.primary.contrastText,
+    color: theme.palette.sidebar.text,
     "& .MuiListItemIcon-root": {
-      color: theme.palette.primary.contrastText,
+      color: theme.palette.sidebar.text,
     },
     "&:hover": {
-      bgcolor: theme.palette.primary.main,
+      bgcolor: theme.palette.sidebar.hover,
     },
     "&.Mui-selected": {
-      bgcolor: theme.palette.primary.light,
+      bgcolor: theme.palette.sidebar.active,
     },
   };
-
+  
   return (
     <Box
       sx={{
         width: SIDEBAR_WIDTH,
         height: "100vh",
-        bgcolor: theme.palette.primary.dark,
-        color: theme.palette.primary.contrastText,
+        bgcolor: theme.palette.sidebar.main,
+        color: theme.palette.sidebar.text,
         display: "flex",
         flexDirection: "column",
         position: "fixed",
@@ -74,7 +76,6 @@ export default function AdminSidebar() {
         </Typography>
       </Box>
 
-      <Divider sx={{ bgcolor: theme.palette.primary.light }} />
 
       {/* Menu */}
       <List sx={{ flex: 1 }}>
@@ -109,9 +110,18 @@ export default function AdminSidebar() {
           </ListItemIcon>
           <ListItemText primary="Quản lý Danh mục" />
         </ListItemButton>
-      </List>
+        <ListItemButton
+          selected={location.pathname.startsWith("/admin/notifications")}
+          onClick={() => navigate("/admin/notifications")}
+          sx={menuItemStyle}
+        >
+          <ListItemIcon>
+            <NotificationBadge count={unReadCount} variant="dot" />
 
-      <Divider sx={{ bgcolor: theme.palette.primary.light }} />
+          </ListItemIcon>
+          <ListItemText primary="Thông báo" />
+        </ListItemButton>
+      </List>
 
       {/* Logout */}
       <List>

@@ -15,12 +15,14 @@ import lombok.experimental.FieldDefaults;
 public class DefaultModel {
   Instant createdAt;
   Instant updatedAt;
-  boolean isActive;
+  Boolean isActive;
 
   @PrePersist
   public void PrePersist() {
     this.createdAt = Instant.now();
-    this.isActive = true;
+    if (this.isActive == null) {
+        this.isActive = true;
+    }
   }
 
   @PreUpdate

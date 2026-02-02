@@ -9,7 +9,6 @@ import com.jwhisper.udemy.dto.auth.LoginResponse;
 import com.jwhisper.udemy.dto.auth.MailRequest;
 import com.jwhisper.udemy.dto.auth.RegisterRequest;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
-import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.projection.user.UserDetail;
 import com.jwhisper.udemy.service.AuthService;
 
@@ -38,7 +37,7 @@ public class AuthController {
 
   @PostMapping("/auth/register")
   @ApiMessage("Đăng kí thành công")
-  public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request) throws ErrorException {
+  public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request)  {
     authService.register(request);
     return ResponseEntity.ok().body(true);
   }
@@ -49,13 +48,14 @@ public class AuthController {
     LoginResponse response = this.authService.login(request);
     StringResult result = new StringResult();
     result.setResult(response.getAccessToken());
-    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, response.getCookie().toString())
+    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, response.getRefreshCookie().toString())
+    .header(HttpHeaders.SET_COOKIE, response.getAccessCookie().toString())
         .body(result);
   }
 
   @GetMapping("/me")
   @ApiMessage("Lấy dữ liệu thành công")
-  public ResponseEntity<?> me() throws ErrorException {
+  public ResponseEntity<?> me()  {
     UserDetail detail = this.authService.getCurrentUser();
     return ResponseEntity.ok().body(detail);
   }
@@ -63,11 +63,12 @@ public class AuthController {
   @PostMapping("/auth/refresh-token")
   @ApiMessage("Lấy token thành công")
   public ResponseEntity<?> refreshToken(@CookieValue(name = "refresh_token", defaultValue = "none") String refreshToken)
-      throws ErrorException {
-    String accessToken = this.authService.refreshToken(refreshToken);
+       {
+    ResponseCookie cookie = this.authService.refreshToken(refreshToken);
     StringResult result = new StringResult();
-    result.setResult(accessToken);
-    return ResponseEntity.ok().body(result);
+    result.setResult(cookie.getValue());
+    
+    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(result);
   }
 
   @PostMapping("/auth/logout")
@@ -79,21 +80,22 @@ public class AuthController {
   if (authorization != null && authorization.startsWith("Bearer ")) {
     accessToken = authorization.substring(7);
   }
-    ResponseCookie cookie = this.authService.logout(accessToken,refreshToken);
+    LoginResponse loginResponse = this.authService.logout(accessToken,refreshToken);
 
-    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(true);
+    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, loginResponse.getRefreshCookie().toString())
+    .header(HttpHeaders.SET_COOKIE, loginResponse.getAccessCookie().toString()).body(true);
   }
 
   @PostMapping("/auth/verify-mail")
   @ApiMessage("Xác thực mail thành công")
-  public ResponseEntity<?> validMail(@RequestBody MailRequest request) throws ErrorException {
+  public ResponseEntity<?> validMail(@RequestBody MailRequest request)  {
     this.authService.isValidMail(request.getEmail());
     return ResponseEntity.ok().body(true);
   }
 
   @PostMapping("/auth/verify-otp")
   @ApiMessage("Xác thực otp thành công")
-  public ResponseEntity<?> validOtp(@RequestBody MailRequest request) throws ErrorException {
+  public ResponseEntity<?> validOtp(@RequestBody MailRequest request)  {
     ResponseCookie cookie = this.authService.isValidOtp(request.getValue(), request.getEmail());
     return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,cookie.toString()).body(true);
   }
@@ -102,7 +104,7 @@ public class AuthController {
   @ApiMessage("Đổi mật khẩu thành công")
   public ResponseEntity<?> changePassword(@RequestBody MailRequest request,
     @CookieValue(name = "reset_token",defaultValue = "none") String resetToken
-  ) throws ErrorException {
+  )  {
     this.authService.changePassword(resetToken, request.getValue());
     return ResponseEntity.ok().body(true);
   }

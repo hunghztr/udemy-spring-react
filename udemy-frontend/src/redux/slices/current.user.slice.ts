@@ -1,6 +1,6 @@
 import type { IUserToken } from '@/type/auth.module';
 import { createSlice } from '@reduxjs/toolkit'
-import { getMe, loginWithInfo, logOut } from '../thunks/auth.thunk';
+import { getMe, logOut } from '../thunks/auth.thunk';
 
 
 // Define the initial state using that type
@@ -29,7 +29,6 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-    .addCase(loginWithInfo.fulfilled,mapActionToState)
     .addCase(getMe.fulfilled,mapActionToState)
     .addCase(logOut.fulfilled,mapActionToState)
   }

@@ -16,22 +16,23 @@ import { useFetchContent } from "@/hooks/instructor/content/fetch.content";
 import { useFileDnd } from "@/hooks/instructor/content/file.dnd.content";
 import SectionAddForm from "./section.add.form";
 import LectureAddForm from "./lecture.add.form";
+import Loading from "@/components/loading";
 
 interface Props {
   course: ICourseDetailResponse | null;
-  refetch:() => Promise<any>
+  refetch:() => Promise<any>;
 }
 
 export default function UpdateContent({ course,refetch }: Props) {
   const theme = useTheme();
   // fetch hook
   const {collapsed,handleToggleColapse,sections,setSections} = useFetchContent(course);
-
+  console.log(sections)
   // upload drag hook
   const {handleDragLectureEnd,isUploadingCloud,setUploadingLectureId,fileInputRef,uploadingLectureId,
-        percent,uploadVideo} = useFileDnd(course,refetch,setSections)
-        console.log(sections)
-  return (
+        percent,uploadVideo,handleDestroy,handleDestroyAll,isLoading} = useFileDnd(course,refetch,setSections)
+  if(isLoading) return <Loading />
+        return (
     <Box>
       {/* HEADER */}
       <Stack direction="row" justifyContent="space-between" mb={3}>
@@ -41,19 +42,29 @@ export default function UpdateContent({ course,refetch }: Props) {
       </Stack>
       {/* SECTIONS */}
       <Stack spacing={3}>
-        {sections?.map((section) => (
-          <Paper
-            key={section.id}
-            sx={{
-              p: 3,
-              borderRadius: 2,
-              border: `1px solid ${theme.palette.divider}`,
-            }}
-          >
+  <AnimatePresence>
+    {sections?.map((section) => (
+      <motion.div
+        key={section.id}
+        layout
+        initial={{ opacity: 0, height: 0 }}
+        animate={{ opacity: 1, height: "auto" }}
+        exit={{ opacity: 0, height: 0, scale: 0.97 }}
+        transition={{ duration: 0.25, ease: "easeInOut" }}
+        style={{ overflow: "hidden" }}
+      >
+        <Paper
+          sx={{
+            p: 3,
+            borderRadius: 2,
+            border: `1px solid ${theme.palette.divider}`,
+          }}
+        >
+
             {/* SECTION HEADER */}
             <SectionTitle theme={theme}  collapsed={collapsed} 
               handleToggleColapse={handleToggleColapse} course={course} section={section} 
-                setSections={setSections} />
+                setSections={setSections} handleDestroyAll={handleDestroyAll}/>
 
             <AnimatePresence initial={false}>
               {!collapsed[section.id || ""] && (
@@ -77,21 +88,21 @@ export default function UpdateContent({ course,refetch }: Props) {
                       <LectureList section={section} theme={theme} 
                             isUploadingCloud={isUploadingCloud} setUploadingLectureId={setUploadingLectureId}
                               fileInputRef={fileInputRef}  uploadingLectureId={uploadingLectureId}
-                                  percent={percent} course={course} setSections={setSections}
+                                  percent={percent} course={course} setSections={setSections} handleDestroy={handleDestroy}
                        />
                     </SortableContext>
                   </DndContext>
-
-
                   {/* ADD LECTURE */}
                   <LectureAddForm course={course} setSections={setSections} section={section} />
                 </motion.div>
               )}
             </AnimatePresence>
+                  </Paper>
+      </motion.div>
+    ))}
+  </AnimatePresence>
+</Stack>
 
-          </Paper>
-        ))}
-      </Stack>
 
       {/* ADD SECTION */}
       <SectionAddForm course={course} setSections={setSections} />

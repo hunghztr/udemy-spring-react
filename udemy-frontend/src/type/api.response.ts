@@ -9,10 +9,7 @@ export interface IResult {
   result: string;
 }
 
-export interface IVideoResponse{
-  result: string;
-  duration: number;
-}
+
 export interface ISignatureResponse{
   apiKey: string;
   cloudName: string;
@@ -20,7 +17,7 @@ export interface ISignatureResponse{
   signature: string;
   timestamp: string;
 }
-export interface ITwoList<T,V>{
-  firstList: T[];
-  secondList: V[];
+export interface ISliceResponse<T> {
+  items: T[];
+  hasNext: boolean;
 }

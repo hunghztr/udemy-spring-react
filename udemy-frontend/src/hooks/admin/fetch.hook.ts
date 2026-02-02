@@ -20,7 +20,7 @@ export const useFetchHook = <Res>({fetchMethod, queryName} : IUseFetchHookProps<
         elementTotals:0,
         pageTotals:0
     });
-    const {error:fetchError,data:newData,isLoading,refetch} = useGetPaging<Res,IPagination>(
+    const {data:newData,isLoading,refetch} = useGetPaging<Res,IPagination>(
       queryName ||"fetch/data",
       fetchMethod,
       {page:page-1,size,active,keyword}
@@ -41,10 +41,10 @@ export const useFetchHook = <Res>({fetchMethod, queryName} : IUseFetchHookProps<
 
     // effect
     useEffect(() =>{
-      if(fetchError){
+      if(!newData || newData.elements.length === 0){
         setMeta({...meta,elementTotals:0})
       }
-    },[fetchError])
+    },[newData])
 
     const handleToggle = (
     _: React.MouseEvent<HTMLElement>,
@@ -53,6 +53,6 @@ export const useFetchHook = <Res>({fetchMethod, queryName} : IUseFetchHookProps<
     if (newValue !== null) setActive(newValue);
   };
     return {
-        data,page,active,handleToggle,keyword,setKeyword,isLoading,fetchError,setPage,meta,refetch
+        data,page,active,handleToggle,keyword,setKeyword,isLoading,setPage,meta,refetch
     }
 }

@@ -56,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
-  public void register(RegisterRequest request) throws ErrorException {
+  public void register(RegisterRequest request)  {
     if (this.userRepository.existsByUsername(request.getUsername())) {
       throw new ErrorException("Người dùng này đã tồn tại");
     }
@@ -81,14 +81,22 @@ public class AuthServiceImpl implements AuthService {
     SecurityContextHolder.getContext().setAuthentication(authentication);
     LoginResponse loginResponse = this.setUpLoginResponse(request.getUsername());
     // set cookies
-    ResponseCookie cookie = ResponseCookie
+    ResponseCookie refreshCookie = ResponseCookie
         .from("refresh_token", loginResponse.getRefreshToken())
         .httpOnly(true)
         .secure(true)
         .path("/")
         .maxAge(refreshTokenExpiration)
         .build();
-    loginResponse.setCookie(cookie);
+    ResponseCookie accessCookie = ResponseCookie
+        .from("access_token", loginResponse.getAccessToken())
+        .httpOnly(true)
+        .secure(true)
+        .path("/")
+        .maxAge(accessTokenExpiration)
+        .build();
+    loginResponse.setRefreshCookie(refreshCookie);
+    loginResponse.setAccessCookie(accessCookie);
     return loginResponse;
   }
 
@@ -112,23 +120,31 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
-  public ResponseCookie logout(String accessToken,String refreshToken) {
+  public LoginResponse logout(String accessToken,String refreshToken) {
     this.redisService.deleteRefreshToken(refreshToken);
     this.redisService.addBlacklistToken(accessToken, accessTokenExpiration);
-    return ResponseCookie
+    LoginResponse loginResponse = new LoginResponse();
+    loginResponse.setRefreshCookie(ResponseCookie
         .from("refresh_token", "")
         .httpOnly(true)
         .secure(true)
         .path("/")
         .maxAge(0)
-        .build();
+        .build());
+    loginResponse.setAccessCookie(ResponseCookie
+        .from("access_token", "")
+        .httpOnly(true)
+        .secure(true)
+        .path("/")
+        .maxAge(0)
+        .build());
+    return loginResponse;
   }
 
   @Override
-  public void isValidMail(String mail) throws ErrorException {
+  public void isValidMail(String mail)  {
     Optional<User> user = this.userRepository.findByUsername(mail);
-    if (!user.isPresent())
-      throw new ErrorException("Mail này chưa đăng kí tài khoản");
+    if (!user.isPresent())  return;
     String otp = this.generateOtp();
     this.redisService.addOtp(mail, otp, 300);
     this.mailService.sendMail(mail, user.get().getFullname(), "Quên mật khẩu", "otp", otp);
@@ -140,7 +156,7 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
-  public ResponseCookie isValidOtp(String otp, String email) throws ErrorException {
+  public ResponseCookie isValidOtp(String otp, String email)  {
     var row = this.redisService.getOtp(email);
     if (!otp.equals(row))
       throw new ErrorException("Mã otp không chính xác");
@@ -160,7 +176,7 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
-  public void changePassword( String token, String password) throws ErrorException {
+  public void changePassword( String token, String password)  {
     String username = this.redisService.getUsernameByResetToken(token);
     if (username == null) {
       throw new ErrorException("Token không hợp lệ hoặc đã hết hạn");
@@ -177,7 +193,7 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
-  public UserDetail getCurrentUser() throws ErrorException {
+  public UserDetail getCurrentUser()  {
     String username = this.securityHelper.getCurrentUsername();
     UserDetail userDetail = this.userRepository.findProjectByUsername(username);
     if (userDetail == null) {
@@ -187,7 +203,7 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
-  public String refreshToken(String refreshToken) throws ErrorException {
+  public ResponseCookie refreshToken(String refreshToken)  {
     String username = this.redisService.getUsernameByRefreshToken(refreshToken);
     if (username == null) {
       throw new ErrorException("token không hợp lệ");
@@ -195,7 +211,14 @@ public class AuthServiceImpl implements AuthService {
     Optional<User> userOpt = this.userRepository.findByUsername(username);
     if (userOpt.isPresent()) {
       String accessToken = this.securityHelper.generateToken(userOpt.get(), "access_token");
-      return accessToken;
+      return ResponseCookie
+        .from("access_token", accessToken)
+        .httpOnly(true)
+        .secure(true)
+        .path("/")
+        .maxAge(accessTokenExpiration)
+        .build();
+   
     }
     throw new ErrorException("Người dùng không tồn tại");
   }

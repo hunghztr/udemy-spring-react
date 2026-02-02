@@ -38,6 +38,7 @@ import com.jwhisper.udemy.model.User;
 import com.jwhisper.udemy.repository.RoleRepository;
 import com.jwhisper.udemy.repository.UserRepository;
 import com.jwhisper.udemy.security.CheckBlackListToken;
+import com.jwhisper.udemy.security.CookieBearerTokenResolver;
 import com.jwhisper.udemy.security.CustomOAuth2Success;
 import com.jwhisper.udemy.security.SecurityHelper;
 import com.jwhisper.udemy.service.AuthService;
@@ -74,7 +75,7 @@ public class SecurityConfiguration {
   public String[] getWhiteList() {
     return new String[] { "/oauth2/**", "/swagger-ui/**", "/v3/api-docs/**", "/api/v1/auth/**","/api/v1/files/**",
     "/api/v1/client/**" ,
-    "/hello" };
+    "/api/v1/hello" };
   }
 
   @Bean
@@ -98,6 +99,7 @@ public class SecurityConfiguration {
             .successHandler(oAuth2SuccessHandler()))
 
         .oauth2ResourceServer(oauth2 -> oauth2
+          .bearerTokenResolver(new CookieBearerTokenResolver())
             .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
             .authenticationEntryPoint(point))
 

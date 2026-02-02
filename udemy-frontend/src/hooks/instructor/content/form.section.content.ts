@@ -1,6 +1,7 @@
 import { createSection, updateSectionName } from "@/query/course/course.query";
 import { useSave } from "@/query/use.crud.query";
 import type { ICourseDetailResponse, ISection, ISectionResponse } from "@/type/course.module";
+import { showToast } from "@/utils/toast";
 import { useState } from "react";
 
 export const useFormSection = (course:ICourseDetailResponse|null,
@@ -27,7 +28,6 @@ export const useFormSection = (course:ICourseDetailResponse|null,
         const newSection: ISection = {
         name: newSectionTitle,
         };
-        console.log(newSection)
         mutateCreateSection({
         data:newSection,
         courseId:course?.id||""
@@ -36,7 +36,7 @@ export const useFormSection = (course:ICourseDetailResponse|null,
             setSections(prev => [...prev,res])
         },
         onError:(err) =>{
-            alert(err);
+            showToast(`Có vấn đề xảy ra: ${err.response?.data.message}`,"error");
         }
         })
         setNewSectionTitle("");
@@ -54,7 +54,7 @@ export const useFormSection = (course:ICourseDetailResponse|null,
             )
           );
         },onError:(err) =>{
-            alert(err);
+            showToast(`Có vấn đề xảy ra: ${err.response?.data.message}`,"error");
         }
         })
     };

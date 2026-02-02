@@ -1,9 +1,11 @@
 import { reorderLectures, updateLectureVideo } from "@/query/course/course.query";
-import { useCloudinaryChunkUpload, useUploadSignature } from "@/query/file/use.file.query";
+import { useCloudinaryChunkUpload, useCloudinaryDestroy, useCloudinaryDestroyAll, useUploadSignature, useUploadSignatureDestroy } from "@/query/file/use.file.query";
 import { useSave } from "@/query/use.crud.query";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { resetUpload, setUploadPercent } from "@/redux/slices/file.slice";
+import type { ISignatureResponse } from "@/type/api.response";
 import type { ICourseDetailResponse, ILecture, ISectionResponse } from "@/type/course.module";
+import { showToast } from "@/utils/toast";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { useRef, useState } from "react";
 
@@ -15,7 +17,12 @@ setSections:React.Dispatch<React.SetStateAction<ISectionResponse[]>>) =>{
     >('courses/reorder-lecture',reorderLectures)
     //  xin chữ ký
     const { mutateAsync: getSignature } = useUploadSignature();
-  
+    // xin chữ kí huỷ file
+    const {mutateAsync:getSignatureDestroy} = useUploadSignatureDestroy();
+    // destroy file
+    const {mutateAsync: deleteFile,isPending:isDelete} = useCloudinaryDestroy();
+    // destroy all file
+    const {mutateAsync:deleteAllFile,isPending:isDeleteAll} = useCloudinaryDestroyAll();
     //  upload cloudinary
     const { mutateAsync: uploadCloud, isPending: isUploadingCloud } = useCloudinaryChunkUpload();
     const {mutateAsync:updateLecturePath} = useSave<ISectionResponse,
@@ -55,13 +62,12 @@ setSections:React.Dispatch<React.SetStateAction<ISectionResponse[]>>) =>{
             dispatch(resetUpload(lectureId))
             },
             onError:(err) =>{
-            alert(err);
+                showToast(`Có vấn đề xảy ra: ${err.response?.data.message}`,"error");
             }
         })
 
         } catch (err) {
-        console.error(err);
-        alert("Upload video thất bại");
+            showToast(`${err}`,"error")
         } finally {
         setUploadingLectureId(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
@@ -97,7 +103,33 @@ setSections:React.Dispatch<React.SetStateAction<ISectionResponse[]>>) =>{
         }
         })
     };
+    // handle destroy file
+    const handleDestroy = async (path:string) =>{
+        try {
+            console.log("check in destroy file")
+              // 1. xin signature để destroy
+              const sig: ISignatureResponse = await getSignatureDestroy(path); 
+        
+              // 2. xoá cloudinary
+              await deleteFile({
+                publicId: path,
+                sig,
+                resourceType: "video",
+              });
+        
+            } catch (err) {
+              showToast(`${err}`,"error")
+            }
+    }
+    const handleDestroyAll = async (publicIds : string[]) =>{
+        try{
+            await deleteAllFile(publicIds);
+        }catch(err){
+            showToast(`${err}`,"error")
+        }
+    }
+    const isLoading = isDelete || isDeleteAll
     return {handleDragLectureEnd,isUploadingCloud,setUploadingLectureId,fileInputRef,uploadingLectureId,
-        percent,uploadVideo
+        percent,uploadVideo,handleDestroy,handleDestroyAll,isLoading
     }
 }

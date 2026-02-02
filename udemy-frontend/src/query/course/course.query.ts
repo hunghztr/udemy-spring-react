@@ -2,7 +2,7 @@ import api from "@/api/api";
 import type { IApiResponse } from "@/type/api.response";
 import { type ICourse, type ICourseDetailResponse, type ICourseResponse, type ILecture, type ISection, type ISectionResponse } from "@/type/course.module";
 import type { IPagination, IPaginationResponse } from "@/type/pagination";
-import { activate, create, getById, update } from "../api.crud.query";
+import { activate, create, getAll, getById, update } from "../api.crud.query";
 
 
 export const getCoursesByAuthor = async ({
@@ -77,5 +77,37 @@ export const getCourseDetail = (id : string) =>{
     return getById<ICourseDetailResponse>({
         url:`/instructor/courses`,
         id
+    })
+}
+
+export const updateCourseImage = (data : ICourse) =>{
+    return update<ICourse>({
+        url: `/instructor/courses/update-image`,
+        data,id:data.id||""
+    })
+}
+export const updatePrice = ({courseId,data} : {courseId:string;data:ICourse}) =>{
+    return update<ICourse>({
+        url: `/instructor/courses/update-price`,
+        id:courseId,data
+    })
+}
+// for admin
+export const getAllCoursesByAdmin = (data : IPagination) =>{
+    return getAll<ICourseResponse>({
+    url:"/admin/courses",
+    pagination : data
+    })
+}
+export const disableCourse = (id : string) =>{
+    return activate({
+    url:"/admin/courses/delete",
+    id
+    })
+}
+export const enableCourse = (id : string) =>{
+    return activate({
+    url:"/admin/courses/active",
+    id
     })
 }

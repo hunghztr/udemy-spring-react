@@ -2,16 +2,20 @@
 export interface ICourse{
     id? : string;
     name?: string;
+    imagePath?: string;
+    price?: number;
     categoriesId?: string[];
     description?: string;
     requirement?: string;
 }
+export type Status = "PENDING" | "PUBLISHED" | "REJECTED"
 export interface ICourseResponse{
     id: string;
     name: string;
     star: number;
     sold: number;
     hour: number;
+    status: Status
 }
 export interface ICourseDetailResponse{
     id: string;
@@ -20,12 +24,13 @@ export interface ICourseDetailResponse{
     requirement: string;
     price: number;
     totalSection: number;
-    imagePath: number;
+    imagePath?: string;
+    status: Status;
     coupons: ICouponResponse[];
     sections: ISectionResponse[];
 }
 export interface ICouponResponse{
-    id: string;
+    id?: string;
     code: string;
     discount: number;
 }

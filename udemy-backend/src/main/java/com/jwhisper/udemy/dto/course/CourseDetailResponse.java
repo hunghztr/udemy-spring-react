@@ -2,6 +2,7 @@ package com.jwhisper.udemy.dto.course;
 
 import java.util.List;
 
+import com.jwhisper.udemy.helper.constant.CourseStatus;
 import com.jwhisper.udemy.model.Coupon;
 
 import lombok.AccessLevel;
@@ -18,6 +19,7 @@ public class CourseDetailResponse {
     double price;
     int totalSection;
     String imagePath;
+    CourseStatus status;
     List<Coupon> coupons;
     List<SectionResponse> sections;
 }

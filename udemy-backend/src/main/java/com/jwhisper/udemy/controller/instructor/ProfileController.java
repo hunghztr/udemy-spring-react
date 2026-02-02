@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jwhisper.udemy.dto.user.ProfileRequest;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
-import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.service.UserService;
 
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,7 @@ public class ProfileController {
     @PutMapping("/{id}")
     @ApiMessage("Cập nhật hồ sơ người dùng thành công")
     public ResponseEntity<?> updateProfile(@PathVariable("id") String id,
-    @RequestBody ProfileRequest request) throws ErrorException {
+    @RequestBody ProfileRequest request)  {
         request.setId(id);
         boolean isUpdated = this.userService.updateProfile(request);
         return ResponseEntity.ok(isUpdated);

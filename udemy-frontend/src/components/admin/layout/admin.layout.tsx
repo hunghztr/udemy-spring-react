@@ -4,6 +4,7 @@ import AdminSidebar from "./admin.sidebar";
 const SIDEBAR_WIDTH = 240;
 
 export default function AdminLayout() {
+
   return (
     <div style={{ display: "flex" }}>
       <AdminSidebar />

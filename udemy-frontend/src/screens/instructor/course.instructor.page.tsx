@@ -9,7 +9,8 @@ import {
   Switch,
   TextField,
   Typography,
-  Tooltip
+  Tooltip,
+  useTheme
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
@@ -22,9 +23,13 @@ import Loading from "@/components/loading";
 import type { IMetaResponse } from "@/type/pagination";
 import type { ICourseResponse } from "@/type/course.module";
 import PaginationComponent from "@/components/admin/layout/pagination.component";
+import { Chip } from "@mui/material";
+import { getCourseStatusMap } from "@/constants/course.status";
 
 export default function CourseInstructorPage() {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const STATUS_MAP = getCourseStatusMap(theme);
 
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"newest" | "oldest">("newest");
@@ -40,7 +45,7 @@ export default function CourseInstructorPage() {
 
   const [courses, setCourses] = useState<ICourseResponse[] | null>(null);
 
-  const { error, isLoading, data } = useGetPaging(
+  const { isLoading, data } = useGetPaging(
     "courses/get-all-by-author",
     getCoursesByAuthor,
     { page: page - 1, size: 5, active, keyword: search, filter }
@@ -54,6 +59,7 @@ export default function CourseInstructorPage() {
   }, [data, isLoading]);
 
   if (isLoading) return <Loading />;
+  const isEmpty = (data?.elements.length ?? 0) === 0;
 
   return (
     <Box sx={{ p: 3 }}>
@@ -94,7 +100,7 @@ export default function CourseInstructorPage() {
               }}
             />
           }
-          label={active ? "Public" : "Private"}
+          label={active ? "Đã kích hoạt" : "Chưa kích hoạt"}
         />
 
         <Box flex={1} />
@@ -112,16 +118,15 @@ export default function CourseInstructorPage() {
 
       {/* ===== COURSE LIST ===== */}
       <Stack spacing={2}>
-        {error && (
+        {isEmpty && (
           <Paper variant="outlined" sx={{ p: 3, borderColor: "error.main" }}>
             <Typography color="error">
-              {error.response?.data.message ||
-                "Có lỗi xảy ra, vui lòng thử lại"}
+              Danh sách khoá học rỗng
             </Typography>
           </Paper>
         )}
 
-        {!error &&
+        {!isEmpty &&
           courses?.map((c) => (
             <Paper
               key={c.id}
@@ -175,11 +180,25 @@ export default function CourseInstructorPage() {
                   </Typography>
                   <Typography fontWeight={700}>{c.hour} giờ</Typography>
                 </Box>
+                {/* STATUS */}
+                <Box minWidth={120} textAlign="right">
+                  <Chip
+                    label={STATUS_MAP[c.status].label}
+                    sx={{
+                      backgroundColor: "#fff",
+                      border: `1px solid ${STATUS_MAP[c.status].borderColor}`,
+                      color: STATUS_MAP[c.status].textColor,
+                      borderRadius: "6px",
+                      fontWeight: 700,
+                    }}
+                  />
+                </Box>
+
               </Stack>
             </Paper>
           ))}
 
-        {!error && (
+        {!isEmpty && (
           <PaginationComponent
             meta={meta}
             page={page}

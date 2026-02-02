@@ -1,20 +1,23 @@
-import { minuteToMMSS } from '@/helpers/helper';
+import { minuteToMMSS } from '@/helpers/format.time';
 import type { ICourseDetailResponse, ISectionResponse } from '@/type/course.module';
 import { Box, Button, IconButton, Stack, TextField, Typography, type Theme } from '@mui/material';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useFormSection } from '@/hooks/instructor/content/form.section.content';
 import { useActionContent } from '@/hooks/instructor/content/action.content';
+import { useState } from 'react';
+import ConfirmDialog from '@/utils/confirm.dialog';
 
 interface IProps{
   theme:Theme;
   collapsed: Record<string,boolean>;
   handleToggleColapse: (value : string) => void;
   course:ICourseDetailResponse|null;
-  setSections:React.Dispatch<React.SetStateAction<ISectionResponse[]>>,section:ISectionResponse
-
+  setSections:React.Dispatch<React.SetStateAction<ISectionResponse[]>>,section:ISectionResponse;
+  handleDestroyAll: (publicIds : string[]) => Promise<any>;
 }
-export default function SectionTitle({course,setSections,section,theme,collapsed,handleToggleColapse
+export default function SectionTitle({course,setSections,section,theme,collapsed,handleToggleColapse,
+  handleDestroyAll
 }: IProps) {
   // edit hook
   const {setEditingSectionId,setEditingSectionTitle,editingSectionId,
@@ -23,6 +26,9 @@ export default function SectionTitle({course,setSections,section,theme,collapsed
   // delete hook
   const {isDeleteSectionPending,handleDeleteSection}
    = useActionContent(course,setSections);
+
+   const [openConfirm, setOpenConfirm] = useState(false);
+
   return (
     <Stack direction="row" justifyContent="space-between" mb={1}>
               <Box
@@ -88,14 +94,11 @@ export default function SectionTitle({course,setSections,section,theme,collapsed
                 <IconButton
                   color="error"
                   disabled={isDeleteSectionPending}
-                  onClick={() => {
-                    if (window.confirm("Xoá phần học này và toàn bộ bài học bên trong?")) {
-                      handleDeleteSection(section.id || "");
-                    }
-                  }}
+                  onClick={() => setOpenConfirm(true)}
                 >
                   <DeleteOutlineIcon />
                 </IconButton>
+
                 <IconButton
                   size="large"
                   sx={{
@@ -117,6 +120,25 @@ export default function SectionTitle({course,setSections,section,theme,collapsed
                 </IconButton>
 
               </Stack>
+              <ConfirmDialog
+                open={openConfirm}
+                isLoading={isDeleteSectionPending}
+                title="Xoá phần học?"
+                description="Toàn bộ bài học bên trong sẽ bị xoá vĩnh viễn. Hành động này không thể hoàn tác."
+                onCancel={() => setOpenConfirm(false)}
+                onConfirm={async () => {
+                  const ids =
+                    section?.lectures?.map(l => l.id).filter(Boolean) as string[];
+
+                  if (ids.length > 0) {
+                    await handleDestroyAll(ids);
+                  }
+
+                  await handleDeleteSection(section.id || "");
+                  setOpenConfirm(false);
+                }}
+              />
+
             </Stack>
   )
 }

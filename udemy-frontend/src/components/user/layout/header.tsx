@@ -24,6 +24,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { persistor } from "@/redux/store";
 import { logOut } from "@/redux/thunks/auth.thunk";
 import { showToast } from "@/utils/toast";
+import { query } from "@/main";
 
 export default function Header() {
   const user = useAppSelector((state) => state.currentUser);
@@ -44,6 +45,10 @@ export default function Header() {
 
   // ===== LOGOUT =====
   const handleLogOut = async () => {
+    query.removeQueries({
+      queryKey: ["courses/get-all-by-author"],
+      exact: false
+    });
     await persistor.purge();
     dispatch(logOut());
     navigate("/auth");

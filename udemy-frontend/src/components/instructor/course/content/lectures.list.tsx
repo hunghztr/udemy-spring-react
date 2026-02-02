@@ -1,4 +1,4 @@
-import { minuteToMMSS } from '@/helpers/helper';
+import { minuteToMMSS } from '@/helpers/format.time';
 import type { ICourseDetailResponse, ISectionResponse } from '@/type/course.module';
 import SortableLectureItem from '@/utils/sort.table.lecture';
 import { Box, Button, IconButton, LinearProgress, Stack, TextField, Typography, type Theme } from '@mui/material';
@@ -10,7 +10,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from 'react';
-
+import { AnimatePresence } from "framer-motion";
+import ConfirmDialog from '@/utils/confirm.dialog';
 interface IProps{
     section:ISectionResponse;
     theme:Theme;
@@ -20,13 +21,11 @@ interface IProps{
     uploadingLectureId:string|null;
     percent: Record<string, number>;
     course:ICourseDetailResponse|null;
-    setSections:React.Dispatch<React.SetStateAction<ISectionResponse[]>>
+    setSections:React.Dispatch<React.SetStateAction<ISectionResponse[]>>;
+    handleDestroy:(path:string) => Promise<any>;
 }
 export default function LectureList({course,setSections,section,theme,isUploadingCloud,
-fileInputRef,setUploadingLectureId,
-uploadingLectureId,percent
-
-}:IProps) {
+fileInputRef,setUploadingLectureId,uploadingLectureId,percent,handleDestroy}:IProps) {
   // delete hook
   const {isDeleteLecturePending,handleDeleteLecture}
    = useActionContent(course,setSections);
@@ -42,28 +41,30 @@ uploadingLectureId,percent
       setPreviewUrl(`${import.meta.env.VITE_CLOUDINARY_WATCH_VIDEO}/${url}.m3u8`);
       setPreviewTitle(title);
     };
-
     const closePreview = () => {
       setPreviewUrl(null);
       setPreviewTitle("");
     };
-
+    const [openConfirm, setOpenConfirm] = useState(false);
+    const [selectedLecture, setSelectedLecture] = useState<{
+      id: string; path?: string;} | null>(null);
   return (
     <Stack spacing={1.5} mt={1}>
-                  {section?.lectures?.map((l, i) => (
-                    <SortableLectureItem id={l.id || ""} key={l.id}>
-                      {(listeners) => (
-                        <Box
-                          sx={{
-                            border: `1px dashed ${theme.palette.primary.main}`,
-                            borderRadius: 1,
-                            px: 2,
-                            py: 1.5,
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: 1.5,
-                          }}
-                        >
+            <AnimatePresence mode="popLayout">
+              {section?.lectures?.map((l, i) => (
+                <SortableLectureItem id={l.id || ""} key={l.id}>
+                  {(listeners) => (
+                    <Box
+                      sx={{
+                        border: `1px dashed ${theme.palette.primary.main}`,
+                        borderRadius: 1,
+                        px: 2,
+                        py: 1.5,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 1.5,
+                      }}
+                    >
                           {/* ROW */}
                           <Box
                             sx={{
@@ -75,17 +76,13 @@ uploadingLectureId,percent
                           >
                             {/* LEFT: drag + title */}
                             <Stack direction="row" spacing={1} alignItems="center" flex={1}>
-                              
-                              {/* ✅ DRAG HANDLE */}
                               <IconButton
                                 {...listeners}
                                 size="small"
                                 sx={{ cursor: "grab" }}
                                 onClick={(e) => e.stopPropagation()}
-                              >
-                                ☰
+                              >☰
                               </IconButton>
-
                               {/* TITLE */}
                               <Box sx={{ flex: 1 }}>
                                 {editingLectureId === l.id ? (
@@ -98,7 +95,6 @@ uploadingLectureId,percent
                                       onChange={(e) => setEditingLectureTitle(e.target.value)}
                                       onClick={(e) => e.stopPropagation()}
                                     />
-
                                     <Button
                                       size="small"
                                       variant="contained"
@@ -111,10 +107,8 @@ uploadingLectureId,percent
                                         );
                                         setEditingLectureId(null);
                                       }}
-                                    >
-                                      Lưu
+                                    >Lưu
                                     </Button>
-
                                     <Button
                                       size="small"
                                       onClick={(e) => {
@@ -122,8 +116,7 @@ uploadingLectureId,percent
                                         setEditingLectureId(null);
                                         setEditingLectureTitle("");
                                       }}
-                                    >
-                                      Huỷ
+                                    >Huỷ
                                     </Button>
                                   </Stack>
                                 ) : (
@@ -134,22 +127,17 @@ uploadingLectureId,percent
                                       setEditingLectureId(l.id || "");
                                       setEditingLectureTitle(l.name || "");
                                     }}
-
                                     sx={{ "&:hover": { textDecoration: "underline" } }}
-                                  >
-                                    Bài {i + 1}: {l.name}
+                                  >Bài {i + 1}: {l.name}
                                   </Typography>
                                 )}
-
                                 {l.second > 0 && (
                                   <Typography fontSize={12} color="text.secondary">
                                     ⏱ {minuteToMMSS(l.second)}
                                   </Typography>
                                 )}
-                                
                               </Box>
                             </Stack>
-
                             {/* RIGHT ACTIONS */}
                             <Stack direction="row" spacing={1}>
                               {l.path && (
@@ -173,24 +161,25 @@ uploadingLectureId,percent
                                   fileInputRef.current?.click();
                                 }}
                               >
-                                {l.path ? "Ghi đè video" : "Thêm video"}
+                                {l.path ? "Ghi đè" : "Thêm video"}
                               </Button>
-
                               <IconButton
                                 size="small"
                                 color="error"
                                 disabled={isDeleteLecturePending}
-                                onClick={() => {
-                                  if (window.confirm("Xoá bài học này?")) {
-                                    handleDeleteLecture(l.id || "");
-                                  }
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedLecture({
+                                    id: l.id || "",
+                                    path: l.path,
+                                  });
+                                  setOpenConfirm(true);
                                 }}
                               >
                                 <DeleteOutlineIcon fontSize="small" />
                               </IconButton>
                             </Stack>
                           </Box>
-
                           {/* PROGRESS */}
                           {uploadingLectureId === l.id && (
                             <Box>
@@ -206,8 +195,8 @@ uploadingLectureId,percent
                         </Box>
                       )}
                     </SortableLectureItem>
-
                           ))}
+                          </AnimatePresence>
                           {/* ===== PREVIEW VIDEO POPUP ===== */}
                             <Dialog
                               open={!!previewUrl}
@@ -224,7 +213,6 @@ uploadingLectureId,percent
                                   <CloseIcon />
                                 </IconButton>
                               </DialogTitle>
-
                               <DialogContent>
                                 {previewUrl && (
                                   <Box
@@ -241,7 +229,30 @@ uploadingLectureId,percent
                                 )}
                               </DialogContent>
                             </Dialog>
-
+                                <ConfirmDialog
+                                  open={openConfirm}
+                                  title="Xoá bài học?"
+                                  description="Bài học này sẽ bị xoá vĩnh viễn. Hành động này không thể hoàn tác."
+                                  confirmText="Xoá"
+                                  cancelText="Huỷ"
+                                  isLoading={isDeleteLecturePending}
+                                  onCancel={() => {
+                                    setOpenConfirm(false);
+                                    setSelectedLecture(null);
+                                  }}
+                                  onConfirm={async () => {
+                                    if (!selectedLecture) return;
+                                    try {
+                                      if (selectedLecture.path) {
+                                        await handleDestroy(selectedLecture.path);
+                                      }
+                                      await handleDeleteLecture(selectedLecture.id);
+                                    } finally {
+                                      setOpenConfirm(false);
+                                      setSelectedLecture(null);
+                                    }
+                                  }}
+                                />
                 </Stack>
   )
 }

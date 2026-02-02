@@ -11,6 +11,6 @@ import lombok.experimental.FieldDefaults;
 public class LoginResponse {
   String accessToken;
   String refreshToken;
-  ResponseCookie cookie;
-
+  ResponseCookie refreshCookie;
+  ResponseCookie accessCookie;
 }

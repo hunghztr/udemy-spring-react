@@ -20,7 +20,7 @@ import { useActionHook } from "@/hooks/admin/action.hook";
 export default function UserManagement() {
   // fetch hook
   const {data,page,active,handleToggle,keyword,setKeyword
-    ,isLoading,fetchError,setPage,meta,refetch
+    ,isLoading,setPage,meta,refetch
   } = useFetchHook<IUserResponse>({fetchMethod:getAllUsers,queryName:"users/fetch-all"});
   // action hook
   const {handleDisable,handleEnable,isPendingDisable,isPendingEnable} = 
@@ -44,12 +44,11 @@ export default function UserManagement() {
           </Stack>
         )}
         {/* ❌ Error */}
-        {fetchError && (
-          <Alert severity="error">{fetchError.response?.data.message}</Alert>
+        {data?.length === 0 && (
+          <Alert severity="error">Danh sách người dùng rỗng</Alert>
         )}
         {/* ✅ Data */}
         {!isLoading &&
-          !fetchError &&
           data &&
           data.length > 0 && (
             <>

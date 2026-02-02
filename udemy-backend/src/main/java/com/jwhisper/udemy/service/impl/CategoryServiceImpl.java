@@ -41,12 +41,9 @@ public class CategoryServiceImpl implements CategoryService {
         this.homeRedisService = homeRedisService;
     }
     @Override
-    public Pagination<CategoryProjection> getAll(Pageable pageable,boolean isActive, String name) throws ErrorException {
+    public Pagination<CategoryProjection> getAll(Pageable pageable,boolean isActive, String name)  {
         Page<CategoryProjection> cPage =
          this.categoryRepository.findAllByIsActiveAndNameContaining(isActive, name, pageable);
-         if(cPage.getContent() == null || cPage.getContent().size() == 0){
-            throw new ErrorException("Danh sách danh mục rỗng");
-         }
         Pagination<CategoryProjection> pagination = new Pagination<>();
         pagination.setElements(cPage.getContent());
         Pagination.Meta meta = new Pagination.Meta();
@@ -58,7 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
         return pagination;
     }
     @Override
-    public boolean create(CategoryRequest request) throws ErrorException {
+    public boolean create(CategoryRequest request)  {
         if(this.categoryRepository.existsByName(request.getName())){
             throw new ErrorException("Danh mục này đã tồn tại");
         }
@@ -68,12 +65,12 @@ public class CategoryServiceImpl implements CategoryService {
         return true;
     }
     @Override
-    public boolean update(CategoryRequest request) throws ErrorException {
+    public boolean update(CategoryRequest request)  {
         if(this.categoryRepository.existsByNameAndIdNot(request.getName(), request.getId())){
             throw new ErrorException("Name đã có danh mục dùng");
         }
         Optional<Category> optional = this.categoryRepository.findById(request.getId());
-        if(!optional.isPresent() || !optional.get().isActive()){
+        if(!optional.isPresent() || !optional.get().getIsActive()){
             throw new ErrorException("Danh mục không tồn tại hoặc đã bị vô hiệu hoá");
         }
         Category category = optional.get();
@@ -86,38 +83,38 @@ public class CategoryServiceImpl implements CategoryService {
         return true;
     }
     @Override
-    public CategoryProjection get(String id) throws ErrorException {
+    public CategoryProjection get(String id)  {
         CategoryProjection categoryProjection = this.categoryRepository.findProjectById(id);
         if(categoryProjection == null) throw new ErrorException("Danh mục không tồn tại");
         return categoryProjection;
     }
     @Override
-    public boolean delete(String id) throws ErrorException {
+    public boolean delete(String id)  {
         var optional = this.categoryRepository.findById(id);
-        if(!optional.isPresent() || !optional.get().isActive()){
+        if(!optional.isPresent() || !optional.get().getIsActive()){
             throw new ErrorException("Danh mục không tồn tại hoặc đã bị vô hiệu hoá");
         }
         Category category = optional.get();
-        category.setActive(false);
+        category.setIsActive(false);
         this.categoryRepository.save(category);
         this.homeRedisService.delete(this.KEY);
         return true;
     }
     @Override
-    public boolean activate(String id) throws ErrorException {
+    public boolean activate(String id)  {
         var optional = this.categoryRepository.findById(id);
-        if(!optional.isPresent() || optional.get().isActive()){
+        if(!optional.isPresent() || optional.get().getIsActive()){
             throw new ErrorException("Danh mục không tồn tại hoặc đã chưa bị vô hiệu hoá");
         }
         Category category = optional.get();
-        category.setActive(true);
+        category.setIsActive(true);
         this.categoryRepository.save(category);
         this.homeRedisService.delete(this.KEY);
         return true;
     }
     @Override
     public Pagination<CategoryParentResponse> getAllParents(Pageable pageable, boolean isActive) 
-    throws ErrorException {
+     {
         long start = System.currentTimeMillis();
         Pagination<CategoryParentResponse> cPagination = this.homeRedisService.get(this.KEY, 
             new TypeReference<Pagination<CategoryParentResponse>>() {}
@@ -130,9 +127,6 @@ public class CategoryServiceImpl implements CategoryService {
         long dbStart = System.currentTimeMillis();
         Page<Category> cPage =
          this.categoryRepository.findAllByIsActiveAndCategoryParentIsNull(isActive, pageable);
-         if(cPage.getContent() == null || cPage.getContent().size() == 0){
-            throw new ErrorException("Danh sách danh mục rỗng");
-         }
          List<CategoryParentResponse> categoryResponses = cPage.getContent()
          .stream().map(c -> this.categoryMapper.toParentCategoryResponse(c)).toList();
          // lấy list con
@@ -158,7 +152,7 @@ public class CategoryServiceImpl implements CategoryService {
         return pagination;
     }
     @Override
-    public List<CategoryProjection> getAllNoPage() throws ErrorException {
+    public List<CategoryProjection> getAllNoPage()  {
         return this.categoryRepository.findAllBy();
     }
     

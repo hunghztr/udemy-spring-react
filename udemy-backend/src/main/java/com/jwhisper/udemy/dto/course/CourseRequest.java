@@ -15,6 +15,8 @@ public class CourseRequest {
     List<String> categoriesId;
     String description;
     String requirement;
+    double price;
+    String imagePath;
     List<SectionRequest> sections;
     List<String> deletedSectionIds;
 }

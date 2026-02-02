@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
-import com.jwhisper.udemy.helper.expception.ErrorException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,11 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequestMapping("/api/v1")
 class HelloController {
-
   @GetMapping("/hello")
   @ApiMessage("gọi api thành công")
-  public String hello() throws ErrorException {
-
+  public String hello()  {
+    // sseService.send("Tôi vừa được gọi nè");
     return "Hello, World!, ";
   }
 
