@@ -1,10 +1,11 @@
+import { query } from "@/main";
 import { updateCourseDesc } from "@/query/course/course.query";
 import {  useSave } from "@/query/use.crud.query";
 import type { ICourseDetailResponse } from "@/type/course.module";
 import { showToast } from "@/utils/toast";
 import { useEffect, useState } from "react";
 
-export const useUpdateDescCourse = (course : ICourseDetailResponse|null,refetch :() => Promise<any>) =>{
+export const useUpdateDescCourse = (course : ICourseDetailResponse|null) =>{
     
       const { isPending, mutateAsync } = useSave("courses/update", updateCourseDesc);
 
@@ -83,7 +84,7 @@ const removeRequirement = (index: number) => {
           showToast("Đã lưu thông tin thành công");
           setInitialObjectives(objectives);
           setInitialRequirements(requirements);
-          refetch();
+          query.invalidateQueries({queryKey:["courses/get-by-id"]})
         },
         onError: (err) => {
           showToast(`Có vấn đề xảy ra: ${err.response?.data.message}`,"error");

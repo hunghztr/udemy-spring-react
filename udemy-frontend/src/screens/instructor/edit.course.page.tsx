@@ -21,7 +21,7 @@ export default function EditCoursePage() {
   const [activeTab, setActiveTab] = useState<CourseTab>("description");
   const [course, setCourse] = useState<ICourseDetailResponse | null>(null);
   
-  const { isLoading, data, refetch } = useGetById<ICourseDetailResponse>(
+  const { isLoading, data } = useGetById<ICourseDetailResponse>(
     "courses/get-by-id",
     getCourseDetail,
     id || ""
@@ -51,7 +51,6 @@ export default function EditCoursePage() {
               activeTab={activeTab}
               setActiveTab={setActiveTab}
               course={course}
-              refetch={refetch}
             />
           </Box>
 
@@ -67,18 +66,18 @@ export default function EditCoursePage() {
                 transition={{ duration: 0.25, ease: "easeOut" }}
               >
                 {activeTab === "description" && (
-                  <UpdateDescription course={course} refetch={refetch} />
+                  <UpdateDescription course={course} />
                 )}
 
                 {activeTab === "image" && (
-                  <UpdateImage course={course} refetch={refetch} />
+                  <UpdateImage course={course} />
                 )}
 
                 {activeTab === "content" && (
-                  <UpdateContent course={course} refetch={refetch} />
+                  <UpdateContent course={course} />
                 )}
                 {activeTab === "pricing" && (
-                  <UpdatePricing course={course} refetch={refetch}  />
+                  <UpdatePricing course={course}   />
                 )}
               </motion.div>
             </AnimatePresence>

@@ -26,14 +26,14 @@ import type { ICourse, ICourseDetailResponse } from "@/type/course.module";
 import { useEffect, useRef, useState } from "react";
 import Loading from "@/components/loading";
 import { showToast } from "@/utils/toast";
+import { query } from "@/main";
 
 interface IProps {
   course: ICourseDetailResponse | null;
-  refetch: () => Promise<any>;
   setDone?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function UpdateImage({ course, refetch }: IProps) {
+export default function UpdateImage({ course }: IProps) {
   const [preview, setPreview] = useState<string | null>(null);
   const [openPreview, setOpenPreview] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -91,7 +91,7 @@ export default function UpdateImage({ course, refetch }: IProps) {
         },
         {
           onSuccess: () => {
-            refetch();
+            query.invalidateQueries({queryKey:["courses/get-by-id"]});
           },
         }
       );
@@ -121,7 +121,7 @@ export default function UpdateImage({ course, refetch }: IProps) {
         {
           onSuccess: () => {
             setPreview(null);
-            refetch();
+            query.invalidateQueries({queryKey:["courses/get-by-id"]})
           },
         }
       );

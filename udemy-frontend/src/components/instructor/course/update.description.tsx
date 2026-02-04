@@ -13,11 +13,10 @@ import { useMemo } from "react";
 
 interface IProps {
   course: ICourseDetailResponse | null;
-  refetch: () => Promise<any>;
   setDone?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function UpdateDescription({ course, refetch }: IProps) {
+export default function UpdateDescription({ course }: IProps) {
   const {
     objectives,
     initialObjectives,
@@ -31,7 +30,7 @@ export default function UpdateDescription({ course, refetch }: IProps) {
     addRequirement,
     removeObjective,
     removeRequirement,
-  } = useUpdateDescCourse(course, refetch);
+  } = useUpdateDescCourse(course);
 
   const isSameArray = (a: string[], b: string[]) =>
     JSON.stringify(a) === JSON.stringify(b);

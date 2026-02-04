@@ -15,7 +15,7 @@ export interface ICourseResponse{
     star: number;
     sold: number;
     hour: number;
-    status: Status
+    status: Status;
 }
 export interface ICourseDetailResponse{
     id: string;

@@ -20,16 +20,15 @@ import Loading from "@/components/loading";
 
 interface Props {
   course: ICourseDetailResponse | null;
-  refetch:() => Promise<any>;
 }
 
-export default function UpdateContent({ course,refetch }: Props) {
+export default function UpdateContent({ course }: Props) {
   const theme = useTheme();
   // fetch hook
   const {collapsed,handleToggleColapse,sections,setSections} = useFetchContent(course);
   // upload drag hook
   const {handleDragLectureEnd,isUploadingCloud,setUploadingLectureId,fileInputRef,uploadingLectureId,
-        percent,uploadVideo,handleDestroy,handleDestroyAll,isLoading} = useFileDnd(course,refetch,setSections)
+        percent,uploadVideo,handleDestroy,handleDestroyAll,isLoading} = useFileDnd(course,setSections)
   if(isLoading) return <Loading />
         return (
     <Box>

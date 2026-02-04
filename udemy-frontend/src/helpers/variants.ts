@@ -37,3 +37,27 @@ export const itemVariants: Variants = {
     },
   },
 };
+
+// variant step
+export const stepVariants: Variants = {
+  initial: (direction: number) => ({
+    opacity: 0,
+    x: direction > 0 ? 40 : -40,
+  }),
+  animate: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.25,
+      ease: [0.4, 0, 0.2, 1], // ✅ material / easeOut chuẩn
+    },
+  },
+  exit: (direction: number) => ({
+    opacity: 0,
+    x: direction > 0 ? -40 : 40,
+    transition: {
+      duration: 0.2,
+      ease: [0.4, 0, 1, 1],
+    },
+  }),
+};

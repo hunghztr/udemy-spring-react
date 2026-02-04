@@ -18,7 +18,6 @@ interface IProps {
   activeTab: "description" | "content" | "image" | "pricing";
   setActiveTab: (value: IProps["activeTab"]) => void;
   course:ICourseDetailResponse|null;
-  refetch: () => Promise<any>;
 }
 
 const tabs = [
@@ -28,7 +27,7 @@ const tabs = [
   { key: "pricing", label: "Giá tiền" },
 ] as const;
 
-export default function CourseSidebar({ activeTab, setActiveTab,course,refetch }: IProps) {
+export default function CourseSidebar({ activeTab, setActiveTab,course }: IProps) {
   const {mutate} = useSave<boolean,INotification>('notifications/create',createNotification);
   const {roleName,username} = useAppSelector(state => state.currentUser);
     const navigate = useNavigate();
@@ -114,7 +113,7 @@ export default function CourseSidebar({ activeTab, setActiveTab,course,refetch }
         )}
 
         {roleName === "ADMIN" && course && (
-              <PassedCourse course={course} refetch={refetch} handleSendNotify={handleSendNotify} />
+              <PassedCourse course={course}  handleSendNotify={handleSendNotify} />
           )}
       </List>
     </Box>

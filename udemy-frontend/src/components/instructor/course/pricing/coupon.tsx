@@ -9,13 +9,12 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { AnimatePresence, motion } from "framer-motion";
 interface Props {
   course: ICourseDetailResponse | null;
-  refetch?: () => Promise<any>;
 } 
-export default function Coupon({course,refetch} : Props) {
+export default function Coupon({course} : Props) {
     const {coupons,setOpenCoupons,openCoupons,
         setOpenAdd,editingCouponId,draftCoupon,setDraftCoupon,isValidDraftCoupon,saveEditCoupon,
         cancelEditCoupon,startEditCoupon,handleDeleteCoupon,openAdd,
-        newCoupon,setNewCoupon,isValidNewCoupon,isCreated,handleAdd,} = useUpdateCoupon({course,refetch});
+        newCoupon,setNewCoupon,isValidNewCoupon,isCreated,handleAdd,} = useUpdateCoupon({course});
   return (
     <Stack spacing={2}>
             <Stack direction="row" justifyContent="space-between">

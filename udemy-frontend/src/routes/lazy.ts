@@ -1,0 +1,61 @@
+// src/routes/lazy.ts
+import { lazy } from "react";
+
+/* ================= USER ================= */
+export const Layout = lazy(
+  () => import("../components/user/layout/layout")
+);
+export const HomePage = lazy(
+  () => import("../screens/user/home.page")
+);
+export const AuthPage = lazy(
+  () => import("../screens/auth.page")
+);
+export const ForgotPasswordPage = lazy(
+  () => import("../screens/forgot.password.page")
+);
+
+/* ================= ADMIN ================= */
+export const AdminLayout = lazy(
+  () => import("../components/admin/layout/admin.layout")
+);
+export const AdminHomePage = lazy(
+  () => import("../screens/admin/admin.home.page")
+);
+export const UserManagementPage = lazy(
+  () => import("../screens/admin/user.management.page")
+);
+export const CourseManagementPage = lazy(
+  () => import("../screens/admin/course.management.page")
+);
+export const CategoryManagementPage = lazy(
+  () => import("../screens/admin/category.management.page")
+);
+export const AdminNotifyPage = lazy(
+  () => import("../screens/admin/admin.notify.page")
+);
+
+/* ============== INSTRUCTOR =============== */
+export const InstructorLayout = lazy(
+  () => import("../components/instructor/layout/instructor.layout")
+);
+export const CourseInstructorPage = lazy(
+  () => import("../screens/instructor/course.instructor.page")
+);
+export const ProfileInstructorPage = lazy(
+  () => import("../screens/instructor/profile.instructor.page")
+);
+export const CreateCoursePage = lazy(
+  () => import("../screens/instructor/create.course.page")
+);
+export const EditCoursePage = lazy(
+  () => import("../screens/instructor/edit.course.page")
+);
+export const InstructorNotifyPage = lazy(
+  () => import("../screens/instructor/instructor.notify.page")
+);
+
+/* ================= MISC ================== */
+export const OAuth2Callback = lazy(
+  () => import("../utils/oauth2Callback")
+);

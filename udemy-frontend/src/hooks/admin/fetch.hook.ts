@@ -1,6 +1,7 @@
 import {  useEffect, useState } from "react"
 import type { IMetaResponse, IPagination, IPaginationResponse } from "@/type/pagination";
 import { useGetPaging } from "@/query/use.crud.query";
+import { query } from "@/main";
 
 interface IUseFetchHookProps<Res> {
   fetchMethod: (data : IPagination) => Promise<IPaginationResponse<Res>>;
@@ -20,7 +21,7 @@ export const useFetchHook = <Res>({fetchMethod, queryName} : IUseFetchHookProps<
         elementTotals:0,
         pageTotals:0
     });
-    const {data:newData,isLoading,refetch} = useGetPaging<Res,IPagination>(
+    const {data:newData,isLoading} = useGetPaging<Res,IPagination>(
       queryName ||"fetch/data",
       fetchMethod,
       {page:page-1,size,active,keyword}
@@ -34,7 +35,7 @@ export const useFetchHook = <Res>({fetchMethod, queryName} : IUseFetchHookProps<
 
     useEffect(() =>{
       setPage(1);
-      refetch();
+      query.invalidateQueries({queryKey:[queryName]})
     },[active])
 
     
@@ -53,6 +54,6 @@ export const useFetchHook = <Res>({fetchMethod, queryName} : IUseFetchHookProps<
     if (newValue !== null) setActive(newValue);
   };
     return {
-        data,page,active,handleToggle,keyword,setKeyword,isLoading,setPage,meta,refetch
+        data,page,active,handleToggle,keyword,setKeyword,isLoading,setPage,meta
     }
 }

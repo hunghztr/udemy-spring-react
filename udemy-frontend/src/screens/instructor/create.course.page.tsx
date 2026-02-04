@@ -11,9 +11,10 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useCreateCourse } from "@/hooks/instructor/create.course.hook";
+import { AnimatePresence, motion } from "framer-motion";
+import { stepVariants } from "@/helpers/variants";
 
 export default function CreateCoursePage() {
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ export default function CreateCoursePage() {
       setStep(prev => prev - 1);
     }
   };
+  const direction = step === 2 ? 1 : -1;
 
   return (
     <Box sx={{ maxWidth: 720, mx: "auto", mt: 6 }}>
@@ -79,118 +81,128 @@ export default function CreateCoursePage() {
             {progress}% hoàn thành
           </Typography>
         </Box>
-
-        {/* ================= STEP 1 ================= */}
-        {step === 1 && (
-          <Stack spacing={3}>
-            <Typography fontWeight={600}>
-              Tên khoá học của bạn là gì?
-            </Typography>
-
-            <TextField
-              fullWidth
-              label="Course title"
-              placeholder="Eg: Spring Boot for Beginners"
-              value={title}
-              error={!!saveError}
-              helperText={saveError?.response?.data.message}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-
-            <Stack direction="row" justifyContent="flex-end">
-              <Button
-                variant="contained"
-                disabled={!title.trim()}
-                onClick={() => setStep(2)}
-              >
-                Tiếp
-              </Button>
-            </Stack>
-          </Stack>
-        )}
-
-        {/* ================= STEP 2 ================= */}
-        {step === 2 && (
-          <Stack spacing={3}>
-            <Typography fontWeight={600}>
-              Chọn danh mục cho khoá học của bạn
-            </Typography>
-
-            {/* ===== SEARCH ===== */}
-            <Stack
-              direction="row"
-              alignItems="center"
-              spacing={1}
-              onMouseEnter={() => setSearchOpen(true)}
-              onMouseLeave={() => {
-                if (!search) setSearchOpen(false);
-              }}
-            >
-              <IconButton>
-                <SearchIcon />
-              </IconButton>
-
+            <AnimatePresence mode="wait" custom={direction}>
               <motion.div
-                animate={{
-                  width: searchOpen || !!search ? 260 : 0,
-                  opacity: searchOpen || !!search ? 1 : 0,
-                }}
-                transition={{ type: "spring", stiffness: 260, damping: 22 }}
-                style={{ overflow: "hidden" }}
+                key={step}
+                custom={direction}
+                variants={stepVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
               >
-                <TextField
-                  size="small"
-                  placeholder="Tìm kiếm danh mục..."
-                  value={search}
-                  onFocus={() => setSearchOpen(true)}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
+                {/* ================= STEP 1 ================= */}
+                {step === 1 && (
+                  <Stack spacing={3}>
+                    <Typography fontWeight={600}>
+                      Tên khoá học của bạn là gì?
+                    </Typography>
+
+                    <TextField
+                      fullWidth
+                      label="Course title"
+                      placeholder="Eg: Spring Boot for Beginners"
+                      value={title}
+                      error={!!saveError}
+                      helperText={saveError?.response?.data.message}
+                      onChange={(e) => setTitle(e.target.value)}
+                    />
+
+                    <Stack direction="row" justifyContent="flex-end">
+                      <Button
+                        variant="contained"
+                        disabled={!title.trim()}
+                        onClick={() => setStep(2)}
+                      >
+                        Tiếp
+                      </Button>
+                    </Stack>
+                  </Stack>
+                )}
+
+                {/* ================= STEP 2 ================= */}
+                {step === 2 && (
+                  <Stack spacing={3}>
+                    <Typography fontWeight={600}>
+                      Chọn danh mục cho khoá học của bạn
+                    </Typography>
+
+                    {/* ===== SEARCH ===== */}
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={1}
+                      onMouseEnter={() => setSearchOpen(true)}
+                      onMouseLeave={() => {
+                        if (!search) setSearchOpen(false);
+                      }}
+                    >
+                      <IconButton>
+                        <SearchIcon />
+                      </IconButton>
+
+                      <motion.div
+                        animate={{
+                          width: searchOpen || !!search ? 260 : 0,
+                          opacity: searchOpen || !!search ? 1 : 0,
+                        }}
+                        transition={{ type: "spring", stiffness: 260, damping: 22 }}
+                        style={{ overflow: "hidden" }}
+                      >
+                        <TextField
+                          size="small"
+                          placeholder="Tìm kiếm danh mục..."
+                          value={search}
+                          onFocus={() => setSearchOpen(true)}
+                          onChange={(e) => setSearch(e.target.value)}
+                        />
+                      </motion.div>
+                    </Stack>
+
+                    {/* ===== CATEGORY LIST ===== */}
+                    <Stack direction="row" flexWrap="wrap" gap={1}>
+                      {filteredCategories.map((c) => {
+                        const active = selectedCategories.includes(c.id);
+
+                        return (
+                          <Chip
+                            key={c.id}
+                            label={c.name}
+                            clickable
+                            color={active ? "primary" : "default"}
+                            variant={active ? "filled" : "outlined"}
+                            onClick={() => toggleCategory(c.id)}
+                          />
+                        );
+                      })}
+                    </Stack>
+
+                    {selectedCategories.length > 0 && (
+                      <Typography variant="caption" color="text.secondary">
+                        Đã chọn: {selectedCategories.length} danh mục
+                      </Typography>
+                    )}
+
+                    {/* ACTIONS */}
+                    <Stack direction="row" justifyContent="space-between">
+                      <Button variant="outlined" onClick={handleBack}>
+                        Trở lại
+                      </Button>
+
+                      <Button
+                        variant="contained"
+                        disabled={selectedCategories.length === 0 || isPending}
+                        onClick={async () =>{
+                          await handleFinish();
+                          window.location.reload();
+                        }}
+                      >
+                        {isPending ? "Đang tạo..." : "Tạo khoá học"}
+                      </Button>
+                    </Stack>
+                  </Stack>
+                )}
               </motion.div>
-            </Stack>
-
-            {/* ===== CATEGORY LIST ===== */}
-            <Stack direction="row" flexWrap="wrap" gap={1}>
-              {filteredCategories.map((c) => {
-                const active = selectedCategories.includes(c.id);
-
-                return (
-                  <Chip
-                    key={c.id}
-                    label={c.name}
-                    clickable
-                    color={active ? "primary" : "default"}
-                    variant={active ? "filled" : "outlined"}
-                    onClick={() => toggleCategory(c.id)}
-                  />
-                );
-              })}
-            </Stack>
-
-            {selectedCategories.length > 0 && (
-              <Typography variant="caption" color="text.secondary">
-                Đã chọn: {selectedCategories.length} danh mục
-              </Typography>
-            )}
-
-            {/* ACTIONS */}
-            <Stack direction="row" justifyContent="space-between">
-              <Button variant="outlined" onClick={handleBack}>
-                Trở lại
-              </Button>
-
-              <Button
-                variant="contained"
-                disabled={selectedCategories.length === 0 || isPending}
-                onClick={async () =>{
-                  await handleFinish();
-                  window.location.reload();
-                }}
-              >
-                {isPending ? "Đang tạo..." : "Tạo khoá học"}
-              </Button>
-            </Stack>
-          </Stack>
-        )}
+            </AnimatePresence>
       </Paper>
     </Box>
   );

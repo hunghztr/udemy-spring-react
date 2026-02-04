@@ -1,4 +1,5 @@
 import { useActionHook } from '@/hooks/admin/action.hook';
+import { query } from '@/main';
 import { disableCourse, enableCourse } from '@/query/course/course.query';
 import { useGetById } from '@/query/use.crud.query';
 import { getUserByCourse } from '@/query/user/user.query';
@@ -11,10 +12,9 @@ import { Box, Button, Divider, Paper, Stack, TextField, ToggleButton, ToggleButt
 import { useEffect, useState } from 'react';
 interface Props{
     course:ICourseDetailResponse|null;
-    refetch: () => Promise<any>;
     handleSendNotify: (request : INotification) => void
 }
-export default function PassedCourse({course,refetch,handleSendNotify}:Props) {
+export default function PassedCourse({course,handleSendNotify}:Props) {
     const {data} = useGetById<IUserResponse>('users/get-by-course',getUserByCourse,course?.id||"")
     const [rejectReason, setRejectReason] = useState("");
     const [openReject, setOpenReject] = useState(false);
@@ -52,7 +52,7 @@ export default function PassedCourse({course,refetch,handleSendNotify}:Props) {
       user: { username: data?.username || "" },
     });
 
-    refetch();
+    query.invalidateQueries({queryKey:['notifications/create']});
     showToast("Lưu thành công thông tin");
   };
 

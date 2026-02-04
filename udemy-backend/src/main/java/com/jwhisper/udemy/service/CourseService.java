@@ -22,5 +22,7 @@ public interface CourseService {
     Pagination<CourseProject> getAll(Pageable pageable , boolean isActive,String keyword);
     boolean delete(String id);
     boolean active(String id);
+    boolean deleteByInstructor(String id);
+    boolean activeByInstructor(String id);
 
 }

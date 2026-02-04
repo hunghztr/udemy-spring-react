@@ -1,10 +1,10 @@
+import { query } from "@/main";
 import { createCoupon, deleteCoupon, getCouponsNoPage, updateCoupon } from "@/query/coupon/coupon.query";
 import { useGetById, useSave } from "@/query/use.crud.query";
 import type { ICouponResponse, ICourseDetailResponse } from "@/type/course.module";
 import { useEffect, useState } from "react";
 
-export const useUpdateCoupon = ({course,refetch} : {course:ICourseDetailResponse|null,
-    refetch?: () => Promise<any>}) =>{
+export const useUpdateCoupon = ({course} : {course:ICourseDetailResponse|null}) =>{
     const [openAdd, setOpenAdd] = useState(false);
     const [openCoupons, setOpenCoupons] = useState(false);
     const [coupons, setCoupons] = useState<ICouponResponse[]>([]);
@@ -70,7 +70,7 @@ export const useUpdateCoupon = ({course,refetch} : {course:ICourseDetailResponse
             onSuccess: () => {
             setNewCoupon({ code: "", discount: 0 });
             setOpenAdd(false);
-            refetch?.();
+            query.invalidateQueries({queryKey:["courses/get-by-id"]});
             },
         }
         );
@@ -80,7 +80,7 @@ export const useUpdateCoupon = ({course,refetch} : {course:ICourseDetailResponse
     const handleDeleteCoupon = (id: string) => {
         deleteElement(
         { id, courseId: course?.id || "" },
-        { onSuccess: () => refetch?.() }
+        { onSuccess: () => query.invalidateQueries({queryKey:["courses/get-by-id"]}) }
         );
     };
 /** ===== EDIT ===== */
@@ -108,7 +108,7 @@ export const useUpdateCoupon = ({course,refetch} : {course:ICourseDetailResponse
         },
         {
             onSuccess: () => {
-            refetch?.();
+            query.invalidateQueries({queryKey:["courses/get-by-id"]});
             cancelEditCoupon();
             },
         }

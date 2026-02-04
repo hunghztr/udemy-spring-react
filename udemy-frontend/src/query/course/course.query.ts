@@ -6,13 +6,37 @@ import { activate, create, getAll, getById, update } from "../api.crud.query";
 
 
 export const getCoursesByAuthor = async ({
-        page,size,active,keyword,filter
-} : IPagination) =>{
-    const res : IApiResponse<IPaginationResponse<ICourseResponse>> =
-     await api
-     .get(`/instructor/courses/get-courses-by-author?filter=name~'${keyword}' and isActive:${active}&sort=createdAt,${filter === 'newest'? 'desc':'asc'}&page=${page}&size=${size}`)
-     return res.data;
-}
+  page,
+  size,
+  active,
+  keyword,
+  filter,
+}: IPagination) => {
+  const params: any = {
+    page,
+    size,
+    sort: `createdAt,${filter === "newest" ? "desc" : "asc"}`,
+  };
+  // filter động
+  const filters: string[] = [];
+
+  if (keyword) {
+    filters.push(`name~'${keyword}'`);
+  }
+  if (active !== undefined) {
+    filters.push(`isActive:${active}`);
+  }
+  if (filters.length > 0) {
+    params.filter = filters.join(" and ");
+  }
+  const res: IApiResponse<IPaginationResponse<ICourseResponse>> =
+    await api.get(
+      "/instructor/courses/get-courses-by-author",
+      { params }
+    );
+  return res.data;
+};
+
 
 export const createCourse = (data : ICourse) =>{
     return create<ICourse>({
@@ -90,6 +114,18 @@ export const updatePrice = ({courseId,data} : {courseId:string;data:ICourse}) =>
     return update<ICourse>({
         url: `/instructor/courses/update-price`,
         id:courseId,data
+    })
+}
+export const disableCourseByIns = (id : string) =>{
+    return activate({
+    url:"/instructor/courses/delete",
+    id
+    })
+}
+export const enableCourseByIns = (id : string) =>{
+    return activate({
+    url:"/instructor/courses/active",
+    id
     })
 }
 // for admin

@@ -12,12 +12,13 @@ import PaginationComponent from "@/components/admin/layout/pagination.component"
 import CategoryCreateDialog from "@/components/admin/category/category.create.dialog";
 import CategoryUpdateDialog from "@/components/admin/category/category.update.dialog";
 import { disableCategory, enableCategory, getAllCategories } from "@/query/category/category.query";
+import { query } from "@/main";
 
 
 export default function CategoryManagementPage() {
  // fetch hook
    const {data,page,active,handleToggle,keyword,setKeyword
-     ,isLoading,setPage,meta,refetch
+     ,isLoading,setPage,meta
    } = useFetchHook<ICategoryResponse>({fetchMethod:getAllCategories,queryName:"categories/fetch-all"});
    // action hook
    const {handleDisable,handleEnable} = 
@@ -129,7 +130,7 @@ export default function CategoryManagementPage() {
                                   color="warning"
                                   onClick={async () => {
                                     await handleDisable(c.id)
-                                    refetch();
+                                    query.invalidateQueries({queryKey:["categories/fetch-all"]})
                                   }}
                                 >
                                   <BlockIcon />
@@ -144,7 +145,7 @@ export default function CategoryManagementPage() {
                                   color="success"
                                   onClick={async () => {
                                     await handleEnable(c.id)
-                                    refetch();
+                                    query.invalidateQueries({queryKey:["categories/fetch-all"]})
                                   }}
                                 >
                                   <CheckCircleIcon />

@@ -15,12 +15,13 @@ import UserCreateDialog from "@/components/admin/user/user.create.dialog";
 import UserUpdateDialog from "@/components/admin/user/user.update.dialog";
 import { disableUser, enableUser, getAllUsers } from "@/query/user/user.query";
 import { useActionHook } from "@/hooks/admin/action.hook";
+import { query } from "@/main";
 
 
 export default function UserManagement() {
   // fetch hook
   const {data,page,active,handleToggle,keyword,setKeyword
-    ,isLoading,setPage,meta,refetch
+    ,isLoading,setPage,meta
   } = useFetchHook<IUserResponse>({fetchMethod:getAllUsers,queryName:"users/fetch-all"});
   // action hook
   const {handleDisable,handleEnable,isPendingDisable,isPendingEnable} = 
@@ -141,7 +142,7 @@ export default function UserManagement() {
                                   disabled={user.roleName === "ADMIN" || isPendingDisable}
                                   onClick={async () => {
                                     await handleDisable(user.id)
-                                    refetch();
+                                    query.invalidateQueries({queryKey:["users/fetch-all"]})
                                   }}
                                 >
                                   <BlockIcon />
@@ -157,7 +158,7 @@ export default function UserManagement() {
                                   disabled={isPendingEnable}
                                   onClick={async () => {
                                     await handleEnable(user.id)
-                                    refetch();
+                                    query.invalidateQueries({queryKey:["users/fetch-all"]})
                                   }}
                                 >
                                   <CheckCircleIcon />

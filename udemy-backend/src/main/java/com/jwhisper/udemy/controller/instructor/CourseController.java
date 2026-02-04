@@ -149,4 +149,18 @@ public class CourseController {
         boolean isUpdated = this.courseService.isPriceUpdated(request);
         return ResponseEntity.ok(isUpdated);
     }
+    @PostMapping("/delete/{id}")
+    @ApiMessage("Xoá mềm khoá học thành công")
+    public ResponseEntity<?> delete(@PathVariable("id") String id) {
+        boolean isDeleted = this.courseService.deleteByInstructor(id);
+        return ResponseEntity.ok(isDeleted);
+    }
+    @PostMapping("/active/{id}")
+    @ApiMessage("Kích hoạt khoá học thành công")
+    public ResponseEntity<?> activate(@PathVariable("id") String id) {
+        boolean isDeleted = this.courseService.activeByInstructor(id);
+        return ResponseEntity.ok(isDeleted);
+    }
+    
+    
 }

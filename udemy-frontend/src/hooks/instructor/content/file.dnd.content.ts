@@ -1,3 +1,4 @@
+import { query } from "@/main";
 import { reorderLectures, updateLectureVideo } from "@/query/course/course.query";
 import { useCloudinaryChunkUpload, useCloudinaryDestroy, useCloudinaryDestroyAll, useUploadSignature, useUploadSignatureDestroy } from "@/query/file/use.file.query";
 import { useSave } from "@/query/use.crud.query";
@@ -9,7 +10,7 @@ import { showToast } from "@/utils/toast";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { useRef, useState } from "react";
 
-export const useFileDnd = (course:ICourseDetailResponse|null,refetch:() => Promise<any>,
+export const useFileDnd = (course:ICourseDetailResponse|null,
 setSections:React.Dispatch<React.SetStateAction<ISectionResponse[]>>) =>{
     //state client 
     const {mutateAsync:reorderLecture} = useSave<ISectionResponse,
@@ -99,7 +100,7 @@ setSections:React.Dispatch<React.SetStateAction<ISectionResponse[]>>) =>{
         sectionId,data:result.map(l => l.id).filter((id): id is string => !!id)
         },{
         onSuccess:() =>{
-            refetch();
+            query.invalidateQueries({queryKey:["courses/get-by-id"]});
         }
         })
     };

@@ -20,12 +20,11 @@ import Coupon from "./coupon";
 
 interface Props {
   course: ICourseDetailResponse | null;
-  refetch?: () => Promise<any>;
 }
 
-export default function UpdatePricing({ course, refetch }: Props) {
+export default function UpdatePricing({ course }: Props) {
   const {price,setPrice,isPriceUpdated,handlePriceSave
-    } = useUpdatePricing({course,refetch});
+    } = useUpdatePricing({course});
   
   return (
     <Box>
@@ -63,7 +62,7 @@ export default function UpdatePricing({ course, refetch }: Props) {
           <Divider />
 
           {/* ===== COUPONS ===== */}
-          <Coupon course={course} refetch={refetch} />
+          <Coupon course={course} />
         </Stack>
       </Paper>
     </Box>

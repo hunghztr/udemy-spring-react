@@ -146,11 +146,8 @@ public class CourseServiceImpl implements CourseService {
     }
     @Override
     public boolean delete(String id)  {
-        var optional = this.courseRepository.findById(id);
-        if(!optional.isPresent() || !optional.get().getIsActive()){
-            throw new ErrorException("Khoá học không tồn tại hoặc đã bị vô hiệu hoá");
-        }
-        Course course = optional.get();
+        Course course = this.securityHelper.checkCourseUser(id);
+        if(!course.getIsActive()) throw new ErrorException("Khoá học đã ngừng hoạt động");
         course.setIsActive(false);
         course.setStatus(CourseStatus.REJECTED);
         this.courseRepository.save(course);
@@ -159,13 +156,30 @@ public class CourseServiceImpl implements CourseService {
 
   @Override
   public boolean active(String id)  {
-    var optional = this.courseRepository.findById(id);
-    if(!optional.isPresent() || optional.get().getIsActive()){
-        throw new ErrorException("Khoá học không tồn tại hoặc đã chưa bị vô hiệu hoá");
-    }
-    Course course = optional.get();
+    Course course = this.securityHelper.checkCourseUser(id);
+    if(course.getIsActive()) throw new ErrorException("Khoá học đã được kích hoạt");
     course.setIsActive(true);
     course.setStatus(CourseStatus.PUBLISHED);
+    this.courseRepository.save(course);
+    return true;
+  }
+  @Override
+  public boolean deleteByInstructor(String id) {
+    Course course = this.securityHelper.checkCourseUser(id);
+    if(!course.getIsActive()) throw new ErrorException("Khoá học đã ngừng hoạt động");
+    if(course.getStatus() == CourseStatus.REJECTED ||
+        course.getStatus() == CourseStatus.PENDING) throw new ErrorException("Khoá học chưa được admin phê duyệt"); 
+    course.setIsActive(false);
+    this.courseRepository.save(course);
+    return true;
+  }
+  @Override
+  public boolean activeByInstructor(String id) {
+    Course course = this.securityHelper.checkCourseUser(id);
+    if(course.getIsActive()) throw new ErrorException("Khoá học đã được kích hoạt");
+    if(course.getStatus() == CourseStatus.REJECTED ||
+        course.getStatus() == CourseStatus.PENDING) throw new ErrorException("Khoá học chưa được admin phê duyệt"); 
+    course.setIsActive(true);
     this.courseRepository.save(course);
     return true;
   }
