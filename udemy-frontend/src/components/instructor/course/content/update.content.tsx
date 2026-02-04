@@ -27,7 +27,6 @@ export default function UpdateContent({ course,refetch }: Props) {
   const theme = useTheme();
   // fetch hook
   const {collapsed,handleToggleColapse,sections,setSections} = useFetchContent(course);
-  console.log(sections)
   // upload drag hook
   const {handleDragLectureEnd,isUploadingCloud,setUploadingLectureId,fileInputRef,uploadingLectureId,
         percent,uploadVideo,handleDestroy,handleDestroyAll,isLoading} = useFileDnd(course,refetch,setSections)
@@ -42,66 +41,66 @@ export default function UpdateContent({ course,refetch }: Props) {
       </Stack>
       {/* SECTIONS */}
       <Stack spacing={3}>
-  <AnimatePresence>
-    {sections?.map((section) => (
-      <motion.div
-        key={section.id}
-        layout
-        initial={{ opacity: 0, height: 0 }}
-        animate={{ opacity: 1, height: "auto" }}
-        exit={{ opacity: 0, height: 0, scale: 0.97 }}
-        transition={{ duration: 0.25, ease: "easeInOut" }}
-        style={{ overflow: "hidden" }}
-      >
-        <Paper
-          sx={{
-            p: 3,
-            borderRadius: 2,
-            border: `1px solid ${theme.palette.divider}`,
-          }}
-        >
+        <AnimatePresence>
+          {sections?.map((section) => (
+            <motion.div
+              key={section.id}
+              layout
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0, scale: 0.97 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+              style={{ overflow: "hidden" }}
+            >
+              <Paper
+                sx={{
+                  p: 3,
+                  borderRadius: 2,
+                  border: `1px solid ${theme.palette.divider}`,
+                }}
+              >
 
-            {/* SECTION HEADER */}
-            <SectionTitle theme={theme}  collapsed={collapsed} 
-              handleToggleColapse={handleToggleColapse} course={course} section={section} 
-                setSections={setSections} handleDestroyAll={handleDestroyAll}/>
+                  {/* SECTION HEADER */}
+                  <SectionTitle theme={theme}  collapsed={collapsed} 
+                    handleToggleColapse={handleToggleColapse} course={course} section={section} 
+                      setSections={setSections} handleDestroyAll={handleDestroyAll}/>
 
-            <AnimatePresence initial={false}>
-              {!collapsed[section.id || ""] && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.25, ease: "easeInOut" }}
-                  style={{ overflow: "hidden" }}
-                >
-                  
-                  <DndContext
-                    collisionDetection={closestCenter}
-                    onDragEnd={(e) => handleDragLectureEnd(e, section.id || "")}
-                  >
-                    <SortableContext
-                      items={(section.lectures ?? []).map((l) => l.id || "")}
-                      strategy={verticalListSortingStrategy}
-                    >
-                      {/* LECTURES */}
-                      <LectureList section={section} theme={theme} 
-                            isUploadingCloud={isUploadingCloud} setUploadingLectureId={setUploadingLectureId}
-                              fileInputRef={fileInputRef}  uploadingLectureId={uploadingLectureId}
-                                  percent={percent} course={course} setSections={setSections} handleDestroy={handleDestroy}
-                       />
-                    </SortableContext>
-                  </DndContext>
-                  {/* ADD LECTURE */}
-                  <LectureAddForm course={course} setSections={setSections} section={section} />
-                </motion.div>
-              )}
-            </AnimatePresence>
-                  </Paper>
-      </motion.div>
-    ))}
-  </AnimatePresence>
-</Stack>
+                  <AnimatePresence initial={false}>
+                    {!collapsed[section.id || ""] && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.25, ease: "easeInOut" }}
+                        style={{ overflow: "hidden" }}
+                      >
+                        
+                        <DndContext
+                          collisionDetection={closestCenter}
+                          onDragEnd={(e) => handleDragLectureEnd(e, section.id || "")}
+                        >
+                          <SortableContext
+                            items={(section.lectures ?? []).map((l) => l.id || "")}
+                            strategy={verticalListSortingStrategy}
+                          >
+                            {/* LECTURES */}
+                            <LectureList section={section} theme={theme} 
+                                  isUploadingCloud={isUploadingCloud} setUploadingLectureId={setUploadingLectureId}
+                                    fileInputRef={fileInputRef}  uploadingLectureId={uploadingLectureId}
+                                        percent={percent} course={course} setSections={setSections} handleDestroy={handleDestroy}
+                            />
+                          </SortableContext>
+                        </DndContext>
+                        {/* ADD LECTURE */}
+                        <LectureAddForm course={course} setSections={setSections} section={section} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                        </Paper>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </Stack>
 
 
       {/* ADD SECTION */}

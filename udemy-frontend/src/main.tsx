@@ -27,8 +27,8 @@ import ProfileInstructorPage from "./screens/instructor/profile.instructor.page.
 import CourseInstructorPage from "./screens/instructor/course.instructor.page.tsx";
 import CreateCoursePage from "./screens/instructor/create.course.page.tsx";
 import EditCoursePage from "./screens/instructor/edit.course.page.tsx";
-import Demo from "./screens/demo.sse.page.tsx";
-import AdminNotificationPage from "./screens/admin/admin.notification.page.tsx";
+import AdminNotifyPage from "./screens/admin/admin.notify.page.tsx";
+import InstructorNotifyPage from "./screens/instructor/instructor.notify.page.tsx";
 
 const router = createBrowserRouter([
   {
@@ -51,10 +51,6 @@ const router = createBrowserRouter([
   {
     element: <OAuth2Callback />,
     path: "/oauth2/callback",
-  },
-  {
-    element:<Demo />,
-    path: "/test"
   },
 
   // protected
@@ -82,7 +78,7 @@ const router = createBrowserRouter([
           },
           {
             path: "/admin/notifications",
-            element: <AdminNotificationPage />
+            element: <AdminNotifyPage />
           }
         ],
       },
@@ -104,6 +100,10 @@ const router = createBrowserRouter([
           {
             path: "/instructor/edit-course/:id",
             element: <EditCoursePage />
+          },
+          {
+            path: "/instructor/notification",
+            element: <InstructorNotifyPage />
           }
         ]
       }

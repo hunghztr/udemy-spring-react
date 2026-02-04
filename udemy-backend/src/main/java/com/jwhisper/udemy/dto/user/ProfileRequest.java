@@ -11,5 +11,5 @@ public class ProfileRequest {
     String fullname;
     String description;
     String avatarPath;
-
+    String roleName;
 }

@@ -9,22 +9,18 @@ import {
   MenuItem,
   Divider,
   Avatar,
-  Badge,
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
 import ExploreIcon from "@mui/icons-material/Explore";
-
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-
 import { Link, useNavigate } from "react-router-dom";
-
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { persistor } from "@/redux/store";
 import { logOut } from "@/redux/thunks/auth.thunk";
 import { showToast } from "@/utils/toast";
 import { query } from "@/main";
+import NotifyDropdown from "@/components/notification/notify.dropdown";
 
 export default function Header() {
   const user = useAppSelector((state) => state.currentUser);
@@ -144,8 +140,13 @@ export default function Header() {
           }}
         >
           <Button
-            component={Link}
-            to="/instructor/course"
+            onClick={() => {
+              if(user.roleName === "INSTRUCTOR") navigate("/instructor/course")
+              if(user.roleName === "USER") {
+                showToast("Vui lòng cập nhật hồ sơ của bạn")
+                navigate("/instructor/profile")
+              } 
+            }}
             color="inherit"
             sx={{
               display: { xs: "none", md: "inline-flex" },
@@ -161,12 +162,7 @@ export default function Header() {
           {user.id ? (
             <>
               {/* NOTIFICATION */}
-              <IconButton color="inherit" sx={headerTextHover}>
-                <Badge badgeContent={0} color="error">
-                  <NotificationsNoneIcon />
-                </Badge>
-              </IconButton>
-
+              <NotifyDropdown />
               {/* AVATAR */}
               <IconButton
                 sx={{ p: 0 }}

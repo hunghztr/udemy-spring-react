@@ -21,5 +21,6 @@ public interface UserRepository extends JpaRepository<User, String> {
   boolean existsByUsernameAndIdNot(String username,String id);
   UserDetail findProjectByUsername(String username);
   UserProject findProjectById(String id);
+  UserProject findProjectByCourses_Id(String courseId);
   Page<UserProject> findAllByIsActiveAndUsernameContaining(Boolean isActive,String username, Pageable pageable);
 }

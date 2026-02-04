@@ -1,25 +1,17 @@
-import { useActionHook } from "@/hooks/admin/action.hook";
-import { disableCourse, enableCourse } from "@/query/course/course.query";
+import PassedCourse from "@/components/admin/course/passed.course";
 import { createNotification } from "@/query/notification/notification.query";
 import { useSave } from "@/query/use.crud.query";
 import { useAppSelector } from "@/redux/hook";
-import type { ICourseDetailResponse, Status } from "@/type/course.module";
+import type { ICourseDetailResponse } from "@/type/course.module";
 import type { INotification } from "@/type/notification.module";
-import { showToast } from "@/utils/toast";
 import {
   Box,
   Button,
-  Divider,
   List,
   ListItemButton,
   ListItemText,
-  Paper,
-  Stack,
-  ToggleButton,
-  ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface IProps {
@@ -39,24 +31,10 @@ const tabs = [
 export default function CourseSidebar({ activeTab, setActiveTab,course,refetch }: IProps) {
   const {mutate} = useSave<boolean,INotification>('notifications/create',createNotification);
   const {roleName,username} = useAppSelector(state => state.currentUser);
-    const [adminStatus, setAdminStatus] = useState<Status | null>(null);
     const navigate = useNavigate();
-    const {handleDisable,handleEnable,isPendingDisable,isPendingEnable} = 
-          useActionHook({mutationDisable:"courses/disable",mutationEnable:"courses/enable",
-            disableMethod:disableCourse,enableMethod:enableCourse
-          });
-    useEffect(() =>{
-      if(course) setAdminStatus(course.status);
-    },[course])
-    const handleSendNotify = () =>{
-      mutate({
-        title:"Phê duyệt khoá học",
-        message:`${username} đã chỉnh sửa khoá học, vui lòng phê duyệt khoá học`,
-        url: `/instructor/edit-course/${course?.id||""}`,
-        user:{
-          username:"admin@gmail.com"
-        }
-      })
+    
+    const handleSendNotify = (request : INotification) =>{
+      mutate(request)
     }
   return (
     <Box sx={{ width: 240 }}>
@@ -112,7 +90,15 @@ export default function CourseSidebar({ activeTab, setActiveTab,course,refetch }
               fullWidth
               variant="outlined"
               onClick={() =>{
-                handleSendNotify();
+                const request = {
+                  title:"Phê duyệt khoá học",
+                  message:`${username} đã chỉnh sửa khoá học, vui lòng phê duyệt khoá học`,
+                  url: `/instructor/edit-course/${course?.id||""}`,
+                  user:{
+                    username:"admin@gmail.com"
+                  }
+                }
+                handleSendNotify(request);
                  navigate(-1)
                 }
               }
@@ -128,49 +114,7 @@ export default function CourseSidebar({ activeTab, setActiveTab,course,refetch }
         )}
 
         {roleName === "ADMIN" && course && (
-              <Box mb={3}>
-                <Paper
-                  variant="outlined"
-                  sx={{
-                    p: 2,
-                    borderRadius: 2,
-                    bgcolor: "rgba(0,0,0,0.02)",
-                  }}
-                >
-                  <Stack spacing={2}>
-                    <ToggleButtonGroup
-                      fullWidth
-                      exclusive
-                      value={adminStatus}
-                      onChange={(_, value) => {
-                        if (value) setAdminStatus(value);
-                      }}
-                    >
-                      <ToggleButton value="PUBLISHED" color="success">
-                        Publish
-                      </ToggleButton>
-
-                      <ToggleButton value="REJECTED" color="error">
-                        Reject
-                      </ToggleButton>
-                    </ToggleButtonGroup>
-
-                    <Button
-                      variant="contained"
-                      disabled={!adminStatus || isPendingDisable || isPendingEnable}
-                      onClick={async () => {
-                        if(adminStatus === "PUBLISHED") handleEnable(course.id)
-                        if(adminStatus === "REJECTED") handleDisable(course.id);
-                        refetch();
-                        showToast("Lưu thành công")
-                      }}
-                    >
-                      Lưu trạng thái
-                    </Button>
-                  </Stack>
-                </Paper>
-                <Divider sx={{ my: 3 }} />
-              </Box>
+              <PassedCourse course={course} refetch={refetch} handleSendNotify={handleSendNotify} />
           )}
       </List>
     </Box>

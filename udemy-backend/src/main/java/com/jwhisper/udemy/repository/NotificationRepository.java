@@ -10,4 +10,6 @@ import com.jwhisper.udemy.model.Notification;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification,String> {
     Slice<Notification> findAllByUser_Id(String userId,Pageable pageable);
+    long countByUser_IdAndIsReadFalse(String userId);
+    void deleteByIdAndUser_Id(String id , String userId);
 }

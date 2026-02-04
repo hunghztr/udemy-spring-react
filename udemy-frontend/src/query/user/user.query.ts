@@ -46,3 +46,10 @@ export const enableUser = (id : string) =>{
     id
     })
 }
+
+export const getUserByCourse = (courseId : string) =>{
+    return getById<IUserResponse>({
+        url:`/admin/users/get-by-course`,
+        id:courseId
+    })
+}

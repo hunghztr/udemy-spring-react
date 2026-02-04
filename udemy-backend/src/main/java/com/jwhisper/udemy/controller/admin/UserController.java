@@ -64,7 +64,7 @@ public class UserController {
         return ResponseEntity.ok().body(isUpdated);
     }
     @PostMapping("/delete/{id}")
-    @ApiMessage("Xoá người dùng thành công")
+    @ApiMessage("Xoá mềm người dùng thành công")
     public ResponseEntity<?> delete(@PathVariable("id") String id)  {
         boolean isDeleted = this.userService.delete(id);
         return ResponseEntity.ok().body(isDeleted);
@@ -75,5 +75,10 @@ public class UserController {
         boolean isActivated = this.userService.active(id);
         return ResponseEntity.ok().body(isActivated);
     }
-    
+    @GetMapping("/get-by-course/{courseId}")
+    @ApiMessage("Lấy người dùng thành công")
+    public ResponseEntity<?> getUser(@PathVariable("courseId") String courseId) {
+        UserProject userProject = this.userService.getByCourseId(courseId);
+        return ResponseEntity.ok(userProject);
+    }
 }

@@ -1,10 +1,17 @@
 import { Outlet } from "react-router-dom";
 import { Box } from "@mui/material";
 import InstructorSidebar from "./instructor.sidebar";
+import { useEffect } from "react";
+import { useAppDispatch } from "@/redux/hook";
+import { countNew } from "@/redux/thunks/notification.thunk";
 
 const SIDEBAR_WIDTH = 260;
 
 export default function InstructorLayout() {
+  const dispatch = useAppDispatch()
+  useEffect(() =>{
+      dispatch(countNew());
+    },[dispatch])
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
       {/* SIDEBAR */}

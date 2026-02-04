@@ -18,5 +18,6 @@ export interface IProfile{
     id?: string,
     fullname: string,
     description: string,
-    avatarPath: string
+    avatarPath: string,
+    roleName? : string
 }

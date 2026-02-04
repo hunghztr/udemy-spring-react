@@ -23,7 +23,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequestMapping("/api/v1/admin/courses")
 public class AdminCourseController {
     private final CourseService courseService;
-    public AdminCourseController(CourseService courseService){
+    public AdminCourseController(CourseService courseService
+    ){
         this.courseService = courseService;
     }
     @GetMapping()
@@ -37,7 +38,7 @@ public class AdminCourseController {
     }
     
     @PostMapping("/delete/{id}")
-    @ApiMessage("Xoá khoá học thành công")
+    @ApiMessage("Xoá mềm khoá học thành công")
     public ResponseEntity<?> delete(@PathVariable("id") String id)  {
         boolean isDeleted = this.courseService.delete(id);
         return ResponseEntity.ok().body(isDeleted);
@@ -48,5 +49,6 @@ public class AdminCourseController {
         boolean isActivated = this.courseService.active(id);
         return ResponseEntity.ok().body(isActivated);
     }
-
+    
+    
 }

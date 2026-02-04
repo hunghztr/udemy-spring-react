@@ -3,7 +3,6 @@ import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined";
-import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined"; // ✅ PROFILE ICON
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 
@@ -14,14 +13,15 @@ import { query } from "@/main";
 import { persistor } from "@/redux/store";
 import { logOut } from "@/redux/thunks/auth.thunk";
 import { showToast } from "@/utils/toast";
-import { useAppDispatch } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import NotifyIcon from "@/components/notification/notify.icon";
 
 const menuItems = [
   { label: "Courses", icon: <SchoolOutlinedIcon />, path: "/instructor/course" },
   { label: "Communication", icon: <ChatBubbleOutlineOutlinedIcon />, path: "/instructor/communication" },
   { label: "Performance", icon: <BarChartOutlinedIcon />, path: "/instructor/performance" },
   { label: "Tools", icon: <BuildOutlinedIcon />, path: "/instructor/tools" },
-  { label: "Notification", icon: <NotificationsNoneOutlinedIcon />, path: "/instructor/notification" },
+  { label: "Notification", icon: <NotifyIcon />, path: "/instructor/notification" },
   { label: "Profile", icon: <PersonOutlineOutlinedIcon />, path: "/instructor/profile" },
 ];
 
@@ -33,6 +33,7 @@ export default function InstructorSidebar() {
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const user = useAppSelector(state => state.currentUser)
   return (
     <MotionBox
       onMouseEnter={() => setCollapsed(false)}
@@ -111,9 +112,16 @@ export default function InstructorSidebar() {
           const active = location.pathname.startsWith(item.path);
           return (
             <Stack
+            onClick={() =>{
+              if(item.path.includes("/instructor/course") && user.roleName !== "INSTRUCTOR" 
+              && user.roleName !== "ADMIN"){
+                  showToast("Vui lòng cập nhật hồ sơ của bạn")
+                  navigate("/instructor/profile");
+              }else{
+                navigate(item.path)
+              }
+            }}
               key={item.label}
-              component={Link}
-              to={item.path}
               direction="row"
               alignItems="center"
               spacing={2}

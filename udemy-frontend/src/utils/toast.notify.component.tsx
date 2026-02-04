@@ -1,4 +1,4 @@
-import { Box, Typography, Tooltip, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
@@ -53,8 +53,10 @@ export default function ToastNotify({
 
         transition: "all 0.2s ease",
         "&:hover": {
-          backgroundColor: theme.palette.action.hover,
+          boxShadow:
+            "0px 6px 18px rgba(0,0,0,0.12), 0px 3px 6px rgba(0,0,0,0.08)",
         },
+
       }}
     >
       {/* Icon */}
@@ -69,7 +71,6 @@ export default function ToastNotify({
       {/* Content */}
       <Box flex={1}>
         {/* Title */}
-        <Tooltip title={title} arrow placement="top-start">
           <Typography
             fontSize={14}
             fontWeight={600}
@@ -78,24 +79,21 @@ export default function ToastNotify({
           >
             {title}
           </Typography>
-        </Tooltip>
 
-        {/* Message */}
-        <Tooltip title={message} arrow placement="top-start">
-          <Typography
-            fontSize={13}
-            color="text.secondary"
-            sx={{
-              maxWidth: 220,
-              overflow: "hidden",
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-            }}
-          >
-            {message}
-          </Typography>
-        </Tooltip>
+        {/* Message*/}
+        <Typography
+          fontSize={13}
+          color="text.secondary"
+          sx={{
+            maxWidth: 220,
+            overflow: "hidden",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+          }}
+        >
+          {message}
+        </Typography>
       </Box>
 
       {/* Link icon */}

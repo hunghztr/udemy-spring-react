@@ -18,4 +18,5 @@ export interface INotification{
 export interface NotificationSlice {
   items: INotificationResponse[];
   hasNext: boolean;
+  unRead: number;
 }

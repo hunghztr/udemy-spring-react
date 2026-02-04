@@ -20,7 +20,7 @@ export const useProfileFormHook = () => {
   const uploadPercent = useAppSelector(
     (state) => state.fileProgress.uploadPercent
   );
-
+  const [role,setRole] = useState<string>("USER")
   const [fullname, setFullname] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
   const [avatarPath, setAvatarPath] = useState<string | null>(null);
@@ -49,6 +49,7 @@ export const useProfileFormHook = () => {
   useEffect(() => {
     if (user?.fullname) setFullname(user.fullname);
     if (user?.avatarPath) setPreview(user.avatarPath);
+    if(user?.roleName) setRole(user.roleName);
   }, [user]);
 
   // handle upload avatar mới
@@ -87,6 +88,7 @@ export const useProfileFormHook = () => {
         fullname,
         avatarPath: avatarPath || user.avatarPath,
         description,
+        roleName:role
       },
       {
         onSuccess: async () => {
@@ -113,5 +115,6 @@ export const useProfileFormHook = () => {
     isFocused,
     setIsFocused,
     isUploadingProfile,
+    role,setRole
   };
 };

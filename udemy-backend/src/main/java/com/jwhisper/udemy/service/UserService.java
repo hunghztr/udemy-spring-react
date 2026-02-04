@@ -10,11 +10,12 @@ import com.jwhisper.udemy.projection.user.UserProject;
 
 public interface UserService {
   User findOriginByUsername(String username);
-  Pagination<UserProject> getAll(Pageable pageable,boolean isActive,String keyword) ;
-  boolean create(UserRequest user) ;
-  boolean update(UserRequest user) ;
-  boolean delete(String id) ;
-  boolean active(String id) ;
-  UserProject get(String id) ;
-  boolean updateProfile(ProfileRequest request) ;
+  Pagination<UserProject> getAll(Pageable pageable,boolean isActive,String keyword);
+  boolean create(UserRequest user);
+  boolean update(UserRequest user);
+  boolean delete(String id);
+  boolean active(String id);
+  UserProject get(String id);
+  UserProject getByCourseId(String courseId);
+  boolean updateProfile(ProfileRequest request);
 }

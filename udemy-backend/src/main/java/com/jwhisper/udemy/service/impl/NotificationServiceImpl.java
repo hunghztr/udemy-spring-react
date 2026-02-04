@@ -16,6 +16,7 @@ import com.jwhisper.udemy.repository.UserRepository;
 import com.jwhisper.udemy.security.SecurityHelper;
 import com.jwhisper.udemy.service.NotificationService;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -67,6 +68,22 @@ public class NotificationServiceImpl  implements NotificationService{
         if(notification.isRead()) throw new ErrorException("Thông báo này đã đọc rồi");
         notification.setRead(true);
         this.notificationRepository.save(notification);
+        return true;
+    }
+    @Override
+    public long countNew() {
+        String username = this.securityHelper.getCurrentUsername();
+        var user = this.userRepository.findProjectByUsername(username);
+        if(user==null) throw new ErrorException("Người dùng không tồn tại");
+        return this.notificationRepository.countByUser_IdAndIsReadFalse(user.getId());
+    }
+    @Override
+    @Transactional
+    public boolean delete(String id) {
+        String username = this.securityHelper.getCurrentUsername();
+        var user = this.userRepository.findProjectByUsername(username);
+        if(user == null) throw new ErrorException("Người dùng không tồn tại");
+        this.notificationRepository.deleteByIdAndUser_Id(id, user.getId());
         return true;
     }
     

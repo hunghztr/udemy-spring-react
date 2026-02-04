@@ -66,7 +66,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryProjection);
     }
     @PostMapping("/delete/{id}")
-    @ApiMessage("Xoá danh mục thành công")
+    @ApiMessage("Xoá mềm danh mục thành công")
     public ResponseEntity<?> delete(@PathVariable("id") String id)  {
         boolean isDeleted = this.categoryService.delete(id);
         return ResponseEntity.ok(isDeleted);

@@ -11,8 +11,10 @@ import com.jwhisper.udemy.dto.user.ProfileRequest;
 import com.jwhisper.udemy.dto.user.UserRequest;
 import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.helper.mapper.UserMapper;
+import com.jwhisper.udemy.model.Role;
 import com.jwhisper.udemy.model.User;
 import com.jwhisper.udemy.projection.user.UserProject;
+import com.jwhisper.udemy.repository.RoleRepository;
 import com.jwhisper.udemy.repository.UserRepository;
 import com.jwhisper.udemy.service.UserService;
 
@@ -23,11 +25,13 @@ import lombok.extern.slf4j.Slf4j;
 public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
+  private final RoleRepository roleRepository;
   public UserServiceImpl(UserRepository userRepository,
-      UserMapper userMapper
+      UserMapper userMapper,RoleRepository roleRepository
   ) {
     this.userRepository = userRepository;
     this.userMapper = userMapper;
+    this.roleRepository = roleRepository;
   }
 
   @Override
@@ -117,13 +121,22 @@ public class UserServiceImpl implements UserService {
       throw new ErrorException("Người dùng không tồn tại hoặc đã bị vô hiệu hoá");
     }
     User selectedUser = optionalUser.get();
-      selectedUser.setFullname(request.getFullname());
-      selectedUser.setDescription(request.getDescription());
-      selectedUser.setAvatarPath(request.getAvatarPath());
-      this.userRepository.save(selectedUser);
-      return true;
+    if(request.getRoleName() == "ADMIN") throw new ErrorException("Không thể đổi role");
+    Role role = this.roleRepository.findByName(request.getRoleName());
+    if(role == null) throw new ErrorException("Vai trò không tồn tại");
+    selectedUser.setRole(role);
+    selectedUser.setFullname(request.getFullname());
+    selectedUser.setDescription(request.getDescription());
+    selectedUser.setAvatarPath(request.getAvatarPath());
+    this.userRepository.save(selectedUser);
+    return true;
   }
 
-  
+  @Override
+  public UserProject getByCourseId(String courseId) {
+      UserProject userProject = this.userRepository.findProjectByCourses_Id(courseId);
+      if(userProject == null) throw new ErrorException("Người dùng không tồn tại với khoá học này");
+      return userProject;
+  }
 
 }

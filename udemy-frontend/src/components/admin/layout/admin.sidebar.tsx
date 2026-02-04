@@ -12,10 +12,10 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import { useTheme } from "@mui/material/styles";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { showToast } from "@/utils/toast";
 import { logOut } from "@/redux/thunks/auth.thunk";
-import NotificationBadge from "@/components/notification/badge";
+import NotifyIcon from "@/components/notification/notify.icon";
 
 const SIDEBAR_WIDTH = 240;
 
@@ -25,8 +25,6 @@ export default function AdminSidebar() {
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const roleName = useAppSelector(state => state.currentUser.roleName);
-  const {items} = useAppSelector(state => state.notifications);
-  const unReadCount = useMemo(() =>  items.filter(i => !i.read).length,[items]);
   useEffect(() =>{
     if(roleName === '') {
         navigate("/auth")
@@ -116,8 +114,7 @@ export default function AdminSidebar() {
           sx={menuItemStyle}
         >
           <ListItemIcon>
-            <NotificationBadge count={unReadCount} variant="dot" />
-
+            <NotifyIcon  />
           </ListItemIcon>
           <ListItemText primary="Thông báo" />
         </ListItemButton>

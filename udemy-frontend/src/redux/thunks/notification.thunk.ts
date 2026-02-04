@@ -34,3 +34,28 @@ export const markNotification = createAsyncThunk(
         }
     }
 )
+export const countNew = createAsyncThunk(
+    'notifications/count-new',
+    async (_,thunkApi) =>{
+        try{
+            const res : IApiResponse<number> = await api.get(`/notifications/get-new`)
+            return res.data
+        }catch(err){
+            const errAxios = err as AxiosError<IApiResponse<string>>;
+            return thunkApi.rejectWithValue(errAxios.response?.data.message||"error occurr");
+        }
+    }
+)
+
+export const deleteNotification = createAsyncThunk(
+    'notifications/delete',
+    async (id:string,thunkApi) =>{
+        try{
+            await api.delete(`/notifications/${id}`)
+            return id;
+        }catch(err){
+            const errAxios = err as AxiosError<IApiResponse<string>>;
+            return thunkApi.rejectWithValue(errAxios.response?.data.message||"error occurr");
+        }
+    }
+)

@@ -15,10 +15,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-
 
 @RestController
 @RequestMapping("/api/v1/notifications")
@@ -46,6 +45,18 @@ public class NotificationController {
     public ResponseEntity<?> mark(@PathVariable("id") String id) {
         boolean isMark = this.notificationService.mark(id);
         return ResponseEntity.ok(isMark);
+    }
+    @GetMapping("/get-new")
+    @ApiMessage("Kiểm tra có thông báo mới")
+    public ResponseEntity<?> getNew() {
+        long count = this.notificationService.countNew();
+        return ResponseEntity.ok(count);
+    }
+    @DeleteMapping("/{id}")
+    @ApiMessage("Xoá thông báo thành công")
+    public ResponseEntity<?> delete(@PathVariable("id") String id) {
+        boolean isDeleted = this.notificationService.delete(id);
+        return ResponseEntity.ok(isDeleted);
     }
     
 }

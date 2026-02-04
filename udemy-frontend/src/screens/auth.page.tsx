@@ -5,17 +5,14 @@ import { useAppSelector } from "@/redux/hook";
 import Loading from "@/components/loading";
 import LoginForm from "@/components/auth/login.form";
 import RegisterForm from "@/components/auth/register.form";
+import { authVariants } from "@/helpers/variants";
 
 export default function AuthPage() {
   const [mode, setMode] = useState<"login" | "register">("login");
   const isShortScreen = useMediaQuery("(max-height: 500px)");
   const isLoading = useAppSelector((state) => state.loading.pendingCount);
 
-  const formVariants = {
-    initial: { opacity: 0, x: 50 },
-    animate: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -50 },
-  };
+  
 
   return (
     <Box
@@ -95,7 +92,7 @@ export default function AuthPage() {
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                variants={formVariants}
+                variants={authVariants}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
                 style={{
                   width: "100%",
@@ -109,7 +106,7 @@ export default function AuthPage() {
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                variants={formVariants}
+                variants={authVariants}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
                 style={{
                   width: "100%",

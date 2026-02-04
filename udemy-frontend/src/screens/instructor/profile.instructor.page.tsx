@@ -11,6 +11,10 @@ import {
   Paper,
   IconButton,
   LinearProgress,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
@@ -22,7 +26,7 @@ import { useProfileFormHook } from "@/hooks/user/profile.form.hook";
 export default function ProfileInstructorPage() {
   const {editor,handleSubmit,fullname,setFullname,
     preview,isUploadingAvatar,isUploadingProfile,handleSelectAvatar,uploadPercent,
-    isFocused,setIsFocused
+    isFocused,setIsFocused,role,setRole
   } = useProfileFormHook();
   if (!editor) return null;
 
@@ -42,6 +46,19 @@ export default function ProfileInstructorPage() {
             placeholder="Nguyễn Văn A"
             fullWidth
           />
+          {/* ===== ROLE ===== */}
+          <FormControl fullWidth>
+            <InputLabel id="role-label">Bạn muốn làm học viên hay giảng viên?</InputLabel>
+            <Select
+              labelId="role-label"
+              label="Bạn muốn làm học viên hay giảng viên?"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <MenuItem value="USER">Học viên</MenuItem>
+              <MenuItem value="INSTRUCTOR">Giảng viên</MenuItem>
+            </Select>
+          </FormControl>
 
           {/* ===== AVATAR ===== */}
           <Stack spacing={1}>
