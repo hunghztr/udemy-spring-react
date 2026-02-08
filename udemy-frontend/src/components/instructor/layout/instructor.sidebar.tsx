@@ -115,7 +115,7 @@ export default function InstructorSidebar() {
             onClick={() =>{
               if(item.path.includes("/instructor/course") && user.roleName !== "INSTRUCTOR" 
               && user.roleName !== "ADMIN"){
-                  showToast("Vui lòng cập nhật hồ sơ của bạn")
+                  showToast("Vui lòng cập nhật hồ sơ của bạn để thành giảng viên")
                   navigate("/instructor/profile");
               }else{
                 navigate(item.path)

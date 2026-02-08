@@ -4,14 +4,12 @@ import {
   Box,
   Button,
   IconButton,
-  TextField,
   Menu,
   MenuItem,
   Divider,
   Avatar,
 } from "@mui/material";
 
-import SearchIcon from "@mui/icons-material/Search";
 import ExploreIcon from "@mui/icons-material/Explore";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -21,6 +19,7 @@ import { logOut } from "@/redux/thunks/auth.thunk";
 import { showToast } from "@/utils/toast";
 import { query } from "@/main";
 import NotifyDropdown from "@/components/notification/notify.dropdown";
+import SearchInput from "../course/search.input";
 
 export default function Header() {
   const user = useAppSelector((state) => state.currentUser);
@@ -97,37 +96,7 @@ export default function Header() {
         </Box>
 
         {/* CENTER - SEARCH */}
-        <Box
-          sx={{
-            flex: 1,
-            mx: 2,
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
-          <TextField
-            fullWidth
-            size="small"
-            placeholder="Search for anything"
-            sx={{
-              display: { xs: "none", md: "flex" },
-              "& input": { fontSize: { xs: "12px", md: "14px" } },
-              "& .MuiInputBase-root": {
-                borderRadius: 10,
-                backgroundColor: "#f0f2f5",
-                py: { md: 0.5 },
-              },
-            }}
-            InputProps={{
-              startAdornment: <SearchIcon sx={{ mr: 1, color: "gray" }} />,
-            }}
-          />
-
-          <IconButton color="inherit" sx={{ display: { xs: "inline-flex", md: "none" } }}>
-            <SearchIcon sx={{ fontSize: 22 }} />
-          </IconButton>
-        </Box>
+        <SearchInput />
 
         {/* RIGHT */}
         <Box
@@ -143,7 +112,7 @@ export default function Header() {
             onClick={() => {
               if(user.roleName === "INSTRUCTOR") navigate("/instructor/course")
               if(user.roleName === "USER") {
-                showToast("Vui lòng cập nhật hồ sơ của bạn")
+                showToast("Vui lòng cập nhật hồ sơ của bạn để thành giảng viên")
                 navigate("/instructor/profile")
               } 
             }}

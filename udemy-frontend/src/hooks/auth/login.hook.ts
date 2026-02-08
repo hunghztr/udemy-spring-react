@@ -41,7 +41,7 @@ export const useLoginHook = () =>{
   };
   useEffect(() =>{
     if(roleName === 'ADMIN') navigate("/admin");
-    if(roleName === 'USER') navigate("/");
+    if(roleName === 'USER' || roleName === 'INSTRUCTOR') navigate("/");
   },[roleName])
   const handleGoogleLogin = async () => {
     window.location.href = `${import.meta.env.VITE_BACKEND}/oauth2/authorization/google`;

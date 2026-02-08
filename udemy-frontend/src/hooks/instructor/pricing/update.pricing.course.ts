@@ -31,6 +31,7 @@ export const useUpdatePricing = ({course} : {course:ICourseDetailResponse|null})
             onSuccess: () => {
             showToast("Cập nhật giá tiền thành công");
             query.invalidateQueries({queryKey:["courses/get-by-id"]});
+            query.removeQueries({queryKey:["courses/search"],exact:false})
             },
         }
         );

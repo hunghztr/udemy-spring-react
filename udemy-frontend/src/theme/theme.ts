@@ -24,6 +24,18 @@ const theme = createTheme({
       published: "#2e7d32",
       rejected: "#d32f2f",
     },
+    banner: {
+      background: `
+        radial-gradient(
+          circle at top left,
+          #8a2be2,
+          #4b0082
+        )
+      `,
+      accent: "#6A0DAD",
+      highlight: "#ffffff",
+    },
+
   },
   cssVariables: true,
 });

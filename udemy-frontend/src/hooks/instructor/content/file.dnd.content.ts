@@ -59,8 +59,9 @@ setSections:React.Dispatch<React.SetStateAction<ISectionResponse[]>>) =>{
             id:lectureId,courseId:course?.id||"",data
         },{
             onSuccess:(res) =>{
-            setSections(prev => prev.map(s => s.id === res.id? res:s))
-            dispatch(resetUpload(lectureId))
+                setSections(prev => prev.map(s => s.id === res.id? res:s))
+                dispatch(resetUpload(lectureId))
+                query.removeQueries({queryKey:["courses/search"],exact:false})
             },
             onError:(err) =>{
                 showToast(`Có vấn đề xảy ra: ${err.response?.data.message}`,"error");
@@ -101,13 +102,13 @@ setSections:React.Dispatch<React.SetStateAction<ISectionResponse[]>>) =>{
         },{
         onSuccess:() =>{
             query.invalidateQueries({queryKey:["courses/get-by-id"]});
+            query.removeQueries({queryKey:["courses/search"],exact:false})
         }
         })
     };
     // handle destroy file
     const handleDestroy = async (path:string) =>{
         try {
-            console.log("check in destroy file")
               // 1. xin signature để destroy
               const sig: ISignatureResponse = await getSignatureDestroy(path); 
         

@@ -13,6 +13,7 @@ import com.jwhisper.udemy.dto.course.LectureRequest;
 import com.jwhisper.udemy.dto.course.SectionResponse;
 import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.helper.mapper.CourseMapper;
+import com.jwhisper.udemy.model.Course;
 import com.jwhisper.udemy.model.Lecture;
 import com.jwhisper.udemy.model.Section;
 import com.jwhisper.udemy.repository.LectureRepository;
@@ -57,7 +58,7 @@ public class LectureServiceImpl implements LectureService {
     @Override
     @Transactional
     public SectionResponse delete(String id, String courseId) {
-        this.securityHelper.checkCourseUser(courseId);
+        Course course = this.securityHelper.checkCourseUser(courseId);
         Lecture lecture = this.lectureRepository.findById(id)
         .orElseThrow(() -> new ErrorException("Bài học không tồn tại"));
         Section section = lecture.getSection();
@@ -65,6 +66,9 @@ public class LectureServiceImpl implements LectureService {
         lectureRepository.sumSecondBySectionId(section.getId());
         section.setHour(totalSecond / 3600.0);
         section.setTotalLecture(section.getTotalLecture() - 1);
+        double totalHour =
+        sectionRepository.sumHourByCourseId(course.getId());
+        course.setHour(totalHour);
         this.lectureRepository.deleteById(id);
         section.getLectures().remove(lecture);
         return this.courseMapper.toSectionResponse(section);
@@ -73,7 +77,7 @@ public class LectureServiceImpl implements LectureService {
     @Override
     @Transactional
     public SectionResponse updatedVideo(LectureRequest request, String courseId) {
-        this.securityHelper.checkCourseUser(courseId);
+        Course course = this.securityHelper.checkCourseUser(courseId);
         Lecture lecture = this.lectureRepository.findById(request.getId()).orElseThrow(
             () ->  new ErrorException("Bài học này không tồn tại")
         );
@@ -83,6 +87,9 @@ public class LectureServiceImpl implements LectureService {
         double totalSecond =
         lectureRepository.sumSecondBySectionId(section.getId());
         section.setHour(totalSecond / 3600.0);
+        double totalHour =
+        sectionRepository.sumHourByCourseId(course.getId());
+        course.setHour(totalHour);
         return this.courseMapper.toSectionResponse(section);
     }
 

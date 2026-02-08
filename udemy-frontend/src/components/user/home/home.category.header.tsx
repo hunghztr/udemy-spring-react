@@ -41,6 +41,10 @@ export default function HomeCategoryHeader() {
           borderBottom: "1px solid",
           borderColor: "divider",
           bgcolor: "background.paper",
+
+          // 👉 Udemy-style subtle shadow
+          boxShadow: "0 1px 2px rgba(0,0,0,0.06)",
+          zIndex: 10,
         }}
       >
         <Stack
@@ -93,6 +97,14 @@ export default function HomeCategoryHeader() {
               py: 1.5,
               zIndex: 1200,
 
+              // 👉 Udemy dropdown shadow
+              boxShadow: `
+                0 2px 4px rgba(0,0,0,0.15),
+                0 8px 20px rgba(0,0,0,0.25)
+              `,
+
+              borderRadius: "0 0 6px 6px",
+
               "&::before": {
                 content: '""',
                 position: "absolute",
@@ -108,6 +120,7 @@ export default function HomeCategoryHeader() {
               },
             }}
           >
+
             <Stack direction="row" spacing={3} flexWrap="wrap">
               {activeCategory.categories.map((sub) => (
                 <Typography

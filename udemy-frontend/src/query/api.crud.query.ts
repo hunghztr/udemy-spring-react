@@ -4,13 +4,27 @@ import type { IPagination, IPaginationResponse } from "@/type/pagination";
 
 
 export const getAll = async <Res>({
-  url,pagination
-} : {url : string; pagination: IPagination}) =>{
-  const res : IApiResponse<IPaginationResponse<Res>> = await api.get(
-    `${url}?page=${pagination.keyword ? 0 : pagination.page}&size=${pagination.size}&active=${pagination.active}&keyword=${pagination.keyword}`
-  );
-  return  res.data;
-}
+  url,
+  pagination,
+}: {
+  url: string;
+  pagination: IPagination;
+}) => {
+  const params: Record<string, any> = {
+    page: pagination.keyword ? 0 : pagination.page,
+    size: pagination.size,
+    keyword: pagination.keyword,
+  };
+
+  if (pagination.active !== undefined) {
+    params.active = pagination.active;
+  }
+
+  const res: IApiResponse<IPaginationResponse<Res>> =
+    await api.get(url, { params });
+  console.log("check res >>>",res)
+  return res.data;
+};
 export const getAllNoPage = async <Res>({
   url
 } : {url : string}) =>{
@@ -46,4 +60,12 @@ export const activate = async <Res = boolean> ({
 } : {url : string; id: string}) =>{
   const res : IApiResponse<Res> = await api.post(`${url}/${id}`);
   return  res.data;
+}
+export const remove = async <Res = boolean> ({
+  url,id
+} : {
+  url : string;id : string
+}) =>{
+  const res : IApiResponse<Res> = await api.delete(`${url}/${id}`);
+  return res.data;
 }

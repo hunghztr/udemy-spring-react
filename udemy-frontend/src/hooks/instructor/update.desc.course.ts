@@ -85,6 +85,7 @@ const removeRequirement = (index: number) => {
           setInitialObjectives(objectives);
           setInitialRequirements(requirements);
           query.invalidateQueries({queryKey:["courses/get-by-id"]})
+          query.removeQueries({queryKey:["courses/search"],exact:false})
         },
         onError: (err) => {
           showToast(`Có vấn đề xảy ra: ${err.response?.data.message}`,"error");

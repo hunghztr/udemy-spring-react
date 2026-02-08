@@ -17,7 +17,6 @@ type CourseTab = "description" | "image" | "content" | "pricing";
 
 export default function EditCoursePage() {
   const { id } = useParams();
-
   const [activeTab, setActiveTab] = useState<CourseTab>("description");
   const [course, setCourse] = useState<ICourseDetailResponse | null>(null);
   

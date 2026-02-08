@@ -4,11 +4,12 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 
 export const useGetAll = <Res>(
-    key : string, apiFn : () => Promise<Res>
+    key : string, apiFn : () => Promise<Res>,enabled = true
 ) => {
     return useQuery<Res>({
         queryKey : [key],
-        queryFn : apiFn
+        queryFn : apiFn,
+        enabled
     })
 }
 

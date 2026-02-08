@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.jwhisper.udemy.model.Course;
@@ -17,4 +18,10 @@ public interface CourseRepository extends JpaRepository<Course, String>, JpaSpec
     boolean existsByName(String name);
     Optional<Course> findByIdAndAuthorId(String id, String authorId);
     Page<CourseProject> findAllByIsActiveAndNameContaining(boolean isActive,String name,Pageable pageable);
+    @Query("""
+    select c from Course c
+    left join fetch c.categories
+    where c.id = :id
+    """)
+    Optional<Course> findByIdWithCategories(String id);
 }

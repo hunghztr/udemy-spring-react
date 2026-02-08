@@ -59,3 +59,16 @@ export interface ILectureResponse{
     path: string;
     sectionId?: string;
 }
+
+export interface ICourseSearchResponse{
+    id:string;
+    name:string;
+    authorName:string;
+    imagePath:string;
+    rating:number;
+    sold:number;
+    hour:number;
+    description:string;
+    price:number;
+    categories:string[]
+}

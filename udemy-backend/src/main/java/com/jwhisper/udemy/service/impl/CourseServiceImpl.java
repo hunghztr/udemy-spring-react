@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.dto.course.CourseDetailResponse;
 import com.jwhisper.udemy.dto.course.CourseRequest;
@@ -22,11 +24,15 @@ import com.jwhisper.udemy.model.Course;
 
 import com.jwhisper.udemy.model.User;
 import com.jwhisper.udemy.projection.course.CourseProject;
+import com.jwhisper.udemy.repository.CategoryRepository;
 import com.jwhisper.udemy.repository.CourseRepository;
 
 import com.jwhisper.udemy.repository.UserRepository;
 import com.jwhisper.udemy.security.SecurityHelper;
 import com.jwhisper.udemy.service.CourseService;
+import com.jwhisper.udemy.service.SearchService;
+
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -35,20 +41,29 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final SecurityHelper securityHelper;
     private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
     private final CourseMapper courseMapper;
-
+    private final SearchService searchService;
+    private final ObjectMapper objectMapper;
     public CourseServiceImpl(CourseRepository courseRepository,
         CategoryMapper categoryMapper,
         SecurityHelper securityHelper,
         UserRepository userRepository,
-        CourseMapper courseMapper
+        CourseMapper courseMapper,
+        SearchService searchService,
+        CategoryRepository categoryRepository,
+        ObjectMapper objectMapper
     ){
         this.courseRepository = courseRepository;
         this.securityHelper = securityHelper;
         this.userRepository = userRepository;
         this.courseMapper = courseMapper;
+        this.searchService = searchService;
+        this.categoryRepository = categoryRepository;
+        this.objectMapper = objectMapper;
     }
     @Override
+    @Transactional
     public boolean isCreated(CourseRequest request)  {
         if(this.courseRepository.existsByName(request.getName())){
             throw new ErrorException("Tên khoá học đã tồn tại");
@@ -64,12 +79,13 @@ public class CourseServiceImpl implements CourseService {
         course.setStatus(CourseStatus.PENDING);
         List<Category> categories = new ArrayList<>();
         for(int i = 0 ; i < request.getCategoriesId().size() ; i++){
-            Category category = new Category();
-            category.setId(request.getCategoriesId().get(i));
+            Category category = this.categoryRepository.findById(request.getCategoriesId().get(i))
+            .orElseThrow(() -> new ErrorException("Danh mục không tồn tại"));
             categories.add(category);
         }
         course.setCategories(categories);
         this.courseRepository.save(course);
+        
         return true;
     }
     @Override
@@ -123,18 +139,33 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public boolean isDescriptionUpdated(CourseRequest request)  {
         Course course = this.securityHelper.checkCourseUser(request.getId());
-        course.setDescription(request.getDescription());
-        course.setRequirement(request.getRequirement());
+        String desc = this.parseToList(request.getDescription());
+        String require = this.parseToList(request.getRequirement());
+        course.setDescription(desc);
+        course.setRequirement(require);
 
-        courseRepository.save(course);
-
+        this.courseRepository.save(course);
+        this.searchService.indexCourse(course.getId());
         return true;
+     
     }
+    String parseToList(String raw) {
+    try {
+        List<String> list = objectMapper.readValue(
+            raw, new TypeReference<List<String>>() {}
+        );
+        return String.join(", ", list);
+    } catch (Exception e) {
+        throw new ErrorException("Requirement format invalid");
+    }
+}
+
     @Override
     public boolean isImageUpdate(CourseRequest request) {
         Course course = this.securityHelper.checkCourseUser(request.getId());
         course.setImagePath(request.getImagePath());
         this.courseRepository.save(course);
+        this.searchService.indexCourse(course.getId());
         return true;
     }
     @Override
@@ -142,11 +173,13 @@ public class CourseServiceImpl implements CourseService {
         Course course = this.securityHelper.checkCourseUser(request.getId());
         course.setPrice(request.getPrice());
         this.courseRepository.save(course);
+        this.searchService.indexCourse(course.getId());
         return true;
     }
     @Override
     public boolean delete(String id)  {
-        Course course = this.securityHelper.checkCourseUser(id);
+        Course course = this.courseRepository.findById(id)
+        .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
         if(!course.getIsActive()) throw new ErrorException("Khoá học đã ngừng hoạt động");
         course.setIsActive(false);
         course.setStatus(CourseStatus.REJECTED);
@@ -156,11 +189,13 @@ public class CourseServiceImpl implements CourseService {
 
   @Override
   public boolean active(String id)  {
-    Course course = this.securityHelper.checkCourseUser(id);
+    Course course = this.courseRepository.findById(id)
+    .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
     if(course.getIsActive()) throw new ErrorException("Khoá học đã được kích hoạt");
     course.setIsActive(true);
     course.setStatus(CourseStatus.PUBLISHED);
     this.courseRepository.save(course);
+    this.searchService.indexCourse(id);
     return true;
   }
   @Override
@@ -171,6 +206,7 @@ public class CourseServiceImpl implements CourseService {
         course.getStatus() == CourseStatus.PENDING) throw new ErrorException("Khoá học chưa được admin phê duyệt"); 
     course.setIsActive(false);
     this.courseRepository.save(course);
+    this.searchService.deleteCourse(id);
     return true;
   }
   @Override
@@ -181,6 +217,7 @@ public class CourseServiceImpl implements CourseService {
         course.getStatus() == CourseStatus.PENDING) throw new ErrorException("Khoá học chưa được admin phê duyệt"); 
     course.setIsActive(true);
     this.courseRepository.save(course);
+    this.searchService.indexCourse(id);
     return true;
   }
     

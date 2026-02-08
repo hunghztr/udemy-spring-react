@@ -14,7 +14,9 @@ export const AuthPage = lazy(
 export const ForgotPasswordPage = lazy(
   () => import("../screens/forgot.password.page")
 );
-
+export const SearchPage = lazy(
+  () => import("../screens/user/search.page")
+)
 /* ================= ADMIN ================= */
 export const AdminLayout = lazy(
   () => import("../components/admin/layout/admin.layout")

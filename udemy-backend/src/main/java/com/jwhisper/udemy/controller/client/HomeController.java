@@ -14,11 +14,14 @@ import com.jwhisper.udemy.dto.category.CategoryParentResponse;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
 import com.jwhisper.udemy.service.CategoryService;
 
+
 @RestController
 @RequestMapping("/api/v1/client")
 public class HomeController {
     private final CategoryService categoryService;
-    public HomeController(CategoryService categoryService){
+
+    public HomeController(CategoryService categoryService
+    ){
         this.categoryService = categoryService;
     }
     

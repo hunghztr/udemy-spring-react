@@ -1,3 +1,4 @@
+import { query } from "@/main";
 import { deleteLecture, deleteSection } from "@/query/course/course.query";
 import { useSave } from "@/query/use.crud.query";
 import type { ICourseDetailResponse, ISectionResponse } from "@/type/course.module";
@@ -18,6 +19,7 @@ export const useActionContent = (course:ICourseDetailResponse|null,
       id: sectionId, courseId: course?.id||""
     })
     setSections(prev => prev.filter(s => s.id !== sectionId));
+    query.removeQueries({queryKey:["courses/search"],exact:false})
   }
   const handleDeleteLecture = async (lectureId: string) => {
     try {
@@ -29,6 +31,7 @@ export const useActionContent = (course:ICourseDetailResponse|null,
       setSections(prev =>
         prev.map(s => (s.id === res.id ? res : s))
       );
+      query.removeQueries({queryKey:["courses/search"],exact:false})
     } catch (err) {
       showToast(`${err}`,"error");
     }

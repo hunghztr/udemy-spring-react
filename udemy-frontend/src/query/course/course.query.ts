@@ -2,7 +2,7 @@ import api from "@/api/api";
 import type { IApiResponse } from "@/type/api.response";
 import { type ICourse, type ICourseDetailResponse, type ICourseResponse, type ILecture, type ISection, type ISectionResponse } from "@/type/course.module";
 import type { IPagination, IPaginationResponse } from "@/type/pagination";
-import { activate, create, getAll, getById, update } from "../api.crud.query";
+import { activate, create, getAll, getById, remove, update } from "../api.crud.query";
 
 
 export const getCoursesByAuthor = async ({
@@ -68,13 +68,13 @@ export const updateLectureName = ({data,courseId,id} : {data:ILecture,courseId:s
     })
 }
 export const deleteSection = ({id,courseId} : {id : string; courseId : string}) =>{
-    return activate({
+    return remove({
         url:`/instructor/courses/${courseId}/delete/section`,
         id
     })
 }
 export const deleteLecture = ({id,courseId} : {id : string; courseId : string}) =>{
-    return activate<ISectionResponse>({
+    return remove<ISectionResponse>({
         url:`/instructor/courses/${courseId}/delete/lecture`,
         id
     })

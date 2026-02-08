@@ -14,15 +14,14 @@ import com.jwhisper.udemy.projection.course.CourseProject;
 
 public interface CourseService {
     boolean isPriceUpdated(CourseRequest request);
-    CourseDetailResponse getDetail(String id);
     boolean isImageUpdate(CourseRequest request);
-    boolean isDescriptionUpdated(CourseRequest request) ;
-    boolean isCreated(CourseRequest request) ;
-    Pagination<CourseResponse> getAllByAuthor(Specification<Course> spec, Pageable pageable);
-    Pagination<CourseProject> getAll(Pageable pageable , boolean isActive,String keyword);
+    boolean isDescriptionUpdated(CourseRequest request);
+    boolean isCreated(CourseRequest request);
     boolean delete(String id);
     boolean active(String id);
     boolean deleteByInstructor(String id);
     boolean activeByInstructor(String id);
-
+    CourseDetailResponse getDetail(String id);
+    Pagination<CourseResponse> getAllByAuthor(Specification<Course> spec, Pageable pageable);
+    Pagination<CourseProject> getAll(Pageable pageable , boolean isActive,String keyword);
 }

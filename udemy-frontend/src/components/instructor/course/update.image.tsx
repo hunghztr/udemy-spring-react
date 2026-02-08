@@ -92,6 +92,7 @@ export default function UpdateImage({ course }: IProps) {
         {
           onSuccess: () => {
             query.invalidateQueries({queryKey:["courses/get-by-id"]});
+            query.removeQueries({queryKey:["courses/search"],exact:false})
           },
         }
       );

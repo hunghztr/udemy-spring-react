@@ -66,7 +66,7 @@ export default function UpdateDescription({ course }: IProps) {
           disabled={isPending || !isChanged}
           sx={{ borderRadius: 2, px: 3, textTransform: "none", fontWeight: 600 }}
         >
-          {isPending ? "Đang lưu" : "Save"}
+          {isPending ? "..." : "Lưu"}
         </Button>
       </Stack>
 

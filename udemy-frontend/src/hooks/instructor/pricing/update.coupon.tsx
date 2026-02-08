@@ -109,6 +109,7 @@ export const useUpdateCoupon = ({course} : {course:ICourseDetailResponse|null}) 
         {
             onSuccess: () => {
             query.invalidateQueries({queryKey:["courses/get-by-id"]});
+            query.removeQueries({queryKey:["courses/search"],exact:false})
             cancelEditCoupon();
             },
         }

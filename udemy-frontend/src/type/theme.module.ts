@@ -15,6 +15,11 @@ declare module "@mui/material/styles" {
       published: string;
       rejected: string;
     };
+    banner: {
+      background: string;
+      accent: string;
+      highlight: string;
+    };
   }
 
   interface PaletteOptions {
@@ -30,6 +35,11 @@ declare module "@mui/material/styles" {
       pending: string;
       published: string;
       rejected: string;
+    };
+    banner?: {
+      background: string;
+      accent: string;
+      highlight: string;
     };
   }
 }

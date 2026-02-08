@@ -49,7 +49,7 @@ export const stepVariants: Variants = {
     x: 0,
     transition: {
       duration: 0.25,
-      ease: [0.4, 0, 0.2, 1], // ✅ material / easeOut chuẩn
+      ease: [0.4, 0, 0.2, 1],
     },
   },
   exit: (direction: number) => ({
@@ -60,4 +60,53 @@ export const stepVariants: Variants = {
       ease: [0.4, 0, 1, 1],
     },
   }),
+};
+
+export const fadeUp: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 40
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.16, 1, 0.3, 1]
+    }
+  }
+};
+// trượt thẻ
+export const cardSlide = {
+  hidden: {
+    opacity: 0,
+    y: 20
+  },
+  visible: {
+    opacity: 1,
+    y: 0
+  }
+};
+
+// hiệu ứng skeleton
+export const skeletonSx = {
+  bgcolor: "grey.300",
+  backgroundImage:
+    "linear-gradient(90deg, rgba(200,200,200,0.85), rgba(230,230,230,1), rgba(200,200,200,0.85))",
+};
+
+// hiệu ứng grid
+export const gridItemVariants = {
+  hidden: {
+    opacity: 0,
+    y: 20,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+  },
+  exit: {
+    opacity: 0,
+    y: -10,
+  },
 };
