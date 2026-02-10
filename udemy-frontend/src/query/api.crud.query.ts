@@ -22,7 +22,6 @@ export const getAll = async <Res>({
 
   const res: IApiResponse<IPaginationResponse<Res>> =
     await api.get(url, { params });
-  console.log("check res >>>",res)
   return res.data;
 };
 export const getAllNoPage = async <Res>({

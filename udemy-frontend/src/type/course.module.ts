@@ -72,3 +72,7 @@ export interface ICourseSearchResponse{
     price:number;
     categories:string[]
 }
+export interface IRecommendResponse{
+    keyword:string;
+    type:"HISTORY"|"TRENDING"
+}

@@ -11,37 +11,93 @@ import {
 import { alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGetAll, useSave } from "@/query/use.crud.query";
-import { deleteHistory, getHistory } from "@/query/course/search.query";
-
 import { motion, AnimatePresence } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
 
+import { useGetAll, useGetById, useSave } from "@/query/use.crud.query";
+import {
+  deleteHistory,
+  getRecommend,
+  getSuggest,
+} from "@/query/course/search.query";
+import type { IRecommendResponse } from "@/type/course.module";
+import { useDebounce } from "@/hooks/debounce.hook";
+
 const MotionPaper = motion(Paper);
 const MotionBox = motion(Box);
+
+const LIMIT = 10;
+const HISTORY_LIMIT = 5;
 
 export default function SearchInput() {
   const theme = useTheme();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
   const [inputValue, setInputValue] = useState("");
   const [open, setOpen] = useState(false);
   const [deletingItem, setDeletingItem] = useState<string | null>(null);
+  const debounce = useDebounce(inputValue, 500);
 
-  // fetch history khi open
-  const { data, isLoading } = useGetAll<string[]>(
+  // History (fetch khi focus)
+  const {
+    data: historyData,
+    isLoading: isHistoryLoading,
+  } = useGetAll<IRecommendResponse[]>(
     "search/history",
-    getHistory,
+    getRecommend,
     open
   );
 
-  const { mutate } = useSave<boolean, string>(
-    "search/remove-history",
-    deleteHistory
+  // Trending (fetch khi gõ)
+  const {
+    data: trendingData,
+    isLoading: isTrendingLoading,
+  } = useGetById<IRecommendResponse[]>(
+    "search/suggest",
+    getSuggest,
+    debounce,
+    debounce.length > 0
   );
+
+  const history = historyData ?? [];
+  const trending = trendingData ?? [];
+
+  /* ===================== FILTER HISTORY ===================== */
+
+  const filteredHistory = useMemo(() => {
+    const kw = debounce.trim().toLowerCase();
+    if (!kw) return history.slice(0, HISTORY_LIMIT);
+
+    return history
+      .filter(h => h.keyword.toLowerCase().includes(kw))
+      .slice(0, HISTORY_LIMIT);
+  }, [history, debounce]);
+
+  /* ===================== MERGE + DEDUPE ===================== */
+
+  const mergedData = useMemo(() => {
+    const seen = new Set<string>();
+    const result: IRecommendResponse[] = [];
+
+    // 1️⃣ History first
+    for (const h of filteredHistory) {
+      if (seen.has(h.keyword)) continue;
+      seen.add(h.keyword);
+      result.push(h);
+    }
+
+    // 2️⃣ Trending
+    for (const t of trending) {
+      if (result.length >= LIMIT) break;
+      if (seen.has(t.keyword)) continue;
+      seen.add(t.keyword);
+      result.push(t);
+    }
+
+    return result;
+  }, [filteredHistory, trending]);
 
   const handleSearch = (keyword?: string) => {
     const value = keyword ?? inputValue.trim();
@@ -50,12 +106,20 @@ export default function SearchInput() {
     setInputValue(value);
     setOpen(false);
     navigate(`/search?keyword=${encodeURIComponent(value)}`);
+
+    // chỉ cần refresh history
+    queryClient.invalidateQueries({ queryKey: ["search/history"] });
   };
+
+  const { mutate } = useSave<boolean, string>(
+    "search/remove-history",
+    deleteHistory
+  );
 
   const handleDelete = (e: React.MouseEvent, keyword: string) => {
     e.stopPropagation();
     setDeletingItem(keyword);
-    mutate(keyword,{
+    mutate(keyword, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["search/history"] });
         setDeletingItem(null);
@@ -65,6 +129,10 @@ export default function SearchInput() {
       },
     });
   };
+  const isLoading =
+    (open && !debounce && isHistoryLoading) ||
+    (debounce.length > 0 && isTrendingLoading);
+  const isEmpty = !isLoading && mergedData.length === 0;
 
   return (
     <ClickAwayListener onClickAway={() => setOpen(false)}>
@@ -98,12 +166,10 @@ export default function SearchInput() {
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             InputProps={{ disableUnderline: true }}
           />
-
           <IconButton onClick={() => handleSearch()}>
             <SearchIcon />
           </IconButton>
         </Box>
-
         {/* ================= DROPDOWN ================= */}
         <AnimatePresence>
           {open && (
@@ -126,32 +192,30 @@ export default function SearchInput() {
             >
               {/* LOADING */}
               {isLoading && (
-                <Box px={2} py={1.5}>
-                  <Typography variant="body2">...</Typography>
+                <Box px={2} py={1.5} display="flex" gap={1}>
+                  <CircularProgress size={16} />
                 </Box>
               )}
-
               {/* EMPTY */}
-              {!isLoading && (!data || data.length === 0) && (
+              {isEmpty && (
                 <Box px={2} py={1.5}>
                   <Typography variant="body2" color="text.secondary">
-                    Không có lịch sử tìm kiếm
+                    Không có gợi ý
                   </Typography>
                 </Box>
               )}
-
               {/* LIST */}
               {!isLoading && (
                 <AnimatePresence initial={false}>
-                  {data?.map((item) => (
+                  {mergedData.map(item => (
                     <MotionBox
-                      key={item}
+                      key={`${item.type}-${item.keyword}`}
                       layout
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.18, ease: "easeOut" }}
-                      onClick={() => handleSearch(item)}
+                      onClick={() => handleSearch(item.keyword)}
                       sx={{
                         px: 2,
                         py: 1,
@@ -159,29 +223,40 @@ export default function SearchInput() {
                         alignItems: "center",
                         justifyContent: "space-between",
                         cursor: "pointer",
-                        overflow: "hidden",
                         "&:hover": {
                           backgroundColor: theme.palette.grey[100],
                         },
                       }}
                     >
-                      <Typography variant="body2">{item}</Typography>
-
-                      <IconButton
-                        size="small"
-                        onClick={(e) => handleDelete(e, item)}
-                      >
-                        {deletingItem === item ? (
-                          <CircularProgress size={14} />
-                        ) : (
-                          <CloseIcon fontSize="small" />
+                      <Typography variant="body2">
+                        {item.keyword}
+                        {item.type === "TRENDING" && (
+                          <Typography
+                            component="span"
+                            variant="caption"
+                            color="primary"
+                            ml={1}
+                          >
+                            Trending
+                          </Typography>
                         )}
-                      </IconButton>
+                      </Typography>
+                      {item.type === "HISTORY" && (
+                        <IconButton
+                          size="small"
+                          onClick={(e) => handleDelete(e, item.keyword)}
+                        >
+                          {deletingItem === item.keyword ? (
+                            <CircularProgress size={14} />
+                          ) : (
+                            <CloseIcon fontSize="small" />
+                          )}
+                        </IconButton>
+                      )}
                     </MotionBox>
                   ))}
                 </AnimatePresence>
               )}
-
             </MotionPaper>
           )}
         </AnimatePresence>

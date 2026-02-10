@@ -27,12 +27,12 @@ export const useSave = <Res, Req>(
 export const useGetById = <Res>(
   key: string,
   apiFn: (id: string) => Promise<Res>,
-  id: string
+  id: string,enabled = true
 ) => {
   return useQuery<Res>({
     queryKey: [key, id],
     queryFn: () => apiFn(id),
-    enabled: !!id
+    enabled
   });
 };
 
