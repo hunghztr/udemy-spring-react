@@ -43,11 +43,11 @@ export default function SearchInput() {
   // History (fetch khi focus)
   const {
     data: historyData,
-    isLoading: isHistoryLoading,
+    isLoading: isHistoryLoading,refetch
   } = useGetAll<IRecommendResponse[]>(
     "search/history",
     getRecommend,
-    open
+    false
   );
 
   // Trending (fetch khi gõ)
@@ -162,9 +162,12 @@ export default function SearchInput() {
             placeholder="Search for anything"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            onFocus={() => setOpen(true)}
+            onFocus={() => {
+              setOpen(true)
+               refetch()
+              }}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            InputProps={{ disableUnderline: true }}
+            InputProps={{ disableUnderline: true,autoComplete: "off" }}
           />
           <IconButton onClick={() => handleSearch()}>
             <SearchIcon />
