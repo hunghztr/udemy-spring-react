@@ -19,7 +19,8 @@ export const useActionContent = (course:ICourseDetailResponse|null,
       id: sectionId, courseId: course?.id||""
     })
     setSections(prev => prev.filter(s => s.id !== sectionId));
-    query.removeQueries({queryKey:["courses/search"],exact:false})
+    query.invalidateQueries({queryKey:["courses/search"]})
+    query.invalidateQueries({queryKey:["courses/get-all-by-author"]})
   }
   const handleDeleteLecture = async (lectureId: string) => {
     try {
@@ -31,7 +32,8 @@ export const useActionContent = (course:ICourseDetailResponse|null,
       setSections(prev =>
         prev.map(s => (s.id === res.id ? res : s))
       );
-      query.removeQueries({queryKey:["courses/search"],exact:false})
+      query.invalidateQueries({queryKey:["courses/search"]})
+      query.invalidateQueries({queryKey:["courses/get-all-by-author"]})
     } catch (err) {
       showToast(`${err}`,"error");
     }

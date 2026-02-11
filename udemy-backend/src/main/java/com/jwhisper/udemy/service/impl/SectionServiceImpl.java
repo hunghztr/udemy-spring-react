@@ -13,6 +13,8 @@ import com.jwhisper.udemy.repository.SectionRepository;
 import com.jwhisper.udemy.security.SecurityHelper;
 import com.jwhisper.udemy.service.SectionService;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class SectionServiceImpl implements SectionService {
     private final SectionRepository sectionRepository;
@@ -34,9 +36,13 @@ public class SectionServiceImpl implements SectionService {
         return this.courseMapper.toSectionResponse(section);
     }
     @Override
+    @Transactional
     public boolean isDeleted(String id,String courseId) {
-        this.securityHelper.checkCourseUser(courseId);
+        Course course = this.securityHelper.checkCourseUser(courseId);
         this.sectionRepository.deleteById(id);
+        double totalHour =
+        sectionRepository.sumHourByCourseId(course.getId());
+        course.setHour(totalHour);
         return true;
     }
     @Override
