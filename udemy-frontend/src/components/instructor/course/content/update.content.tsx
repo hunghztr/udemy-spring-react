@@ -28,7 +28,7 @@ export default function UpdateContent({ course }: Props) {
   const {collapsed,handleToggleColapse,sections,setSections} = useFetchContent(course);
   // upload drag hook
   const {handleDragLectureEnd,isUploadingCloud,setUploadingLectureId,fileInputRef,uploadingLectureId,
-        percent,uploadVideo,handleDestroy,handleDestroyAll,isLoading} = useFileDnd(course,setSections)
+        percent,uploadVideo,handleDestroy,handleDestroyAll,isLoading} = useFileDnd(course)
   if(isLoading) return <Loading />
         return (
     <Box>
@@ -62,7 +62,7 @@ export default function UpdateContent({ course }: Props) {
                   {/* SECTION HEADER */}
                   <SectionTitle theme={theme}  collapsed={collapsed} 
                     handleToggleColapse={handleToggleColapse} course={course} section={section} 
-                      setSections={setSections} handleDestroyAll={handleDestroyAll}/>
+                       handleDestroyAll={handleDestroyAll}/>
 
                   <AnimatePresence initial={false}>
                     {!collapsed[section.id || ""] && (

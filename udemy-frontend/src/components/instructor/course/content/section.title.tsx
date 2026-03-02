@@ -13,19 +13,19 @@ interface IProps{
   collapsed: Record<string,boolean>;
   handleToggleColapse: (value : string) => void;
   course:ICourseDetailResponse|null;
-  setSections:React.Dispatch<React.SetStateAction<ISectionResponse[]>>,section:ISectionResponse;
+  section:ISectionResponse;
   handleDestroyAll: (publicIds : string[]) => Promise<any>;
 }
-export default function SectionTitle({course,setSections,section,theme,collapsed,handleToggleColapse,
+export default function SectionTitle({course,section,theme,collapsed,handleToggleColapse,
   handleDestroyAll
 }: IProps) {
   // edit hook
   const {setEditingSectionId,setEditingSectionTitle,editingSectionId,
         editingSectionTitle,updateSectionTitle
-    } = useFormSection(course,setSections);
+    } = useFormSection(course);
   // delete hook
   const {isDeleteSectionPending,handleDeleteSection}
-   = useActionContent(course,setSections);
+   = useActionContent(course);
 
    const [openConfirm, setOpenConfirm] = useState(false);
 

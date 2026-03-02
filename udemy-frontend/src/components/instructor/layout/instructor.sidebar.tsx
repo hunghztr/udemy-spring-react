@@ -194,7 +194,7 @@ export default function InstructorSidebar() {
                 transition={{ duration: 0.15 }}
               >
                 <Typography fontSize={14} fontWeight={600} whiteSpace="nowrap">
-                  Logout
+                  Đăng xuất
                 </Typography>
               </motion.div>
             )}

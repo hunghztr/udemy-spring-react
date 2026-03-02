@@ -5,12 +5,13 @@ import org.springframework.stereotype.Service;
 
 import com.jwhisper.udemy.dto.course.SectionRequest;
 import com.jwhisper.udemy.dto.course.SectionResponse;
+import com.jwhisper.udemy.helper.annotation.CheckCourseOwner;
 import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.helper.mapper.CourseMapper;
 import com.jwhisper.udemy.model.Course;
 import com.jwhisper.udemy.model.Section;
+import com.jwhisper.udemy.repository.CourseRepository;
 import com.jwhisper.udemy.repository.SectionRepository;
-import com.jwhisper.udemy.security.SecurityHelper;
 import com.jwhisper.udemy.service.SectionService;
 
 import jakarta.transaction.Transactional;
@@ -18,18 +19,21 @@ import jakarta.transaction.Transactional;
 @Service
 public class SectionServiceImpl implements SectionService {
     private final SectionRepository sectionRepository;
-    private final SecurityHelper securityHelper;
     private final CourseMapper courseMapper;
+    private final CourseRepository courseRepository;
     public SectionServiceImpl(SectionRepository sectionRepository,
-        SecurityHelper securityHelper, CourseMapper courseMapper
+         CourseMapper courseMapper,
+         CourseRepository courseRepository
     ){
         this.sectionRepository = sectionRepository;
-        this.securityHelper = securityHelper;
         this.courseMapper = courseMapper;
+        this.courseRepository = courseRepository;
     }
     @Override
+    @CheckCourseOwner
     public SectionResponse create(SectionRequest request,String courseId) {
-        Course course = this.securityHelper.checkCourseUser(courseId);
+        Course course = this.courseRepository.findById(courseId)
+        .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
         Section section = this.courseMapper.toSection(request);
         section.setCourse(course);
         section = this.sectionRepository.save(section);
@@ -37,8 +41,10 @@ public class SectionServiceImpl implements SectionService {
     }
     @Override
     @Transactional
+    @CheckCourseOwner
     public boolean isDeleted(String id,String courseId) {
-        Course course = this.securityHelper.checkCourseUser(courseId);
+        Course course = this.courseRepository.findById(courseId)
+        .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
         this.sectionRepository.deleteById(id);
         double totalHour =
         sectionRepository.sumHourByCourseId(course.getId());
@@ -46,8 +52,8 @@ public class SectionServiceImpl implements SectionService {
         return true;
     }
     @Override
+    @CheckCourseOwner
     public SectionResponse updateName(SectionRequest request, String courseId) {
-        this.securityHelper.checkCourseUser(courseId);
         Section section = this.sectionRepository.findById(request.getId())
         .orElseThrow(() -> new ErrorException("Chương học không tồn tại"));
         section.setName(request.getName());

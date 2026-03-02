@@ -15,6 +15,9 @@ import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.dto.course.CourseDetailResponse;
 import com.jwhisper.udemy.dto.course.CourseRequest;
 import com.jwhisper.udemy.dto.course.CourseResponse;
+import com.jwhisper.udemy.helper.annotation.CheckCourseOwner;
+import com.jwhisper.udemy.helper.annotation.LogActivity;
+import com.jwhisper.udemy.helper.constant.ActivityAction;
 import com.jwhisper.udemy.helper.constant.CourseStatus;
 import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.helper.mapper.CategoryMapper;
@@ -64,6 +67,7 @@ public class CourseServiceImpl implements CourseService {
     }
     @Override
     @Transactional
+    @LogActivity(action = ActivityAction.CREATE_COURSE, resource = "Course")
     public boolean isCreated(CourseRequest request)  {
         if(this.courseRepository.existsByName(request.getName())){
             throw new ErrorException("Tên khoá học đã tồn tại");
@@ -124,6 +128,7 @@ public class CourseServiceImpl implements CourseService {
         return pagination;
     }
     @Override
+    @CheckCourseOwner
     public CourseDetailResponse getDetail(String id)  {
         String permission = this.securityHelper.getCurrentPermission();
         Course course = new Course();
@@ -131,14 +136,17 @@ public class CourseServiceImpl implements CourseService {
             course = this.courseRepository.findById(id)
             .orElseThrow(() -> new ErrorException("Khoá học được lấy bởi admin không tồn tại"));
         }else{
-            course = this.securityHelper.checkCourseUser(id);
+            course = this.courseRepository.findById(id)
+            .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
         }
         CourseDetailResponse detailResponse = this.courseMapper.toCourseDetailResponse(course);
         return detailResponse;
     }
     @Override
+    @CheckCourseOwner
     public boolean isDescriptionUpdated(CourseRequest request)  {
-        Course course = this.securityHelper.checkCourseUser(request.getId());
+        Course course = this.courseRepository.findById(request.getId())
+        .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
         String desc = this.parseToList(request.getDescription());
         String require = this.parseToList(request.getRequirement());
         course.setDescription(desc);
@@ -161,16 +169,20 @@ public class CourseServiceImpl implements CourseService {
 }
 
     @Override
+    @CheckCourseOwner
     public boolean isImageUpdate(CourseRequest request) {
-        Course course = this.securityHelper.checkCourseUser(request.getId());
+        Course course = this.courseRepository.findById(request.getId())
+        .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
         course.setImagePath(request.getImagePath());
         this.courseRepository.save(course);
         this.searchService.indexCourse(course.getId());
         return true;
     }
     @Override
+    @CheckCourseOwner
     public boolean isPriceUpdated(CourseRequest request) {
-        Course course = this.securityHelper.checkCourseUser(request.getId());
+        Course course = this.courseRepository.findById(request.getId())
+        .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
         course.setPrice(request.getPrice());
         this.courseRepository.save(course);
         this.searchService.indexCourse(course.getId());
@@ -199,8 +211,10 @@ public class CourseServiceImpl implements CourseService {
     return true;
   }
   @Override
-  public boolean deleteByInstructor(String id) {
-    Course course = this.securityHelper.checkCourseUser(id);
+  @CheckCourseOwner
+    public boolean deleteByInstructor(String id) {
+        Course course = this.courseRepository.findById(id)
+        .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
     if(!course.getIsActive()) throw new ErrorException("Khoá học đã ngừng hoạt động");
     if(course.getStatus() == CourseStatus.REJECTED ||
         course.getStatus() == CourseStatus.PENDING) throw new ErrorException("Khoá học chưa được admin phê duyệt"); 
@@ -210,8 +224,10 @@ public class CourseServiceImpl implements CourseService {
     return true;
   }
   @Override
+  @CheckCourseOwner
   public boolean activeByInstructor(String id) {
-    Course course = this.securityHelper.checkCourseUser(id);
+    Course course = this.courseRepository.findById(id)
+        .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
     if(course.getIsActive()) throw new ErrorException("Khoá học đã được kích hoạt");
     if(course.getStatus() == CourseStatus.REJECTED ||
         course.getStatus() == CourseStatus.PENDING) throw new ErrorException("Khoá học chưa được admin phê duyệt"); 

@@ -24,15 +24,15 @@ interface IProps{
     setSections:React.Dispatch<React.SetStateAction<ISectionResponse[]>>;
     handleDestroy:(path:string) => Promise<any>;
 }
-export default function LectureList({course,setSections,section,theme,isUploadingCloud,
+export default function LectureList({course,section,theme,isUploadingCloud,
 fileInputRef,setUploadingLectureId,uploadingLectureId,percent,handleDestroy}:IProps) {
   // delete hook
   const {isDeleteLecturePending,handleDeleteLecture}
-   = useActionContent(course,setSections);
+   = useActionContent(course);
    // edit hook
    const {editingLectureId,editingLectureTitle,setEditingLectureTitle,updateLectureTitle,
         setEditingLectureId
-    } = useFormLecture(course,setSections);
+    } = useFormLecture(course);
 
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [previewTitle, setPreviewTitle] = useState<string>("");
@@ -102,9 +102,7 @@ fileInputRef,setUploadingLectureId,uploadingLectureId,percent,handleDestroy}:IPr
                                         e.stopPropagation();
                                         updateLectureTitle(
                                           l.id || "",
-                                          editingLectureTitle,
-                                          section.id || ""
-                                        );
+                                          editingLectureTitle                                        );
                                         setEditingLectureId(null);
                                       }}
                                     >Lưu

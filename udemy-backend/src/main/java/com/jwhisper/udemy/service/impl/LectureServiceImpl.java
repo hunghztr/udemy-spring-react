@@ -11,14 +11,15 @@ import org.springframework.stereotype.Service;
 
 import com.jwhisper.udemy.dto.course.LectureRequest;
 import com.jwhisper.udemy.dto.course.SectionResponse;
+import com.jwhisper.udemy.helper.annotation.CheckCourseOwner;
 import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.helper.mapper.CourseMapper;
 import com.jwhisper.udemy.model.Course;
 import com.jwhisper.udemy.model.Lecture;
 import com.jwhisper.udemy.model.Section;
+import com.jwhisper.udemy.repository.CourseRepository;
 import com.jwhisper.udemy.repository.LectureRepository;
 import com.jwhisper.udemy.repository.SectionRepository;
-import com.jwhisper.udemy.security.SecurityHelper;
 import com.jwhisper.udemy.service.LectureService;
 
 import jakarta.transaction.Transactional;
@@ -29,22 +30,23 @@ import lombok.extern.slf4j.Slf4j;
 public class LectureServiceImpl implements LectureService {
     private final LectureRepository lectureRepository;
     private final CourseMapper courseMapper;
-    private final SecurityHelper securityHelper;
     private final SectionRepository sectionRepository;
+    private final CourseRepository courseRepository;
     public LectureServiceImpl(LectureRepository lectureRepository,
-        CourseMapper courseMapper, SecurityHelper securityHelper,
-        SectionRepository sectionRepository
+        CourseMapper courseMapper,
+        SectionRepository sectionRepository,
+        CourseRepository courseRepository
     ) {
         this.lectureRepository = lectureRepository;
         this.courseMapper = courseMapper;
-        this.securityHelper = securityHelper;
         this.sectionRepository = sectionRepository;
+        this.courseRepository = courseRepository;
     }
 
     @Override
     @Transactional
+    @CheckCourseOwner
     public SectionResponse create(LectureRequest request,String courseId) {
-        this.securityHelper.checkCourseUser(courseId);
         Lecture lecture = this.courseMapper.toLecture(request);
         Section section = this.sectionRepository.findById(lecture.getSection().getId())
         .orElseThrow(() -> new ErrorException("Chương học không tốn tại"));
@@ -57,8 +59,10 @@ public class LectureServiceImpl implements LectureService {
 
     @Override
     @Transactional
+    @CheckCourseOwner
     public SectionResponse delete(String id, String courseId) {
-        Course course = this.securityHelper.checkCourseUser(courseId);
+        Course course = this.courseRepository.findById(courseId)
+        .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
         Lecture lecture = this.lectureRepository.findById(id)
         .orElseThrow(() -> new ErrorException("Bài học không tồn tại"));
         Section section = lecture.getSection();
@@ -76,8 +80,10 @@ public class LectureServiceImpl implements LectureService {
 
     @Override
     @Transactional
+    @CheckCourseOwner
     public SectionResponse updatedVideo(LectureRequest request, String courseId) {
-        Course course = this.securityHelper.checkCourseUser(courseId);
+        Course course = this.courseRepository.findById(courseId)
+        .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
         Lecture lecture = this.lectureRepository.findById(request.getId()).orElseThrow(
             () ->  new ErrorException("Bài học này không tồn tại")
         );
@@ -94,8 +100,8 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @CheckCourseOwner
     public SectionResponse updateName(LectureRequest request, String courseId) {
-        this.securityHelper.checkCourseUser(courseId);
         Lecture lecture = this.lectureRepository.findById(request.getId())
         .orElseThrow(() -> new ErrorException("Bài học không tồn tại"));
         lecture.setName(request.getName());

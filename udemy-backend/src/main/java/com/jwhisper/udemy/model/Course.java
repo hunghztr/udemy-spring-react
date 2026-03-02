@@ -19,6 +19,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -78,6 +79,7 @@ public class Course extends DefaultModel {
 
   @JsonIgnore
   @OneToMany(mappedBy = "course", fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+  @OrderBy("createdAt ASC")
   List<Section> sections;
 
   @JsonIgnore

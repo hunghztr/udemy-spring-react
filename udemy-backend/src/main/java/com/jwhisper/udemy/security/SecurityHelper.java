@@ -2,7 +2,6 @@ package com.jwhisper.udemy.security;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,24 +19,18 @@ import org.springframework.stereotype.Service;
 
 import com.jwhisper.udemy.dto.auth.UserToken;
 import com.jwhisper.udemy.helper.expception.ErrorException;
-import com.jwhisper.udemy.model.Course;
 import com.jwhisper.udemy.model.User;
-import com.jwhisper.udemy.repository.CourseRepository;
-import com.jwhisper.udemy.repository.UserRepository;
+
 
 @Service
 public class SecurityHelper {
     private final JwtEncoder jwtEncoder;
     private final SecretKey secretKey;
-    private final UserRepository userRepository;
-    private final CourseRepository courseRepository;
-    public SecurityHelper(JwtEncoder jwtEncoder, SecretKey secretKey,
-        UserRepository userRepository,CourseRepository courseRepository
+ 
+    public SecurityHelper(JwtEncoder jwtEncoder, SecretKey secretKey
     ) {
         this.jwtEncoder = jwtEncoder;
         this.secretKey = secretKey;
-        this.userRepository = userRepository;
-        this.courseRepository = courseRepository;
     }
 
     public static final MacAlgorithm JWT_ALGORITHM = MacAlgorithm.HS512;
@@ -122,12 +115,12 @@ public class SecurityHelper {
                 .findFirst()
                 .orElse(null);
     }
-    public Course checkCourseUser(String courseId){
-        String username = this.getCurrentUsername();
-        var user = this.userRepository.findProjectByUsername(username);
-        if(user == null) throw new ErrorException("Người dùng này không tồn tại");
-        Optional<Course> optional = this.courseRepository.findByIdAndAuthorId(courseId, user.getId());
-        if(optional.isEmpty()) throw new ErrorException("Khoá học này không thuộc về bạn");
-        return optional.get();
-    }
+    // public Course checkCourseUser(String courseId){
+    //     String username = this.getCurrentUsername();
+    //     var user = this.userRepository.findProjectByUsername(username);
+    //     if(user == null) throw new ErrorException("Người dùng này không tồn tại");
+    //     Optional<Course> optional = this.courseRepository.findByIdAndAuthorId(courseId, user.getId());
+    //     if(optional.isEmpty()) throw new ErrorException("Khoá học này không thuộc về bạn");
+    //     return optional.get();
+    // }
 }

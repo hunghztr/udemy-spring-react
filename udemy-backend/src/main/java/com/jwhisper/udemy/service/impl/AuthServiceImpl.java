@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import com.jwhisper.udemy.dto.auth.LoginRequest;
 import com.jwhisper.udemy.dto.auth.LoginResponse;
 import com.jwhisper.udemy.dto.auth.RegisterRequest;
+import com.jwhisper.udemy.helper.annotation.LogActivity;
+import com.jwhisper.udemy.helper.constant.ActivityAction;
 import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.helper.mapper.AuthMapper;
 import com.jwhisper.udemy.model.Role;
@@ -68,6 +70,7 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
+  @LogActivity(action = ActivityAction.USER_LOGIN, resource = "User")
   public LoginResponse login(LoginRequest request) throws BadCredentialsException {
     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
         request.getUsername(), request.getPassword());
@@ -120,6 +123,7 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
+  @LogActivity(action = ActivityAction.USER_LOGOUT, resource = "User")
   public LoginResponse logout(String accessToken,String refreshToken) {
     this.redisService.deleteRefreshToken(refreshToken);
     this.redisService.addBlacklistToken(accessToken, accessTokenExpiration);
