@@ -13,4 +13,5 @@ public @interface LogActivity {
     ActivityAction action();
     String resource() default "";
     int resourceIdIndex() default -1;
+    String resourceIdField() default "id";
 }

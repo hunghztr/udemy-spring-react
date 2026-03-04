@@ -4,7 +4,7 @@ import {Box,Paper,Typography,List,ListItemButton,
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { deleteNotification, getNotifications, markNotification } from "@/redux/thunks/notification.thunk";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {  useMemo, useState } from "react";
 import { formatDateTime, fromNow } from "@/helpers/day.time";
 import LoadMoreTrigger from "@/components/notification/load.more.trigger";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,7 +15,7 @@ import { getDefault } from "@/redux/slices/notification.slice";
 
 export default function Notification() {
     const [collapsed, setCollapsed] = useState(true);
-    const fetchedRef = useRef(false)
+    
     const [page, setPage] = useState(0);
     const dispatch = useAppDispatch();
 
@@ -23,11 +23,7 @@ export default function Notification() {
         (state) => state.notifications
     );
 
-    useEffect(() => {
-        if (fetchedRef.current) return;
-        fetchedRef.current = true;
-        dispatch(getNotifications({ page: 0, size: 10 }));
-    }, [dispatch]);
+    
 
     const sortList = useMemo(() => {
         return [...items].sort(

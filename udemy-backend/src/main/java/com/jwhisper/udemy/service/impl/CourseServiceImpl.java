@@ -68,7 +68,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     @LogActivity(action = ActivityAction.CREATE_COURSE, resource = "Course")
-    public boolean isCreated(CourseRequest request)  {
+    public CourseResponse create(CourseRequest request)  {
         if(this.courseRepository.existsByName(request.getName())){
             throw new ErrorException("Tên khoá học đã tồn tại");
         }
@@ -90,7 +90,7 @@ public class CourseServiceImpl implements CourseService {
         course.setCategories(categories);
         this.courseRepository.save(course);
         
-        return true;
+        return this.courseMapper.toCourseResponse(course);
     }
     @Override
     public Pagination<CourseResponse> getAllByAuthor(Specification<Course> spec, Pageable pageable){
@@ -144,7 +144,8 @@ public class CourseServiceImpl implements CourseService {
     }
     @Override
     @CheckCourseOwner
-    public boolean isDescriptionUpdated(CourseRequest request)  {
+    @LogActivity(action = ActivityAction.UPDATE_COURSE, resource = "Course")
+    public CourseResponse updateDesc(CourseRequest request)  {
         Course course = this.courseRepository.findById(request.getId())
         .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
         String desc = this.parseToList(request.getDescription());
@@ -152,41 +153,43 @@ public class CourseServiceImpl implements CourseService {
         course.setDescription(desc);
         course.setRequirement(require);
 
-        this.courseRepository.save(course);
+        course = this.courseRepository.save(course);
         this.searchService.indexCourse(course.getId());
-        return true;
+        return this.courseMapper.toCourseResponse(course);
      
     }
     String parseToList(String raw) {
-    try {
-        List<String> list = objectMapper.readValue(
-            raw, new TypeReference<List<String>>() {}
-        );
-        return String.join(", ", list);
-    } catch (Exception e) {
-        throw new ErrorException("Requirement format invalid");
+        try {
+            List<String> list = objectMapper.readValue(
+                raw, new TypeReference<List<String>>() {}
+            );
+            return String.join(", ", list);
+        } catch (Exception e) {
+            throw new ErrorException("Requirement format invalid");
+        }
     }
-}
 
     @Override
     @CheckCourseOwner
-    public boolean isImageUpdate(CourseRequest request) {
+    @LogActivity(action = ActivityAction.UPDATE_COURSE, resource = "Course")
+    public CourseResponse updateImage(CourseRequest request) {
         Course course = this.courseRepository.findById(request.getId())
         .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
         course.setImagePath(request.getImagePath());
-        this.courseRepository.save(course);
+        course = this.courseRepository.save(course);
         this.searchService.indexCourse(course.getId());
-        return true;
+        return this.courseMapper.toCourseResponse(course);
     }
     @Override
     @CheckCourseOwner
-    public boolean isPriceUpdated(CourseRequest request) {
+    @LogActivity(action = ActivityAction.UPDATE_COURSE, resource = "Course")
+    public CourseResponse updatePrice(CourseRequest request) {
         Course course = this.courseRepository.findById(request.getId())
         .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
         course.setPrice(request.getPrice());
-        this.courseRepository.save(course);
+        course = this.courseRepository.save(course);
         this.searchService.indexCourse(course.getId());
-        return true;
+        return this.courseMapper.toCourseResponse(course);
     }
     @Override
     public boolean delete(String id)  {

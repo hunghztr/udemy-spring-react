@@ -16,7 +16,7 @@ interface ConfirmDialogProps {
   description?: string;
   confirmText?: string;
   cancelText?: string;
-  isLoading?: boolean;   // ✅ thêm
+  isLoading?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -27,7 +27,7 @@ export default function ConfirmDialog({
   description = "Bạn có chắc chắn muốn thực hiện hành động này?",
   confirmText = "Xoá",
   cancelText = "Huỷ",
-  isLoading = false,     // ✅ default
+  isLoading = false,
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
@@ -57,7 +57,7 @@ export default function ConfirmDialog({
       <DialogActions sx={{ px: 3, pb: 2 }}>
         <Button
           onClick={onCancel}
-          disabled={isLoading}          // ✅ disable khi loading
+          disabled={isLoading}
           color="inherit"
           sx={{ textTransform: "none" }}
         >
@@ -66,7 +66,7 @@ export default function ConfirmDialog({
 
         <Button
           onClick={onConfirm}
-          disabled={isLoading}          // ✅ disable khi loading
+          disabled={isLoading}
           color="error"
           variant="contained"
           sx={{

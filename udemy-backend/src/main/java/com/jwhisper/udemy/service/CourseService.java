@@ -13,10 +13,10 @@ import com.jwhisper.udemy.model.Course;
 import com.jwhisper.udemy.projection.course.CourseProject;
 
 public interface CourseService {
-    boolean isPriceUpdated(CourseRequest request);
-    boolean isImageUpdate(CourseRequest request);
-    boolean isDescriptionUpdated(CourseRequest request);
-    boolean isCreated(CourseRequest request);
+    CourseResponse updateImage(CourseRequest request);
+    CourseResponse updateDesc(CourseRequest request);
+    CourseResponse updatePrice(CourseRequest request);
+    CourseResponse create(CourseRequest request);
     boolean delete(String id);
     boolean active(String id);
     boolean deleteByInstructor(String id);

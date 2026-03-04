@@ -48,8 +48,8 @@ public class CourseController {
     @PostMapping()
     @ApiMessage("Tạo mới khoá học thành công")
     public ResponseEntity<?> create(@RequestBody CourseRequest request)  {
-        boolean isCreated = this.courseService.isCreated(request);
-        return ResponseEntity.ok().body(isCreated);
+        this.courseService.create(request);
+        return ResponseEntity.ok().body(true);
     }
 
     @GetMapping("/get-courses-by-author")
@@ -72,8 +72,8 @@ public class CourseController {
     @ApiMessage("Cập nhật thông tin khoá học thành công")
     public ResponseEntity<?> putDescription(@PathVariable("id") String id, @RequestBody CourseRequest entity)  {
         entity.setId(id);
-        boolean isUpdated = this.courseService.isDescriptionUpdated(entity);
-        return ResponseEntity.ok(isUpdated);
+        this.courseService.updateDesc(entity);
+        return ResponseEntity.ok(true);
     }
     @PostMapping("/section/{courseId}")
     @ApiMessage("Thêm mới chương học thành công")
@@ -140,15 +140,15 @@ public class CourseController {
     @ApiMessage("Cập nhật hình ảnh khoá học thành công")
     public ResponseEntity<?> updateImage(@PathVariable("id") String id, @RequestBody CourseRequest request) {
         request.setId(id);
-        boolean isUpdated = this.courseService.isImageUpdate(request);
-        return ResponseEntity.ok(isUpdated);
+        this.courseService.updateImage(request);
+        return ResponseEntity.ok(true);
     }
     @PutMapping("/update-price/{id}")
     @ApiMessage("Cập nhật giá tiền")
     public ResponseEntity<?> updatePrice(@PathVariable("id") String id, @RequestBody CourseRequest request) {
         request.setId(id);
-        boolean isUpdated = this.courseService.isPriceUpdated(request);
-        return ResponseEntity.ok(isUpdated);
+        this.courseService.updatePrice(request);
+        return ResponseEntity.ok(true);
     }
     @PostMapping("/delete/{id}")
     @ApiMessage("Xoá mềm khoá học thành công")

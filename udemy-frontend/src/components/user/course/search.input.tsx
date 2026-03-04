@@ -119,9 +119,14 @@ export default function SearchInput() {
   const handleDelete = (e: React.MouseEvent, keyword: string) => {
     e.stopPropagation();
     setDeletingItem(keyword);
+
     mutate(keyword, {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["search/history"] });
+        queryClient.setQueryData<IRecommendResponse[]>(
+          ["search/history"],
+          old => old?.filter(item => item.keyword !== keyword) ?? []
+        );
+
         setDeletingItem(null);
       },
       onError: () => {
