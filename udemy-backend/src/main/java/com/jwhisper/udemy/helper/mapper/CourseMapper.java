@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
 import com.jwhisper.udemy.dto.course.CourseDetailResponse;
+import com.jwhisper.udemy.dto.course.CourseInfoResponse;
 import com.jwhisper.udemy.dto.course.CourseRequest;
 import com.jwhisper.udemy.dto.course.CourseResponse;
 import com.jwhisper.udemy.dto.course.LectureRequest;
@@ -14,7 +15,8 @@ import com.jwhisper.udemy.model.Course;
 import com.jwhisper.udemy.model.Lecture;
 import com.jwhisper.udemy.model.Section;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring",uses = UserMapper.class,
+ unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CourseMapper {
     CourseResponse toCourseResponse(Course course);
     CourseDetailResponse toCourseDetailResponse(Course course);
@@ -23,5 +25,6 @@ public interface CourseMapper {
     Course toCourse(CourseRequest request);
     Section toSection(SectionRequest request);
     Lecture toLecture(LectureRequest request);
+    CourseInfoResponse toCourseInfoResponse(Course course);
 }
 

@@ -11,6 +11,7 @@ import {
 import { useState } from "react";
 import type { ICourseSearchResponse } from "@/type/course.module";
 import { formatVnd } from "@/helpers/format.price";
+import { slugify } from "@/helpers/slugify";
 
 interface Props {
   course: ICourseSearchResponse;
@@ -20,8 +21,13 @@ export default function SearchCourseCard({ course }: Props) {
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
 
+  const handleClick = () => {
+    const slug = slugify(course.name);
+    window.open(`/course/${slug}-${course.id}.html`, "_blank");
+  };
   return (
     <Card
+      onClick={handleClick}
       sx={{
         height: "100%",
         borderRadius: 3,

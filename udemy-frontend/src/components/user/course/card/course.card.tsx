@@ -1,39 +1,168 @@
+import { slugify } from "@/helpers/slugify";
+import type { ICourseSearchResponse } from "@/type/course.module";
 import { Box, Typography } from "@mui/material";
+import { useState } from "react";
 
-function CourseCard() {
+function CourseCard({ course }: { course: ICourseSearchResponse }) {
+  const [loaded, setLoaded] = useState(false);
+
+  const imgSrc = course.imagePath
+    ? course.imagePath.startsWith("blob:")
+      ? course.imagePath
+      : `${import.meta.env.VITE_CLOUDINARY_WATCH_IMG}/${course.imagePath}`
+    : undefined;
+
+  const handleClick = () => {
+    const slug = slugify(course.name);
+    window.open(`/course/${slug}-${course.id}.html`, "_blank");
+  };
+
   return (
     <Box
-      sx={{
-        bgcolor: "#fff",
-        borderRadius: 1,
+      onClick={handleClick}
+      sx={(theme) => ({
+        bgcolor: "background.paper",
+        borderRadius: 3,
         overflow: "hidden",
-        boxShadow: "0 2px 8px rgba(0,0,0,.08)",
+        border: `1px solid ${theme.palette.divider}`,
         cursor: "pointer",
-        transition: ".25s",
+        transition: "all .25s",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+
+        // shadow nhẹ mặc định
+        boxShadow: theme.shadows[1],
+
         "&:hover": {
-          transform: "translateY(-4px)",
-          boxShadow: "0 6px 20px rgba(0,0,0,.15)"
+          transform: "translateY(-6px)",
+          boxShadow: theme.shadows[6],
+          borderColor: theme.palette.primary.main
         }
-      }}
+      })}
     >
-      <Box sx={{ height: 140, bgcolor: "grey.300" }} />
+      {/* IMAGE */}
+      <Box
+        sx={{
+          position: "relative",
+          height: 150,
+          overflow: "hidden",
+          bgcolor: "grey.200"
+        }}
+      >
+        {/* BLUR PLACEHOLDER */}
+        {imgSrc && (
+          <Box
+            component="img"
+            src={imgSrc}
+            alt="blur"
+            sx={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              filter: "blur(18px)",
+              transform: "scale(1.1)",
+              opacity: loaded ? 0 : 1,
+              transition: "opacity .4s"
+            }}
+          />
+        )}
 
-      <Box sx={{ p: 1 }}>
-        <Typography fontSize={14} fontWeight={600} lineHeight={1.3}>
-          React + Spring Boot Full Course
+        {/* REAL IMAGE */}
+        <Box
+          component="img"
+          src={imgSrc}
+          alt={course.name}
+          loading="lazy"
+          onLoad={() => setLoaded(true)}
+          sx={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            position: "relative",
+            opacity: loaded ? 1 : 0,
+            transition: "opacity .4s, transform .4s",
+
+            ".MuiBox-root:hover &": {
+              transform: "scale(1.06)"
+            }
+          }}
+        />
+
+        {/* GRADIENT OVERLAY */}
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(to bottom, rgba(0,0,0,0) 65%, rgba(0,0,0,0.18))"
+          }}
+        />
+      </Box>
+
+      {/* CONTENT */}
+      <Box sx={{ p: 1.5, flexGrow: 1 }}>
+        {/* COURSE NAME */}
+        <Typography
+          fontSize={14}
+          fontWeight={700}
+          lineHeight={1.3}
+          sx={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            mb: 0.5
+          }}
+        >
+          {course.name}
         </Typography>
 
-        <Typography fontSize={12} color="text.secondary">
-          Trần Hùng
+        {/* AUTHOR */}
+        <Typography
+          fontSize={12}
+          color="text.secondary"
+          sx={{ mb: 0.5 }}
+        >
+          {course.authorName}
         </Typography>
 
-        <Typography fontSize={12}>
-          ⭐ 4.8 <span style={{ color: "#777" }}>(1,230)</span>
-        </Typography>
+        {/* RATING */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 0.5,
+            mb: 0.5
+          }}
+        >
+          <Typography
+            fontSize={12}
+            fontWeight={700}
+            color="warning.main"
+          >
+            {course.rating.toFixed(1)}
+          </Typography>
 
-        <Typography fontWeight={700}>₫299,000</Typography>
+          <Typography fontSize={12}>⭐</Typography>
+
+          <Typography fontSize={12} color="text.secondary">
+            ({course.sold})
+          </Typography>
+        </Box>
+
+        {/* PRICE */}
+        <Typography
+          fontWeight={800}
+          fontSize={16}
+          color="primary.main"
+        >
+          ₫{course.price.toLocaleString()}
+        </Typography>
       </Box>
     </Box>
   );
 }
+
 export default CourseCard;

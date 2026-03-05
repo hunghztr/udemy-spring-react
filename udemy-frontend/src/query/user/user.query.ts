@@ -1,4 +1,4 @@
-import type { IProfile, IUser, IUserResponse } from "@/type/user.module";
+import type { IProfile, IUser, IUserDetailResponse, IUserResponse } from "@/type/user.module";
 import { activate, create, getAll, getById, update } from "../api.crud.query";
 import type { IPagination, } from "@/type/pagination";
 
@@ -9,6 +9,12 @@ export const updateProfile = (data: IProfile) => {
     data
   });
 };
+export const getProfile = (id : string) =>{
+    return getById<IUserDetailResponse>({
+        url:"/profiles",
+        id
+    })
+}
 export const updateUser = (data : IUser) =>{
     return update<IUser>({
     url:"/admin/users",

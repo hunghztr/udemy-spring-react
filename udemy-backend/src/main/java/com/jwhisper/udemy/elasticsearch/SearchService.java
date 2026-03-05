@@ -1,4 +1,6 @@
-package com.jwhisper.udemy.service;
+package com.jwhisper.udemy.elasticsearch;
+
+import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
@@ -9,4 +11,5 @@ public interface SearchService {
     void indexCourse(String courseId);
     void deleteCourse(String courseId);
     Pagination<CourseSearchResponse> searchFuzzi(Pageable pageable,String keyword);
+    List<CourseSearchResponse> getFeaturestCourses();
 }

@@ -1,4 +1,4 @@
-package com.jwhisper.udemy.service;
+package com.jwhisper.udemy.redis;
 
 import java.util.Set;
 

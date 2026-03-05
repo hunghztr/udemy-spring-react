@@ -1,4 +1,4 @@
-package com.jwhisper.udemy.service.impl;
+package com.jwhisper.udemy.redis.impl;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -7,7 +7,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import com.jwhisper.udemy.service.HistoryRedisService;
+
+import com.jwhisper.udemy.redis.HistoryRedisService;
 
 @Service
 public class HistoryRedisServiceImpl implements HistoryRedisService{

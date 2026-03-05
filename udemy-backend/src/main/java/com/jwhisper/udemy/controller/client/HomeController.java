@@ -5,6 +5,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,17 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.dto.category.CategoryParentResponse;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
-import com.jwhisper.udemy.service.CategoryService;
+import com.jwhisper.udemy.service.HomeService;
 
 
 @RestController
 @RequestMapping("/api/v1/client")
 public class HomeController {
-    private final CategoryService categoryService;
-
-    public HomeController(CategoryService categoryService
-    ){
-        this.categoryService = categoryService;
+    private final HomeService homeService;
+    public HomeController(HomeService homeService){
+        this.homeService = homeService;
     }
     
     @GetMapping("/categories/get-all-parents")
@@ -33,7 +32,18 @@ public class HomeController {
     @RequestParam(name = "keyword",required = false) String keyword)  {
 
         Pagination<CategoryParentResponse> parents =
-         this.categoryService.getAllParents(pageable,isActive);
+         this.homeService.getAllParents(pageable,isActive);
         return ResponseEntity.ok().body(parents);
     }
+    @GetMapping("/get-course-detail/{id}")
+    @ApiMessage("Lấy chi tiết khoá học thành công")
+     public ResponseEntity<?> getCourseDetail(@PathVariable("id") String id)  {
+        return ResponseEntity.ok().body(this.homeService.getCourseDetail(id));
+    }
+    @GetMapping("/get-interested-courses")
+    @ApiMessage("Lấy khoá học nổi bật dành cho bạn thành công")
+    public ResponseEntity<?> getInterestedCourse() {
+        return ResponseEntity.ok(this.homeService.getInterestedCourses());
+    }
+    
 }

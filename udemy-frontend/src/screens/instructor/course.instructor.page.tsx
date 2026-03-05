@@ -42,7 +42,7 @@ export default function CourseInstructorPage() {
   const STATUS_MAP = getCourseStatusMap(theme);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"newest" | "oldest">("newest");
-  const [active, setActive] = useState<boolean>(true);
+  const [active, setActive] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [meta, setMeta] = useState<IMetaResponse>({
     currentPage: 1,

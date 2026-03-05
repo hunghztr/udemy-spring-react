@@ -1,4 +1,4 @@
-package com.jwhisper.udemy.service.impl;
+package com.jwhisper.udemy.redis.impl;
 
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jwhisper.udemy.service.HomeRedisService;
+import com.jwhisper.udemy.redis.HomeRedisService;
 
 @Service
 public class HomeRedisServiceImpl implements HomeRedisService {

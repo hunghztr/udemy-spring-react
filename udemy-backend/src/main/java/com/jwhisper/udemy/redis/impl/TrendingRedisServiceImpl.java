@@ -1,4 +1,4 @@
-package com.jwhisper.udemy.service.impl;
+package com.jwhisper.udemy.redis.impl;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -8,7 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
-import com.jwhisper.udemy.service.TrendingRedisService;
+import com.jwhisper.udemy.redis.TrendingRedisService;
 
 @Service
 public class TrendingRedisServiceImpl implements TrendingRedisService{

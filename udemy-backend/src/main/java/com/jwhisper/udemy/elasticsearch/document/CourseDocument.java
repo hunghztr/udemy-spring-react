@@ -1,4 +1,4 @@
-package com.jwhisper.udemy.document;
+package com.jwhisper.udemy.elasticsearch.document;
 
 import java.util.List;
 

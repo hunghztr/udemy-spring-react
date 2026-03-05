@@ -1,4 +1,4 @@
-package com.jwhisper.udemy.controller.instructor;
+package com.jwhisper.udemy.controller.client;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

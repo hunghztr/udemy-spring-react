@@ -1,8 +1,8 @@
 import api from "@/api/api";
 import type { IApiResponse } from "@/type/api.response";
-import { type ICourse, type ICourseDetailResponse, type ICourseResponse, type ILecture, type ISection, type ISectionResponse } from "@/type/course.module";
+import { type ICourseInfoResponse, type ICourse, type ICourseDetailResponse, type ICourseResponse, type ILecture, type ISection, type ISectionResponse, type ICourseSearchResponse } from "@/type/course.module";
 import type { IPagination, IPaginationResponse } from "@/type/pagination";
-import { activate, create, getAll, getById, remove, update } from "../api.crud.query";
+import { activate, create, getAll, getAllNoPage, getById, remove, update } from "../api.crud.query";
 
 
 export const getCoursesByAuthor = async ({
@@ -37,6 +37,17 @@ export const getCoursesByAuthor = async ({
   return res.data;
 };
 
+export const getInterestedCourses = () =>{
+    return getAllNoPage<ICourseSearchResponse[]>({
+        url:"/client/get-interested-courses"
+    })
+}
+export const getCourseInfo = (id : string) =>{
+    return getById<ICourseInfoResponse>({
+        url:"/client/get-course-detail",
+        id
+    })
+}
 
 export const createCourse = (data : ICourse) =>{
     return create<ICourse>({

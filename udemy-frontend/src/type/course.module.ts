@@ -1,3 +1,5 @@
+import type { ICategoryResponse } from "./category.module";
+import type { IUserResponse } from "./user.module";
 
 export interface ICourse{
     id? : string;
@@ -75,4 +77,20 @@ export interface ICourseSearchResponse{
 export interface IRecommendResponse{
     keyword:string;
     type:"HISTORY"|"TRENDING"
+}
+export interface ICourseInfoResponse{
+    id : string;
+    name : string;
+    description : string;
+    requirement : string;
+    price : number;
+    hour : number;
+    sold : number;
+    star : number;
+    totalSection : number;
+    imagePath : string;
+    sections : ISectionResponse[];
+    updatedAt : string;
+    author : IUserResponse;
+    categories : ICategoryResponse[];
 }

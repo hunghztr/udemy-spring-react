@@ -35,6 +35,7 @@ import com.jwhisper.udemy.helper.constant.LoginMethod;
 import com.jwhisper.udemy.helper.expception.CustomAuthenticationEntryPoint;
 import com.jwhisper.udemy.model.Role;
 import com.jwhisper.udemy.model.User;
+import com.jwhisper.udemy.redis.AuthRedisService;
 import com.jwhisper.udemy.repository.RoleRepository;
 import com.jwhisper.udemy.repository.UserRepository;
 import com.jwhisper.udemy.security.CheckBlackListToken;
@@ -42,7 +43,6 @@ import com.jwhisper.udemy.security.CookieBearerTokenResolver;
 import com.jwhisper.udemy.security.CustomOAuth2Success;
 import com.jwhisper.udemy.security.SecurityHelper;
 import com.jwhisper.udemy.service.AuthService;
-import com.jwhisper.udemy.service.AuthRedisService;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 
 @Configuration

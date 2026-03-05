@@ -3,6 +3,9 @@ import { Box, IconButton, Typography } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CourseCard from "./card/course.card";
+import { useGetAll } from "@/query/use.crud.query";
+import { getInterestedCourses } from "@/query/course/course.query";
+import type { ICourseSearchResponse } from "@/type/course.module";
 
 export default function FeaturedCourses() {
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -11,6 +14,7 @@ export default function FeaturedCourses() {
     dragFree: true
   });
 
+  const { data } = useGetAll<ICourseSearchResponse[]>('courses/get-interested-courses',getInterestedCourses)
   return (
     <Box sx={{ px: 4, py: 6 }}>
       {/* ===== TITLE ===== */}
@@ -66,19 +70,19 @@ export default function FeaturedCourses() {
               flexWrap: "nowrap"
             }}
           >
-            {[...Array(12)].map((_, i) => (
+            {data?.map((course) => (
               <Box
-                key={i}
+                key={course.id}
                 sx={{
                   flex: {
                     xs: "0 0 80%",
                     sm: "0 0 45%",
-                    md: "0 0 20%" // 5 item desktop
+                    md: "0 0 20%"
                   },
                   minWidth: 0
                 }}
               >
-                <CourseCard />
+                <CourseCard course={course} />
               </Box>
             ))}
           </Box>

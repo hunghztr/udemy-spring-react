@@ -19,7 +19,8 @@ export const useSave = <Res, Req>(
 ) => {
   return useMutation<Res, AxiosError<IApiResponse<string>>, Req>({
     mutationKey: [key],
-    mutationFn: (data) => apiFn(data)
+    mutationFn: (data) => apiFn(data),
+    retry: false,
   });
 };
 

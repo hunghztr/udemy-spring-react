@@ -6,6 +6,7 @@ import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.dto.user.ProfileRequest;
 import com.jwhisper.udemy.dto.user.UserRequest;
 import com.jwhisper.udemy.model.User;
+import com.jwhisper.udemy.projection.user.UserDetail;
 import com.jwhisper.udemy.projection.user.UserProject;
 
 public interface UserService {
@@ -18,4 +19,5 @@ public interface UserService {
   UserProject get(String id);
   UserProject getByCourseId(String courseId);
   boolean updateProfile(ProfileRequest request);
+  UserDetail getProfile(String id);
 }

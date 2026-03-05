@@ -1,4 +1,4 @@
-package com.jwhisper.udemy.service;
+package com.jwhisper.udemy.redis;
 
 public interface AuthRedisService {
   void storeRefreshToken(String username, String token, long ttlSeconds);

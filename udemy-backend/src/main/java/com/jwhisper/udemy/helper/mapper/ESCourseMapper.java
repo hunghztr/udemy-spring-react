@@ -6,8 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
-import com.jwhisper.udemy.document.CourseDocument;
 import com.jwhisper.udemy.dto.course.CourseSearchResponse;
+import com.jwhisper.udemy.elasticsearch.document.CourseDocument;
 import com.jwhisper.udemy.model.Category;
 import com.jwhisper.udemy.model.Course;
 

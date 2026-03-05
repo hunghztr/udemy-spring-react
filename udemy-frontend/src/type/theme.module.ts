@@ -9,7 +9,11 @@ declare module "@mui/material/styles" {
       active: string;
       border: string;
     };
-
+    hero: {
+      background: string;
+      text: string;
+      chipBg: string;
+    };
     courseStatus: {
       pending: string;
       published: string;
@@ -23,6 +27,11 @@ declare module "@mui/material/styles" {
   }
 
   interface PaletteOptions {
+    hero?: {
+      background: string;
+      text: string;
+      chipBg: string;
+    };
     sidebar?: {
       main: string;
       text: string;

@@ -4,7 +4,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtException;
 
-import com.jwhisper.udemy.service.AuthRedisService;
+import com.jwhisper.udemy.redis.AuthRedisService;
 
 public class CheckBlackListToken implements JwtDecoder {
 

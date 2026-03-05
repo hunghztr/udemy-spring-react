@@ -1,7 +1,10 @@
 import Loading from "@/components/loading";
 import {  Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom"
-import { AdminHomePage, AdminLayout, AdminNotifyPage, AuthPage, CategoryManagementPage, CourseInstructorPage, CourseManagementPage, CreateCoursePage, EditCoursePage, ForgotPasswordPage, HomePage, InstructorLayout, InstructorNotifyPage, Layout, OAuth2Callback, ProfileInstructorPage, SearchPage, UserManagementPage } from "./lazy";
+import { AdminHomePage, AdminLayout, AdminNotifyPage, AuthPage, CategoryManagementPage,
+   CourseInstructorPage, CourseManagementPage, CreateCoursePage, EditCoursePage, ForgotPasswordPage,
+    HomePage, InstructorLayout, InstructorNotifyPage, Layout, OAuth2Callback, ProfileInstructorPage,
+     SearchPage, UserManagementPage, CourseDetailPage } from "./lazy";
 import ProtectedLayout from "@/components/admin/layout/protected.layout";
 
 export const router = createBrowserRouter([
@@ -16,6 +19,7 @@ export const router = createBrowserRouter([
       { path: "/search", element: <SearchPage />},
       { path: "/auth", element: <AuthPage /> },
       { path: "/forgot-password", element: <ForgotPasswordPage /> },
+      { path: "/course/:slug", element: <CourseDetailPage /> },
     ],
   },
   {

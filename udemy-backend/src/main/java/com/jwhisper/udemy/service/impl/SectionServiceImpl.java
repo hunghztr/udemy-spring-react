@@ -31,9 +31,11 @@ public class SectionServiceImpl implements SectionService {
     }
     @Override
     @CheckCourseOwner
+    @Transactional
     public SectionResponse create(SectionRequest request,String courseId) {
         Course course = this.courseRepository.findById(courseId)
         .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
+        course.setTotalSection(course.getTotalSection() + 1);
         Section section = this.courseMapper.toSection(request);
         section.setCourse(course);
         section = this.sectionRepository.save(section);
@@ -45,6 +47,7 @@ public class SectionServiceImpl implements SectionService {
     public boolean isDeleted(String id,String courseId) {
         Course course = this.courseRepository.findById(courseId)
         .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
+        course.setTotalSection(course.getTotalSection() - 1);
         this.sectionRepository.deleteById(id);
         double totalHour =
         sectionRepository.sumHourByCourseId(course.getId());

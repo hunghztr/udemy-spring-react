@@ -10,7 +10,11 @@ const theme = createTheme({
       dark: "#4b0082",
       contrastText: "#ffffff",
     },
-
+    hero: {
+      background: "#1c1d1f",
+      text: "#ffffff",
+      chipBg: "rgba(255,255,255,0.12)"
+    },
     sidebar: {
       main: "#111116",
       text: "#ffffff",

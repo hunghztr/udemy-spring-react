@@ -31,7 +31,6 @@ export default function UpdateDescription({ course }: IProps) {
     removeObjective,
     removeRequirement,
   } = useUpdateDescCourse(course);
-
   const isSameArray = (a: string[], b: string[]) =>
     JSON.stringify(a) === JSON.stringify(b);
 

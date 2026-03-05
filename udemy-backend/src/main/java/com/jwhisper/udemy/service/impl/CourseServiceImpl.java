@@ -15,6 +15,7 @@ import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.dto.course.CourseDetailResponse;
 import com.jwhisper.udemy.dto.course.CourseRequest;
 import com.jwhisper.udemy.dto.course.CourseResponse;
+import com.jwhisper.udemy.elasticsearch.SearchService;
 import com.jwhisper.udemy.helper.annotation.CheckCourseOwner;
 import com.jwhisper.udemy.helper.annotation.LogActivity;
 import com.jwhisper.udemy.helper.constant.ActivityAction;
@@ -33,7 +34,6 @@ import com.jwhisper.udemy.repository.CourseRepository;
 import com.jwhisper.udemy.repository.UserRepository;
 import com.jwhisper.udemy.security.SecurityHelper;
 import com.jwhisper.udemy.service.CourseService;
-import com.jwhisper.udemy.service.SearchService;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -239,5 +239,6 @@ public class CourseServiceImpl implements CourseService {
     this.searchService.indexCourse(id);
     return true;
   }
+  
     
 }

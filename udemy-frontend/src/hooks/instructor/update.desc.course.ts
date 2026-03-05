@@ -49,24 +49,24 @@ const removeRequirement = (index: number) => {
   useEffect(() => {
     if (!course) return;
 
-    try {
-      if (course.description) {
-        const descArr = JSON.parse(course.description);
-        if (Array.isArray(descArr)) {
-          setObjectives(descArr);
-          setInitialObjectives(descArr);
-        }
-      }
+    if (course.description) {
+      const descArr = course.description
+        .split(", ")
+        .map(item => item.trim())
+        .filter(Boolean);
 
-      if (course.requirement) {
-        const reqArr = JSON.parse(course.requirement);
-        if (Array.isArray(reqArr)) {
-          setRequirements(reqArr);
-          setInitialRequirements(reqArr);
-        }
-      }
-    } catch (err) {
-      console.error("Parse description/requirement failed", err);
+      setObjectives(descArr);
+      setInitialObjectives(descArr);
+    }
+
+    if (course.requirement) {
+      const reqArr = course.requirement
+        .split(", ")
+        .map(item => item.trim())
+        .filter(Boolean);
+
+      setRequirements(reqArr);
+      setInitialRequirements(reqArr);
     }
   }, [course]);
     /* ===== SAVE ===== */

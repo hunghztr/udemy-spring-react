@@ -7,141 +7,157 @@ import type { ICourseDetailResponse, Status } from '@/type/course.module';
 import type { INotification } from '@/type/notification.module';
 import type { IUserResponse } from '@/type/user.module';
 import { showToast } from '@/utils/toast';
-import { Drawer } from "@mui/material";
-import { Box, Button, Divider, Paper, Stack, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { useEffect, useState } from 'react';
-interface Props{
-    course:ICourseDetailResponse|null;
-    handleSendNotify: (request : INotification) => void
+import {
+  Box,
+  Button,
+  Divider,
+  Drawer,
+  Paper,
+  Stack,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+} from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
+
+interface Props {
+  course: ICourseDetailResponse | null;
+  handleSendNotify: (request: INotification) => Promise<void> | void;
 }
-export default function PassedCourse({course,handleSendNotify}:Props) {
-    const {data} = useGetById<IUserResponse>('users/get-by-course',getUserByCourse,course?.id||"")
-    const [rejectReason, setRejectReason] = useState("");
-    const [openReject, setOpenReject] = useState(false);
-    const {handleDisable,handleEnable,isPendingDisable,isPendingEnable} = 
-              useActionHook({mutationDisable:"courses/disable",mutationEnable:"courses/enable",
-                disableMethod:disableCourse,enableMethod:enableCourse
-              });
-    const [adminStatus, setAdminStatus] = useState<Status | null>(null);
-    useEffect(() =>{
-      if(course) setAdminStatus(course.status);
-    },[course])
-    const handleSendResult = async () => {
+
+export default function PassedCourse({ course, handleSendNotify }: Props) {
+  const { data } = useGetById<IUserResponse>(
+    'users/get-by-course',
+    getUserByCourse,
+    course?.id || ''
+  );
+
+  const { handleDisable, handleEnable } = useActionHook({
+    mutationDisable: 'courses/disable',
+    mutationEnable: 'courses/enable',
+    disableMethod: disableCourse,
+    enableMethod: enableCourse,
+  });
+
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [adminStatus, setAdminStatus] = useState<Status>('PUBLISHED');
+  const [message, setMessage] = useState('');
+  const submittingRef = useRef(false);
+
+  useEffect(() => {
+    if (course) setAdminStatus(course.status);
+  }, [course]);
+
+  const handleSendResult = async () => {
     if (!course) return;
+    if (submittingRef.current) return;
 
-    let mess = "";
-
-    if (adminStatus === "PUBLISHED") {
-      handleEnable(course.id);
-      mess = "Khoá học của bạn đã được xét duyệt";
+    if (adminStatus === 'REJECTED' && !message.trim()) {
+      showToast('Vui lòng nhập lý do từ chối', 'error');
+      return;
     }
 
-    if (adminStatus === "REJECTED") {
-      if (!rejectReason.trim()) {
-        showToast("Vui lòng nhập lý do từ chối", "error");
-        return;
+    submittingRef.current = true;
+
+    try {
+      let finalMessage = message;
+
+      if (adminStatus === 'PUBLISHED') {
+        await handleEnable(course.id);
+        finalMessage ||= 'Khoá học của bạn đã được xét duyệt';
       }
-      handleDisable(course.id);
-      mess = `Khoá học của bạn đã bị từ chối.\nLý do: ${rejectReason}`;
+
+      if (adminStatus === 'REJECTED') {
+        await handleDisable(course.id);
+        finalMessage ||= 'Khoá học của bạn đã bị từ chối';
+      }
+
+      await handleSendNotify({
+        title: 'Thông báo duyệt khoá học',
+        message: finalMessage,
+        url: `/instructor/edit-course/${course.id}`,
+        user: { username: data?.username || '' },
+      });
+
+      query.invalidateQueries({ queryKey: ['notifications/create'] });
+      showToast('Đã gửi kết quả xét duyệt');
+
+      setOpenDrawer(false);
+      setMessage('');
+    } catch (err) {
+      console.error(err);
+      showToast('Có lỗi xảy ra, vui lòng thử lại', 'error');
+    } finally {
+      submittingRef.current = false; // 🔓 UNLOCK
     }
-
-    handleSendNotify({
-      title: "Thông báo duyệt khoá học",
-      message: mess,
-      url: `/instructor/edit-course/${course.id}`,
-      user: { username: data?.username || "" },
-    });
-
-    query.invalidateQueries({queryKey:['notifications/create']});
-    showToast("Lưu thành công thông tin");
   };
 
   return (
     <Box mb={3}>
-                <Paper
-                  variant="outlined"
-                  sx={{
-                    p: 2,
-                    borderRadius: 2,
-                    bgcolor: "rgba(0,0,0,0.02)",
-                  }}
-                >
-                  <Stack spacing={2}>
-                    <ToggleButtonGroup
-                      fullWidth
-                      exclusive
-                      value={adminStatus}
-                      onChange={(_, value) => {
-                        if (value) setAdminStatus(value);
-                      }}
-                    >
-                      <ToggleButton value="PUBLISHED" color="success">
-                        Publish
-                      </ToggleButton>
+      <Paper
+        variant="outlined"
+        sx={{ p: 2, borderRadius: 2, bgcolor: 'rgba(0,0,0,0.02)' }}
+      >
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          onClick={() => setOpenDrawer(true)}
+        >
+          Phê duyệt khoá học
+        </Button>
+      </Paper>
 
-                      <ToggleButton
-                        value="REJECTED"
-                        color="error"
-                        onClick={() => {
-                          setAdminStatus("REJECTED");
-                          setOpenReject(true);
-                        }}
-                      >
-                        Reject
-                      </ToggleButton>
+      <Drawer
+        anchor="right"
+        open={openDrawer}
+        onClose={() => setOpenDrawer(false)}
+        PaperProps={{ sx: { width: 380, p: 3 } }}
+      >
+        <Stack spacing={2}>
+          <ToggleButtonGroup
+            exclusive
+            fullWidth
+            value={adminStatus}
+            onChange={(_, value) => value && setAdminStatus(value)}
+          >
+            <ToggleButton value="PUBLISHED" color="success">
+              Publish
+            </ToggleButton>
+            <ToggleButton value="REJECTED" color="error">
+              Reject
+            </ToggleButton>
+          </ToggleButtonGroup>
 
-                    </ToggleButtonGroup>
-                    <Button
-                      variant="contained"
-                      disabled={
-                        !adminStatus ||
-                        isPendingDisable ||
-                        isPendingEnable ||
-                        (adminStatus === "REJECTED" && !rejectReason.trim())
-                      }
-                      onClick={handleSendResult}
-                    >
-                      Lưu trạng thái
-                    </Button>
-                  </Stack>
-                </Paper>
-                <Drawer
-                    anchor="right"
-                    open={openReject}
-                    onClose={() => setOpenReject(false)}
-                    PaperProps={{
-                      sx: {
-                        width: 360,
-                        p: 3,
-                      },
-                    }}
-                  >
-                    <Stack spacing={2}>
-                      <TextField
-                        label="Lý do từ chối"
-                        placeholder="Nhập lý do từ chối khoá học..."
-                        multiline
-                        minRows={4}
-                        fullWidth
-                        value={rejectReason}
-                        onChange={(e) => setRejectReason(e.target.value)}
-                      />
+          <TextField
+            label={
+              adminStatus === 'REJECTED'
+                ? 'Lý do từ chối'
+                : 'Ghi chú phê duyệt'
+            }
+            placeholder={
+              adminStatus === 'REJECTED'
+                ? 'Nhập lý do từ chối khoá học...'
+                : 'Khoá học đã được xét duyệt'
+            }
+            multiline
+            minRows={4}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            fullWidth
+          />
 
-                      <Button
-                        variant="contained"
-                        color="error"
-                        disabled={!rejectReason.trim() || isPendingDisable}
-                        onClick={() => {
-                          handleSendResult();
-                          setOpenReject(false);
-                        }}
-                      >
-                        Xác nhận từ chối
-                      </Button>
-                    </Stack>
-                  </Drawer>
+          <Button
+            variant="contained"
+            color={adminStatus === 'REJECTED' ? 'error' : 'success'}
+            onClick={handleSendResult}
+          >
+            Gửi kết quả
+          </Button>
+        </Stack>
+      </Drawer>
 
-                <Divider sx={{ my: 3 }} />
-              </Box>
-  )
+      <Divider sx={{ my: 3 }} />
+    </Box>
+  );
 }

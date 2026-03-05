@@ -1,4 +1,4 @@
-package com.jwhisper.udemy.controller.instructor;
+package com.jwhisper.udemy.controller.client;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 
 @RestController
@@ -28,6 +30,11 @@ public class ProfileController {
         request.setId(id);
         boolean isUpdated = this.userService.updateProfile(request);
         return ResponseEntity.ok(isUpdated);
+    }
+    @GetMapping("/{id}")
+    @ApiMessage("Lấy thông tin hồ sơ người dùng thành công")
+    public ResponseEntity<?> getProfile(@PathVariable("id") String id) {
+        return ResponseEntity.ok().body(this.userService.getProfile(id));
     }
     
 }

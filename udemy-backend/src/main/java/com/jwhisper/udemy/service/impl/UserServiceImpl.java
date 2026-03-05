@@ -13,6 +13,7 @@ import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.helper.mapper.UserMapper;
 import com.jwhisper.udemy.model.Role;
 import com.jwhisper.udemy.model.User;
+import com.jwhisper.udemy.projection.user.UserDetail;
 import com.jwhisper.udemy.projection.user.UserProject;
 import com.jwhisper.udemy.repository.RoleRepository;
 import com.jwhisper.udemy.repository.UserRepository;
@@ -137,6 +138,13 @@ public class UserServiceImpl implements UserService {
       UserProject userProject = this.userRepository.findProjectByCourses_Id(courseId);
       if(userProject == null) throw new ErrorException("Người dùng không tồn tại với khoá học này");
       return userProject;
+  }
+
+  @Override
+  public UserDetail getProfile(String id) {
+    UserDetail userDetail = this.userRepository.findProjectionById(id);
+    if(userDetail == null) throw new ErrorException("Người dùng không tồn tại");
+    return userDetail;
   }
 
 }

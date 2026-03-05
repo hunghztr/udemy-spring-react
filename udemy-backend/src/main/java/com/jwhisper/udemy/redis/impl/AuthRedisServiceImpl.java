@@ -1,4 +1,4 @@
-package com.jwhisper.udemy.service.impl;
+package com.jwhisper.udemy.redis.impl;
 
 import java.security.SecureRandom;
 import java.util.Base64;
@@ -6,7 +6,9 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Service;
-import com.jwhisper.udemy.service.AuthRedisService;
+
+import com.jwhisper.udemy.redis.AuthRedisService;
+
 import org.springframework.data.redis.core.RedisTemplate;
 
 @Service

@@ -25,7 +25,6 @@ import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import { useProfileFormHook } from "@/hooks/user/profile.form.hook";
 
-const ONBOARDING_KEY = "instructor_onboarding_done";
 
 export default function ProfileInstructorPage() {
   const theme = useTheme();
@@ -42,14 +41,15 @@ export default function ProfileInstructorPage() {
     isFocused,
     setIsFocused,
     role,
-    setRole,
+    setRole, user
   } = useProfileFormHook();
 
   const [runTour, setRunTour] = useState(false);
 
   useEffect(() => {
-    const done = localStorage.getItem(ONBOARDING_KEY);
-    if (!done) {
+    const done = localStorage.getItem(user?.username || "");
+    // Nếu chưa hoàn thành tour, bắt đầu chạy
+    if (done !== "visited") {
       setRunTour(true);
     }
   }, []);
@@ -80,7 +80,7 @@ export default function ProfileInstructorPage() {
   const handleJoyrideCallback = (data: any) => {
     const { status } = data;
     if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
-      localStorage.setItem(ONBOARDING_KEY, "true");
+      localStorage.setItem(user?.username || "", "visited");
       setRunTour(false);
     }
   };
@@ -149,7 +149,9 @@ export default function ProfileInstructorPage() {
                 <Avatar
                   src={
                     preview
-                      ? `${import.meta.env.VITE_CLOUDINARY_WATCH_IMG}/${preview}`
+                      ? preview.startsWith("blob:")
+                        ? preview //  preview local
+                        : `${import.meta.env.VITE_CLOUDINARY_WATCH_IMG}/${preview}`
                       : undefined
                   }
                   sx={{ width: 96, height: 96 }}

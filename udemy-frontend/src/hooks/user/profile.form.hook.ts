@@ -75,7 +75,6 @@ export const useProfileFormHook = () => {
       showToast(`${err}`,"error")
     }
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editor) return;
@@ -115,6 +114,7 @@ export const useProfileFormHook = () => {
     isFocused,
     setIsFocused,
     isUploadingProfile,
-    role,setRole
+    role,setRole,
+    user
   };
 };

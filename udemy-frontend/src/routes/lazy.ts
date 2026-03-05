@@ -17,6 +17,9 @@ export const ForgotPasswordPage = lazy(
 export const SearchPage = lazy(
   () => import("../screens/user/search.page")
 )
+export const CourseDetailPage = lazy(
+  () => import("../screens/user/course.detail.page")
+);
 /* ================= ADMIN ================= */
 export const AdminLayout = lazy(
   () => import("../components/admin/layout/admin.layout")

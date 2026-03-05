@@ -1,4 +1,4 @@
-package com.jwhisper.udemy.service;
+package com.jwhisper.udemy.redis;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 

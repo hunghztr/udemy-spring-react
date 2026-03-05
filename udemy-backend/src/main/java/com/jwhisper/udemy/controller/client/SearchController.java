@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.dto.course.CourseSearchResponse;
 import com.jwhisper.udemy.dto.recommend.RecommendResponse;
+import com.jwhisper.udemy.elasticsearch.SearchService;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
 import com.jwhisper.udemy.helper.constant.RecommendType;
+import com.jwhisper.udemy.redis.HistoryRedisService;
+import com.jwhisper.udemy.redis.TrendingRedisService;
 import com.jwhisper.udemy.security.SecurityHelper;
-import com.jwhisper.udemy.service.HistoryRedisService;
-import com.jwhisper.udemy.service.SearchService;
-import com.jwhisper.udemy.service.TrendingRedisService;
 
 @RestController
 @RequestMapping("/api/v1/client")

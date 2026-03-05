@@ -21,12 +21,12 @@ import com.jwhisper.udemy.helper.mapper.AuthMapper;
 import com.jwhisper.udemy.model.Role;
 import com.jwhisper.udemy.model.User;
 import com.jwhisper.udemy.projection.user.UserDetail;
+import com.jwhisper.udemy.redis.AuthRedisService;
 import com.jwhisper.udemy.repository.RoleRepository;
 import com.jwhisper.udemy.repository.UserRepository;
 import com.jwhisper.udemy.security.SecurityHelper;
 import com.jwhisper.udemy.service.AuthService;
 import com.jwhisper.udemy.service.MailService;
-import com.jwhisper.udemy.service.AuthRedisService;
 
 @Service
 public class AuthServiceImpl implements AuthService {
