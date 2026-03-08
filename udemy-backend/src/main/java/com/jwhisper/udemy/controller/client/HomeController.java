@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.dto.category.CategoryParentResponse;
+import com.jwhisper.udemy.dto.course.FilterRequest;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
 import com.jwhisper.udemy.service.HomeService;
 
@@ -44,6 +45,13 @@ public class HomeController {
     @ApiMessage("Lấy khoá học nổi bật dành cho bạn thành công")
     public ResponseEntity<?> getInterestedCourse() {
         return ResponseEntity.ok(this.homeService.getInterestedCourses());
+    }
+    @GetMapping("/get-courses-by-category/{id}")
+    @ApiMessage("Lấy danh sách khoá học theo danh mục thành công")
+    public ResponseEntity<?> getCoursesByCategory(@PathVariable("id") String id,
+        @PageableDefault(page = 0, size = 10) Pageable pageable,
+    FilterRequest filterRequest) {
+        return ResponseEntity.ok(this.homeService.getCoursesByCategory(id,pageable,filterRequest));
     }
     
 }

@@ -14,6 +14,7 @@ import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.dto.user.UserRequest;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
 import com.jwhisper.udemy.projection.user.UserProject;
+import com.jwhisper.udemy.service.OrderService;
 import com.jwhisper.udemy.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,9 +30,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class UserController {
 
     private final UserService userService;
+    private final OrderService orderService;
 
-    public UserController(UserService userService){
+    public UserController(UserService userService, OrderService orderService){
         this.userService = userService;
+        this.orderService = orderService;
     }
     
     @GetMapping()
@@ -81,4 +84,10 @@ public class UserController {
         UserProject userProject = this.userService.getByCourseId(courseId);
         return ResponseEntity.ok(userProject);
     }
+    @GetMapping("/get-bought-courses/{username}")
+    @ApiMessage("Lấy khoá học người dùng đã mua")
+    public ResponseEntity<?> getCourses(@PathVariable("username") String username) {
+        return ResponseEntity.ok(this.orderService.getBoughtCourses(username));
+    }
+    
 }

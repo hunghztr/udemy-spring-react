@@ -74,7 +74,7 @@ public class SecurityConfiguration {
   @Bean
   public String[] getWhiteList() {
     return new String[] { "/oauth2/**", "/swagger-ui/**", "/v3/api-docs/**", "/api/v1/auth/**","/api/v1/files/**",
-    "/api/v1/client/**" ,
+    "/api/v1/client/**" , "/api/v1/payment/vnpay-ipn",
     "/api/v1/hello" };
   }
 

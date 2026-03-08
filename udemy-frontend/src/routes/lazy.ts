@@ -20,6 +20,18 @@ export const SearchPage = lazy(
 export const CourseDetailPage = lazy(
   () => import("../screens/user/course.detail.page")
 );
+export const CategoryCoursePage = lazy(
+  () => import("../screens/user/category.course.page")
+);
+export const CartPage = lazy(
+  () => import("../screens/user/cart.page")
+)
+export const PaySuccessPage = lazy(
+  () => import("../screens/user/pay.success.page")
+)
+export const PaySuccess = lazy(
+  () => import("../utils/pay.success")
+)
 /* ================= ADMIN ================= */
 export const AdminLayout = lazy(
   () => import("../components/admin/layout/admin.layout")

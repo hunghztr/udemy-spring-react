@@ -8,7 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -27,9 +26,9 @@ public class InstructorPayout extends DefaultModel {
   @Column(columnDefinition = "DECIMAL(10,2)")
   double amount;
 
-  @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "order_id")
-  Order order;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "course_id")
+  Course course;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "instructor_id")

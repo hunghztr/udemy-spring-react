@@ -93,7 +93,7 @@ public class CategoryAnalyzeComponent {
                         )
                     )
                     .script(s -> s
-                        .source("doc['sold'].value * 0.7 + doc['rating'].value * 0.3")
+                        .source("doc['sold'].value * 0.7 + doc['star'].value * 0.3")
                     )
                 )
             )

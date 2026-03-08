@@ -41,7 +41,7 @@ public class Course extends DefaultModel {
   @Enumerated(EnumType.STRING)
   CourseStatus status;
   int sold;
-  int star;
+  double star;
   @Column(columnDefinition = "TEXT")
   String description;
   @Column(columnDefinition = "TEXT")
@@ -85,4 +85,7 @@ public class Course extends DefaultModel {
   @JsonIgnore
   @ManyToMany(mappedBy = "courses", fetch = FetchType.LAZY)
   List<Order> orders;
+  @JsonIgnore
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "course")
+  List<InstructorPayout> instructorPayout;
 }

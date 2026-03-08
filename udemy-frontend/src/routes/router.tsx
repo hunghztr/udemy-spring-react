@@ -4,8 +4,12 @@ import { createBrowserRouter } from "react-router-dom"
 import { AdminHomePage, AdminLayout, AdminNotifyPage, AuthPage, CategoryManagementPage,
    CourseInstructorPage, CourseManagementPage, CreateCoursePage, EditCoursePage, ForgotPasswordPage,
     HomePage, InstructorLayout, InstructorNotifyPage, Layout, OAuth2Callback, ProfileInstructorPage,
-     SearchPage, UserManagementPage, CourseDetailPage } from "./lazy";
+     SearchPage, UserManagementPage, CourseDetailPage, 
+     CategoryCoursePage,
+     CartPage,
+     PaySuccess} from "./lazy";
 import ProtectedLayout from "@/components/admin/layout/protected.layout";
+import PaySuccessPage from "@/screens/user/pay.success.page";
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +24,10 @@ export const router = createBrowserRouter([
       { path: "/auth", element: <AuthPage /> },
       { path: "/forgot-password", element: <ForgotPasswordPage /> },
       { path: "/course/:slug", element: <CourseDetailPage /> },
+      { path: "/category/:slug", element: <CategoryCoursePage /> },
+      { path: "/cart", element: <CartPage />},
+      { path: "/payment-success", element: <PaySuccessPage />},
+      { path: "/payment-result", element: <PaySuccess />}
     ],
   },
   {

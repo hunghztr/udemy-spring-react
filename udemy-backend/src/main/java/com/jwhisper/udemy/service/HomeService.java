@@ -8,8 +8,10 @@ import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.dto.category.CategoryParentResponse;
 import com.jwhisper.udemy.dto.course.CourseInfoResponse;
 import com.jwhisper.udemy.dto.course.CourseSearchResponse;
+import com.jwhisper.udemy.dto.course.FilterRequest;
 
 public interface HomeService {
+    Pagination<CourseSearchResponse> getCoursesByCategory(String id,Pageable pageable, FilterRequest filterRequest);
     List<CourseSearchResponse> getInterestedCourses();
     CourseInfoResponse getCourseDetail(String id);
     Pagination<CategoryParentResponse> getAllParents(Pageable pageable, boolean isActive);

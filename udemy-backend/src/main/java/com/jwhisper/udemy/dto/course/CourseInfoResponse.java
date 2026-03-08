@@ -19,7 +19,7 @@ public class CourseInfoResponse {
     double price;
     double hour;
     int sold;
-    int star;
+    double star;
     int totalSection;
     String imagePath;
     List<SectionResponse> sections;

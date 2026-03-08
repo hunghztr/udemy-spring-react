@@ -28,13 +28,7 @@ export const loginWithInfo = createAsyncThunk(
     try {
       // Call login
       const tokenResponse = await thunkApi.dispatch(login({ username, password })).unwrap();
-
-      // api.defaults.headers.common['Authorization'] =
-      //   `Bearer ${tokenResponse.data.result}`;
-
-      // const res: IApiResponse<IUserToken> = await api.get("/me");
       return {
-        // user: res.data,
         accessToken: tokenResponse.data.result
       };
     } catch (err: unknown) {

@@ -51,7 +51,7 @@ export default function CourseDetailPage() {
 
   const objectives = splitToList(data.description);
   const requirements = splitToList(data.requirement);
-
+  
   return (
     <>
       {/* ================= PHẦN HERO ================= */}
@@ -125,6 +125,7 @@ export default function CourseDetailPage() {
         }}
       >
         <CoursePurchaseCard
+          courseId={data.id}
           price={data.price}
           image={data.imagePath}
         />

@@ -14,6 +14,7 @@ import com.jwhisper.udemy.dto.category.CategoryChildResponse;
 import com.jwhisper.udemy.dto.category.CategoryParentResponse;
 import com.jwhisper.udemy.dto.course.CourseInfoResponse;
 import com.jwhisper.udemy.dto.course.CourseSearchResponse;
+import com.jwhisper.udemy.dto.course.FilterRequest;
 import com.jwhisper.udemy.elasticsearch.SearchService;
 import com.jwhisper.udemy.elasticsearch.document.CourseDocument;
 import com.jwhisper.udemy.helper.expception.ErrorException;
@@ -115,5 +116,12 @@ public class HomeServiceImpl implements HomeService {
             return responses;
         }
         return this.searchService.getFeaturestCourses();
+    }
+    @Override
+    public Pagination<CourseSearchResponse> getCoursesByCategory(String id,Pageable pageable,
+        FilterRequest filterRequest) {
+        Category category = this.categoryRepository.findById(id)
+        .orElseThrow(() -> new ErrorException("Thể loại không tồn tại"));
+        return this.searchService.getCoursesByCategory(category.getName(),pageable, filterRequest);
     }
 }

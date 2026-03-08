@@ -12,4 +12,5 @@ import com.jwhisper.udemy.projection.coupon.CouponProject;
 public interface CouponRepository extends JpaRepository<Coupon,String> {
     boolean existsByCodeAndCourseId(String code,String courseId);
     List<CouponProject> findAllProjectByCourseId(String courseId);
+    List<CouponProject> findByCourseId(String courseId);
 }

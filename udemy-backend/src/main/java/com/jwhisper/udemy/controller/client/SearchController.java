@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.dto.course.CourseSearchResponse;
+import com.jwhisper.udemy.dto.course.FilterRequest;
 import com.jwhisper.udemy.dto.recommend.RecommendResponse;
 import com.jwhisper.udemy.elasticsearch.SearchService;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
@@ -45,6 +46,7 @@ public class SearchController {
     @ApiMessage("Tìm kiếm mơ hồ thành công")
     public ResponseEntity<?> search(
             @RequestParam(name = "keyword", defaultValue = "") String keyword,
+             FilterRequest filterRequest,
             @PageableDefault(page = 0, size = 10) Pageable pageable
     ) {
         String normalized = keyword == null ? "" : keyword.trim();
@@ -57,7 +59,7 @@ public class SearchController {
             trendingRedisService.recordKeyword(normalized);
         }
         Pagination<CourseSearchResponse> pagination =
-                searchService.searchFuzzi(pageable, keyword);
+                searchService.searchFuzzi(pageable, keyword,filterRequest);
         return ResponseEntity.ok(pagination);
     }
     /**

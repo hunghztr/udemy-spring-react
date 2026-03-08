@@ -2,7 +2,6 @@ package com.jwhisper.udemy.model;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,7 +13,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -41,7 +39,4 @@ public class Order extends DefaultModel {
   @JoinTable(name = "order_detail", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "course_id"))
   List<Course> courses;
 
-  @JsonIgnore
-  @OneToOne(fetch = FetchType.LAZY, mappedBy = "order")
-  InstructorPayout instructorPayout;
 }

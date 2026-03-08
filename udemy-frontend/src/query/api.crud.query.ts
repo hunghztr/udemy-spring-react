@@ -1,27 +1,40 @@
 import api from "@/api/api";
 import type { IApiResponse } from "@/type/api.response";
+import type { IFilterRequest } from "@/type/course.module";
 import type { IPagination, IPaginationResponse } from "@/type/pagination";
 
 
 export const getAll = async <Res>({
   url,
   pagination,
+  filters,
 }: {
   url: string;
   pagination: IPagination;
+  filters?: IFilterRequest;
 }) => {
+
   const params: Record<string, any> = {
-    page: pagination.keyword ? 0 : pagination.page,
+    page: pagination.page,
     size: pagination.size,
-    keyword: pagination.keyword,
   };
+
+  if (pagination.keyword) {
+    params.keyword = pagination.keyword;
+  }
 
   if (pagination.active !== undefined) {
     params.active = pagination.active;
   }
 
+  // merge filter
+  if (filters) {
+    Object.assign(params, filters);
+  }
+
   const res: IApiResponse<IPaginationResponse<Res>> =
     await api.get(url, { params });
+
   return res.data;
 };
 export const getAllNoPage = async <Res>({
@@ -41,7 +54,7 @@ export const getById = async <Res>({
 export const create = async <Req,Res=boolean>({
   url,
   data
-} : {url : string; data: Req}) =>{
+} : {url : string; data?: Req}) =>{
   const res : IApiResponse<Res> = await api.post(url, data);
   return  res.data;
 }

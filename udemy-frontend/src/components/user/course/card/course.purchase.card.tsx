@@ -9,13 +9,16 @@ import {
 } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { useState } from "react";
+import { useCartHook } from "@/hooks/user/cart.hook";
 
 interface Props {
+  courseId: string;
   image?: string;
   price: number;
 }
 
-export default function CoursePurchaseCard({ image, price }: Props) {
+export default function CoursePurchaseCard({ courseId, image, price }: Props) {
+  const {handleAdd,isPending} = useCartHook();
   const [loaded, setLoaded] = useState(false);
 
   const imgSrc = image
@@ -131,10 +134,12 @@ export default function CoursePurchaseCard({ image, price }: Props) {
                 fontSize: 15,
               }}
             >
-              Buy now
+              Mua ngay
             </Button>
 
             <Button
+              onClick={() => handleAdd(courseId)}
+              disabled={isPending}
               variant="outlined"
               size="large"
               fullWidth
@@ -144,7 +149,7 @@ export default function CoursePurchaseCard({ image, price }: Props) {
                 py: 1.3,
               }}
             >
-              Add to cart
+              Thêm vào giỏ
             </Button>
           </Stack>
 

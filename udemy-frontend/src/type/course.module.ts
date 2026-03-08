@@ -67,12 +67,20 @@ export interface ICourseSearchResponse{
     name:string;
     authorName:string;
     imagePath:string;
-    rating:number;
+    star:number;
     sold:number;
     hour:number;
     description:string;
     price:number;
     categories:string[]
+}
+export interface ILearningResponse{
+    id : string;
+    imagePath: string;
+    name : string;
+    progress : number;
+    star:number;
+
 }
 export interface IRecommendResponse{
     keyword:string;
@@ -93,4 +101,12 @@ export interface ICourseInfoResponse{
     updatedAt : string;
     author : IUserResponse;
     categories : ICategoryResponse[];
+}
+
+export interface IFilterRequest{
+    star? : number;
+    isFree? : boolean;
+    durationFrom? :number;
+    durationTo? : number;
+    sortBy? : "ratingDesc" | "ratingAsc" | "priceDesc" | "priceAsc" | "durationDesc" | "durationAsc";
 }

@@ -37,7 +37,7 @@ public class CourseDocument {
     /* ================= RANKING ================= */
 
     @Field(type = FieldType.Double)
-    private double rating;
+    private double star;
 
     @Field(type = FieldType.Integer)
     private int sold;

@@ -26,7 +26,7 @@ import type { ICourseResponse } from "@/type/course.module";
 import PaginationComponent from "@/components/admin/layout/pagination.component";
 import { Chip } from "@mui/material";
 import { getCourseStatusMap } from "@/constants/course.status";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { listVariants, itemVariants } from "@/helpers/variants";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
@@ -140,7 +140,6 @@ export default function CourseInstructorPage() {
             initial="hidden"
             animate="visible"
           >
-            <AnimatePresence>
               {courses?.map((c) => (
                 <motion.div
                   key={c.id}
@@ -264,7 +263,6 @@ export default function CourseInstructorPage() {
                   </Paper>
                 </motion.div>
               ))}
-            </AnimatePresence>
           </motion.div>
         )}
 

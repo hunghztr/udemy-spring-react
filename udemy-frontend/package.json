@@ -29,6 +29,7 @@
     "gsap": "^3.14.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-hook-form": "^7.71.2",
     "react-joyride": "^2.9.3",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.11.0",

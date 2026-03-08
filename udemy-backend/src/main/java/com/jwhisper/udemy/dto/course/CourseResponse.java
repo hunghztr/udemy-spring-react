@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 public class CourseResponse {
     String id;
     String name;
-    int star;
+    double star;
     int sold;
     double hour;
     CourseStatus status;

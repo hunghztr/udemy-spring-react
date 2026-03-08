@@ -3,6 +3,8 @@ import type { IApiResponse } from "@/type/api.response";
 import type { ICategory, ICategoryParentResponse, ICategoryResponse } from "@/type/category.module";
 import type { IPagination, IPaginationResponse } from "@/type/pagination";
 import { activate, create, getAll, getAllNoPage, getById, update } from "../api.crud.query";
+import type { ICourseSearchResponse, IFilterRequest } from "@/type/course.module";
+import { useQuery } from "@tanstack/react-query";
 
 export const getCategoriesParent = async () =>{
         const res : IApiResponse<IPaginationResponse<ICategoryParentResponse>> =
@@ -57,5 +59,19 @@ export const enableCategory = (id : string) =>{
     return activate({
     url:"/admin/categories/active",
     id
+    })
+}
+
+export const getCoursesByCategory = ({id,data,filters} : {id:string,data:IPagination,filters?: IFilterRequest}) =>{
+    return useQuery<IPaginationResponse<ICourseSearchResponse>>({
+        queryKey : ["courses-by-category",id,data,filters],
+        queryFn : () => api.get(`/client/get-courses-by-category/${id}`,{
+            params : {
+                page : data.page,
+                size : data.size,
+                ...filters
+            }
+        })
+        .then(res => res.data)
     })
 }

@@ -109,14 +109,14 @@ export default function SearchCourseCard({ course }: Props) {
           {/* META */}
           <Stack direction="row" spacing={1} alignItems="center">
             <Typography fontWeight={700}>
-              {course.rating.toFixed(1)}
+              {course.star.toFixed(1)}
             </Typography>
-            <Rating value={course.rating} precision={0.5} readOnly size="small" />
+            <Rating value={course.star} precision={0.5} readOnly size="small" />
             <Typography variant="caption" color="text.secondary">
               ({course.sold.toLocaleString()})
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              • {course.hour} total hours
+              • {course.hour} tổng giờ
             </Typography>
           </Stack>
         </Stack>

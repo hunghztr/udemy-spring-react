@@ -142,7 +142,7 @@ function CourseCard({ course }: { course: ICourseSearchResponse }) {
             fontWeight={700}
             color="warning.main"
           >
-            {course.rating.toFixed(1)}
+            {course.star.toFixed(1)}
           </Typography>
 
           <Typography fontSize={12}>⭐</Typography>

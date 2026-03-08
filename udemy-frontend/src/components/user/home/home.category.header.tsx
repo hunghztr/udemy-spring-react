@@ -1,3 +1,4 @@
+import { slugify } from "@/helpers/slugify";
 import { getCategoriesParent } from "@/query/category/category.query";
 import { useGetAll } from "@/query/use.crud.query";
 import type { ICategoryParentResponse } from "@/type/category.module";
@@ -9,6 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -32,7 +34,11 @@ export default function HomeCategoryHeader() {
       ? itemRefs.current[activeIndex]!.offsetLeft +
         itemRefs.current[activeIndex]!.offsetWidth / 2
       : 0;
-
+  const navigate = useNavigate();
+  const handleClick = (id : string,name : string) =>{
+    const slug = slugify(name);
+    navigate(`/category/${slug}-${id}.html`);
+  }
   return (
     <Box sx={{ position: "relative" }} onMouseLeave={() => setActiveId(null)}>
       {/* ===== TOP CATEGORY ===== */}
@@ -42,7 +48,6 @@ export default function HomeCategoryHeader() {
           borderColor: "divider",
           bgcolor: "background.paper",
 
-          // 👉 Udemy-style subtle shadow
           boxShadow: "0 1px 2px rgba(0,0,0,0.06)",
           zIndex: 10,
         }}
@@ -65,6 +70,7 @@ export default function HomeCategoryHeader() {
                     itemRefs.current[idx] = el;
                   }}
                   onMouseEnter={() => setActiveId(c.id)}
+                  onClick={() => handleClick(c.id,c.name)}
                   sx={{
                     cursor: "pointer",
                     fontWeight: isActive ? 700 : 500,
@@ -97,7 +103,6 @@ export default function HomeCategoryHeader() {
               py: 1.5,
               zIndex: 1200,
 
-              // 👉 Udemy dropdown shadow
               boxShadow: `
                 0 2px 4px rgba(0,0,0,0.15),
                 0 8px 20px rgba(0,0,0,0.25)
@@ -124,6 +129,7 @@ export default function HomeCategoryHeader() {
             <Stack direction="row" spacing={3} flexWrap="wrap">
               {activeCategory.categories.map((sub) => (
                 <Typography
+                  onClick={() => handleClick(sub.id,sub.name)}
                   key={sub.id}
                   sx={{
                     cursor: "pointer",

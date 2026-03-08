@@ -11,7 +11,7 @@ public class CourseSearchResponse {
     private String authorName;
     private String imagePath;
     private String description;
-    private double rating;
+    private double star;
     private int sold;
     private double price;
     private double hour;

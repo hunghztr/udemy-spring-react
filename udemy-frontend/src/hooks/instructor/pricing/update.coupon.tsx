@@ -2,6 +2,7 @@ import { query } from "@/main";
 import { createCoupon, deleteCoupon, getCouponsNoPage, updateCoupon } from "@/query/coupon/coupon.query";
 import { useGetById, useSave } from "@/query/use.crud.query";
 import type { ICouponResponse, ICourseDetailResponse } from "@/type/course.module";
+import { showToast } from "@/utils/toast";
 import { useEffect, useState } from "react";
 
 export const useUpdateCoupon = ({course} : {course:ICourseDetailResponse|null}) =>{
@@ -72,6 +73,9 @@ export const useUpdateCoupon = ({course} : {course:ICourseDetailResponse|null}) 
             setOpenAdd(false);
             query.invalidateQueries({queryKey:["courses/get-by-id"]});
             },
+            onError: (err) => {
+                showToast(err.response?.data.message||"occurr error","error");
+            }
         }
         );
     };

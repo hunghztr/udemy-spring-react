@@ -9,18 +9,18 @@ import org.springframework.stereotype.Component;
 
 import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.model.Course;
+import com.jwhisper.udemy.model.User;
 import com.jwhisper.udemy.repository.CourseRepository;
 import com.jwhisper.udemy.repository.UserRepository;
 import com.jwhisper.udemy.security.SecurityHelper;
 
 @Aspect
 @Component
-public class CoursePermissionAspect {
+public class CheckedAspect {
     private final SecurityHelper securityHelper;
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
-
-    public CoursePermissionAspect(SecurityHelper securityHelper,
+    public CheckedAspect(SecurityHelper securityHelper,
                                   UserRepository userRepository,
                                   CourseRepository courseRepository) {
         this.securityHelper = securityHelper;
@@ -28,7 +28,7 @@ public class CoursePermissionAspect {
         this.courseRepository = courseRepository;
     }
     @Before("@annotation(CheckCourseOwner)")
-    public void checkOwner(JoinPoint joinPoint) {
+    public void checkCourseOwner(JoinPoint joinPoint) {
 
         String courseId = (String) joinPoint.getArgs()[0];
         String username = securityHelper.getCurrentUsername();
@@ -39,5 +39,17 @@ public class CoursePermissionAspect {
         }
         Optional<Course> optional = this.courseRepository.findByIdAndAuthorId(courseId, user.getId());
         if(optional.isEmpty()) throw new ErrorException("Khoá học này không thuộc về bạn");
+    }
+    @Before("@annotation(CheckCartOwner)")
+    public void checkCartOwner() {
+
+        String username = securityHelper.getCurrentUsername();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ErrorException("Người dùng không tồn tại"));
+
+        if (user.getCart() == null) {
+            throw new ErrorException("Giỏ hàng không tồn tại");
+        }
     }
 }

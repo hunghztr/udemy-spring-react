@@ -130,6 +130,18 @@ export default function Header() {
           {/* ===== AUTH AREA ===== */}
           {user.id ? (
             <>
+              <Button
+                color="inherit"
+                onClick={() => navigate("/my-learning")}
+                sx={{
+                  display: { xs: "none", md: "inline-flex" },
+                  fontSize: { xs: "12px", md: "14px" },
+                  whiteSpace: "nowrap",
+                  ...headerTextHover,
+                }}
+              >
+                Học tập
+              </Button>
               {/* NOTIFICATION */}
               <NotifyDropdown />
               {/* AVATAR */}

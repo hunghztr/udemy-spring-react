@@ -1,37 +1,37 @@
 import {
   Box,
   Grid,
+  Stack,
   Typography,
-  Pagination,
 } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 import { useGetPaging } from "@/query/use.crud.query";
 import { searchFuzzi } from "@/query/course/search.query";
-import type { ICourseSearchResponse } from "@/type/course.module";
-import type { IPagination } from "@/type/pagination";
+import { type IFilterRequest, type ICourseSearchResponse } from "@/type/course.module";
+import type { IMetaResponse, IPagination } from "@/type/pagination";
 import SearchCourseCard from "@/components/user/course/card/search.course.card";
 import FilterDrawer from "@/components/user/course/filter.drawer";
 import SkeletonCard from "@/components/user/course/card/skeleton.card";
 import { motion, AnimatePresence } from "framer-motion";
 import { gridItemVariants } from "@/helpers/variants";
+import { useState } from "react";
+import PaginationComponent from "@/components/admin/layout/pagination.component";
+import CourseSort from "@/components/user/course/course.sort";
 
 export default function SearchPage() {
-  const [params, setParams] = useSearchParams();
+  const [params] = useSearchParams();
 
   const keyword = params.get("keyword") || "";
-  const page = 0;
-
-  const {data,isLoading} = useGetPaging<ICourseSearchResponse, IPagination>(
+  const [page, setPage] = useState<number>(1);
+  const [filters, setFilters] = useState<IFilterRequest|undefined>(undefined);
+  const {data,isLoading} = useGetPaging<ICourseSearchResponse, 
+  {data: IPagination; filters: IFilterRequest|undefined}
+  >(
     "courses/search",
     searchFuzzi,
-    { page, size: 10, keyword }
+    { data: { page:page-1, size: 6, keyword }, filters }
   );
-
-  const handleChangePage = (_: any, value: number) => {
-    params.set("page", String(value - 1));
-    setParams(params);
-  };
-
+  const meta = data?.meta;
   return (
     <Box sx={{ px: { xs: 2, md: 4 }, py: 3 }}>
       {/* ===== TITLE ===== */}
@@ -40,7 +40,24 @@ export default function SearchPage() {
           ? `Kết quả tìm kiếm cho "${keyword}"`
           : "Tất cả khoá học"}
       </Typography>
-      <FilterDrawer />
+      <Stack
+          direction="row"
+          alignItems="center"
+          spacing={2}
+          sx={{ mb: 2 }}
+        >
+          <FilterDrawer filters={filters} setFilters={setFilters} />
+          <CourseSort
+            onChange={(value) => {
+              setPage(1);
+
+              setFilters((prev) => ({
+                ...prev,
+                sortBy: value as IFilterRequest["sortBy"],
+              }));
+            }}
+          />
+        </Stack>
       {/* ===== COURSE GRID ===== */}
       <Grid container spacing={3}>
         <AnimatePresence mode="wait">
@@ -78,17 +95,14 @@ export default function SearchPage() {
         </AnimatePresence>
         </Grid>
 
-      {/* ===== PAGINATION ===== */}
-      {data && data.meta.pageTotals > 1 && (
-        <Box display="flex" justifyContent="center" mt={4}>
-          <Pagination
-            count={data.meta.pageTotals}
-            page={page + 1}
-            onChange={handleChangePage}
-            color="primary"
-          />
-        </Box>
-      )}
+      {!isLoading && (
+                <PaginationComponent
+                  meta={meta||{} as IMetaResponse}
+                  page={page}
+                  setPage={setPage}
+                  isLoading={isLoading}
+                />
+              )}
     </Box>
   );
 }
