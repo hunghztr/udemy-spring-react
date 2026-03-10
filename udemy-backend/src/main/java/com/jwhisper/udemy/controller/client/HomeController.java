@@ -36,6 +36,13 @@ public class HomeController {
          this.homeService.getAllParents(pageable,isActive);
         return ResponseEntity.ok().body(parents);
     }
+    @GetMapping("/categories/get-all-children")
+    @ApiMessage("Lấy danh sách danh mục con thành công")
+    public ResponseEntity<?> getAllChildren() {
+    
+        return ResponseEntity.ok(null);
+    }
+    
     @GetMapping("/get-course-detail/{id}")
     @ApiMessage("Lấy chi tiết khoá học thành công")
      public ResponseEntity<?> getCourseDetail(@PathVariable("id") String id)  {

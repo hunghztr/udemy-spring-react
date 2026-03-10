@@ -241,7 +241,7 @@ export default function UpdateImage({ course }: IProps) {
               top: 8,
               right: 8,
               bgcolor: "rgba(0,0,0,0.5)",
-              color: "#fff",
+              color: "divider",
               "&:hover": { bgcolor: "rgba(0,0,0,0.7)" },
               zIndex: 10,
             }}

@@ -1,7 +1,6 @@
 import { type ICartResponse } from "@/type/cart.module"
-import { create, getAllNoPage, remove } from "../api.crud.query"
-import type { IApiResponse } from "@/type/api.response"
-import api from "@/api/api"
+import { create, getAllNoPage, getById, remove } from "../api.crud.query"
+
 
 export const addToCart = (courseId : string) =>{
     return create<{courseId : string}>({
@@ -20,6 +19,10 @@ export const deleteFromCart = (courseId : string) =>{
     })
 }
 export const getSalePrice = async ({courseId,code} : {courseId : string, code : string}) =>{
-    const res : IApiResponse<number> = await api.get(`/client/carts/${courseId}/discount/${code}`);
-    return res.data;
+    // const res : IApiResponse<number> = await api.get(`/client/carts/${courseId}/discount/${code}`);
+    // return res.data;
+    return getById<number>({
+        url: `/client/carts/${courseId}/discount`,
+        id:code
+    })
 }

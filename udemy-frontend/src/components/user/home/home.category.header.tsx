@@ -3,146 +3,172 @@ import { getCategoriesParent } from "@/query/category/category.query";
 import { useGetAll } from "@/query/use.crud.query";
 import type { ICategoryParentResponse } from "@/type/category.module";
 import type { IPaginationResponse } from "@/type/pagination";
+
 import {
   Box,
   Stack,
   Typography,
   useTheme,
 } from "@mui/material";
-import { useRef, useState } from "react";
+
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function HomeCategoryHeader() {
-  const { data, isLoading  } = useGetAll<IPaginationResponse<ICategoryParentResponse>>(
-    "get-all-category-parents",
-    getCategoriesParent
-  );
+
+  const { data, isLoading } =
+    useGetAll<IPaginationResponse<ICategoryParentResponse>>(
+      "get-all-category-parents",
+      getCategoriesParent
+    );
 
   const [activeId, setActiveId] = useState<string | null>(null);
+
   const theme = useTheme();
-
-  // refs for arrow position
-  const itemRefs = useRef<(HTMLSpanElement | null)[]>([]);
-
-  const activeIndex = data?.elements.findIndex((c) => c.id === activeId) ?? -1;
-  const activeCategory = data && activeIndex >= 0 ? data.elements[activeIndex] : null;
-
-  const arrowLeft =
-    activeIndex >= 0 && itemRefs.current[activeIndex]
-      ? itemRefs.current[activeIndex]!.offsetLeft +
-        itemRefs.current[activeIndex]!.offsetWidth / 2
-      : 0;
   const navigate = useNavigate();
-  const handleClick = (id : string,name : string) =>{
+
+  const activeCategory = data?.elements.find(
+    (c) => c.id === activeId
+  );
+
+  const handleClick = (id: string, name: string) => {
     const slug = slugify(name);
     navigate(`/category/${slug}-${id}.html`);
-  }
+  };
+
   return (
-    <Box sx={{ position: "relative" }} onMouseLeave={() => setActiveId(null)}>
-      {/* ===== TOP CATEGORY ===== */}
+    <Box
+      sx={{ position: "relative" }}
+      onMouseLeave={() => setActiveId(null)}
+    >
+
+      {/* ===== CATEGORY CHA ===== */}
       <Box
         sx={{
-          borderBottom: "1px solid",
-          borderColor: "divider",
+          width: 220,
           bgcolor: "background.paper",
-
-          boxShadow: "0 1px 2px rgba(0,0,0,0.06)",
-          zIndex: 10,
+          borderRadius: 2,
+          boxShadow: "0 8px 20px rgba(0,0,0,0.15)",
+          overflow: "hidden",
         }}
       >
-        <Stack
-          direction="row"
-          spacing={4}
-          sx={{ px: 4, py: 1.5, alignItems: "center" }}
-        >
-          {/* ===== REAL DATA ===== */}
-          {!isLoading &&
-            data?.elements.map((c, idx) => {
-              const isActive = activeId === c.id;
 
-              return (
+        {!isLoading &&
+          data?.elements.map((c) => {
+
+            const isActive = activeId === c.id;
+
+            return (
+              <Box
+                key={c.id}
+                onMouseEnter={() => setActiveId(c.id)}
+                onClick={() => handleClick(c.id, c.name)}
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+
+                  px: 3,
+                  py: 1.6,
+
+                  cursor: "pointer",
+
+                  "&:hover": {
+                    bgcolor: "#f7f9fa",
+                  },
+                }}
+              >
+
                 <Typography
-                  key={c.id}
-                  component="span"
-                  ref={(el) => {
-                    itemRefs.current[idx] = el;
-                  }}
-                  onMouseEnter={() => setActiveId(c.id)}
-                  onClick={() => handleClick(c.id,c.name)}
                   sx={{
-                    cursor: "pointer",
-                    fontWeight: isActive ? 700 : 500,
+                    fontSize: 14,
+                    fontWeight: 500,
                     color: isActive
                       ? theme.palette.primary.main
                       : "text.primary",
-                    whiteSpace: "nowrap",
                   }}
                 >
                   {c.name}
                 </Typography>
-              );
-            })}
-        </Stack>
+
+                <ChevronRightIcon
+                  sx={{
+                    fontSize: 18,
+                    color: "text.secondary",
+                  }}
+                />
+
+              </Box>
+            );
+          })}
+
       </Box>
 
-      {/* ===== SUB CATEGORY DROPDOWN ===== */}
-      {!isLoading &&
-        activeCategory &&
-        activeCategory.categories?.length > 0 && (
-          <Box
-            sx={{
-              position: "absolute",
-              top: "100%",
-              left: 0,
-              width: "100%",
-              bgcolor: "#1c1d1f",
-              color: "#fff",
-              px: 4,
-              py: 1.5,
-              zIndex: 1200,
+      {/* ===== CATEGORY CON ===== */}
+      <AnimatePresence>
 
-              boxShadow: `
-                0 2px 4px rgba(0,0,0,0.15),
-                0 8px 20px rgba(0,0,0,0.25)
-              `,
+        {activeCategory &&
+          activeCategory.categories?.length > 0 && (
 
-              borderRadius: "0 0 6px 6px",
+            <Box
+              component={motion.div}
+              key={activeCategory.id}
 
-              "&::before": {
-                content: '""',
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 10 }}
+
+              transition={{ duration: 0.2 }}
+
+              sx={{
                 position: "absolute",
                 top: 0,
-                left: arrowLeft,
-                transform: "translate(-50%, -100%)",
-                width: 0,
-                height: 0,
-                borderLeft: "8px solid transparent",
-                borderRight: "8px solid transparent",
-                borderBottom: "8px solid #1c1d1f",
-                transition: "left 0.15s ease",
-              },
-            }}
-          >
+                left: "100%",
 
-            <Stack direction="row" spacing={3} flexWrap="wrap">
-              {activeCategory.categories.map((sub) => (
-                <Typography
-                  onClick={() => handleClick(sub.id,sub.name)}
-                  key={sub.id}
-                  sx={{
-                    cursor: "pointer",
-                    fontSize: 14,
-                    "&:hover": { textDecoration: "underline" },
-                  }}
-                >
-                  {sub.name}
-                </Typography>
-              ))}
-            </Stack>
-          </Box>
-        )}
+                width: 260,
+
+                bgcolor: "background.paper",
+                borderRadius: 2,
+                boxShadow: "0 8px 20px rgba(0,0,0,0.18)",
+
+                p: 2,
+              }}
+            >
+
+              <Stack spacing={1}>
+
+                {activeCategory.categories.map((sub) => (
+                  <Typography
+                    key={sub.id}
+                    onClick={() =>
+                      handleClick(sub.id, sub.name)
+                    }
+                    sx={{
+                      cursor: "pointer",
+                      fontSize: 14,
+
+                      "&:hover": {
+                        color: "primary.main",
+                        textDecoration: "underline",
+                      },
+                    }}
+                  >
+                    {sub.name}
+                  </Typography>
+                ))}
+
+              </Stack>
+
+            </Box>
+
+          )}
+
+      </AnimatePresence>
+
     </Box>
   );
 }

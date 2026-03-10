@@ -33,12 +33,13 @@ export default function LoginForm({
         flexDirection: "column",
         gap: 2.5,
         p: { xs: 2, sm: 4 },
-        border: "1px solid #ccc",
+        border: "1px solid",
+        borderColor: "divider",
         borderRadius: 3,
         width: "100%",
         maxWidth: 450,
         minHeight: 550,
-        backgroundColor: "#fff",
+        backgroundColor: "background.paper",
       }}
     >
       <Typography variant="h5" textAlign="center">

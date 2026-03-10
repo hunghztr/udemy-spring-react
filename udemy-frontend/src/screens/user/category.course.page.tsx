@@ -41,13 +41,12 @@ export default function CategoryCoursePage() {
     <Box>
         {/* HERO */}
         <Box
-          sx={{
-            background: (theme) =>
-              `linear-gradient(135deg, ${theme.palette.primary.dark}, #1c1d1f)`,
-            color: "white",
+          sx={(theme) => ({
+            background: `linear-gradient(135deg, ${theme.palette.primary.dark}, ${theme.palette.hero.background})`,
+            color: "common.white",
             py: { xs: 6, md: 8 },
             mb: 4
-          }}
+          })}
         >
           <Container maxWidth="lg">
             <Stack spacing={3} maxWidth={800}>

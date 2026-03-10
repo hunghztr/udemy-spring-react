@@ -221,7 +221,7 @@ fileInputRef,setUploadingLectureId,uploadingLectureId,percent,handleDestroy}:IPr
                                     sx={{
                                       width: "100%",
                                       borderRadius: 2,
-                                      background: "#000",
+                                      background: "common.black",
                                     }}
                                   />
                                 )}

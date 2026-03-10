@@ -56,15 +56,6 @@ public class LogActivityAspect {
             String resourceId =
                     extractResourceId(result, logActivity.resourceIdField());
 
-            // lấy id từ tham số method
-            // if (resourceId == null && logActivity.resourceIdIndex() >= 0) {
-            //     Object[] args = joinPoint.getArgs();
-            //     int index = logActivity.resourceIdIndex();
-            //     if (index < args.length && args[index] != null) {
-            //         resourceId = args[index].toString();
-            //     }
-            // }
-
             activity.setResourceId(resourceId);
             activityRepository.save(activity);
             log.info(activity.toString());

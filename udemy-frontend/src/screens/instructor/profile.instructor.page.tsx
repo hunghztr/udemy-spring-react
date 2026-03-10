@@ -204,7 +204,7 @@ export default function ProfileInstructorPage() {
                   direction="row"
                   spacing={1}
                   p={1}
-                  borderBottom="1px solid #eee"
+                  borderBottom="1px solid divider"
                 >
                   <IconButton
                     size="small"

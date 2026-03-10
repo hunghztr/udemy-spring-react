@@ -61,7 +61,7 @@ export default function BecomeInstructor() {
       sx={{
         position: "relative",
         px: { xs: 3, md: 6 },
-        py: { xs: 8, md: 10 },
+        py: { xs: 4, md: 10 },
         borderRadius: 4,
         overflow: "hidden",
         textAlign: "center",

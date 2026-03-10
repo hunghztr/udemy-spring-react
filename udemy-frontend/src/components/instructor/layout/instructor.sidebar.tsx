@@ -160,17 +160,19 @@ export default function InstructorSidebar() {
           direction="row"
           alignItems="center"
           spacing={2}
-          sx={{
+          sx={(theme) => ({
             px: 2,
             py: 1.2,
             borderRadius: 2,
             cursor: "pointer",
-            color: "rgba(255,255,255,0.85)",
+            color: theme.palette.sidebar.text,
+            opacity: 0.85,
             "&:hover": {
-              bgcolor: "rgba(255,255,255,0.08)",
-              color: "#fff",
+              bgcolor: theme.palette.sidebar.hover,
+              color: theme.palette.sidebar.text,
+              opacity: 1,
             },
-          }}
+          })}
           onClick={async () => {
             query.removeQueries({
                   queryKey: ["courses/get-all-by-author"],

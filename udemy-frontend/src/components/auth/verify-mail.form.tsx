@@ -43,7 +43,7 @@ export default function VerifyMail({setMode} : {setMode : (value : "mail"|"otp"|
       display="flex"
       justifyContent="center"
       alignItems="center"
-      bgcolor="#f7f9fa"
+      bgcolor="background.paper"
     >
       <Paper
         elevation={3}

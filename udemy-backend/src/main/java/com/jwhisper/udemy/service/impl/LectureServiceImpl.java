@@ -10,8 +10,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.jwhisper.udemy.dto.course.LectureRequest;
+import com.jwhisper.udemy.dto.course.LectureResponse;
 import com.jwhisper.udemy.dto.course.SectionResponse;
 import com.jwhisper.udemy.helper.annotation.CheckCourseOwner;
+import com.jwhisper.udemy.helper.annotation.UpdateProgress;
 import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.helper.mapper.CourseMapper;
 import com.jwhisper.udemy.model.Course;
@@ -133,5 +135,17 @@ public class LectureServiceImpl implements LectureService {
 
         return courseMapper.toSectionResponse(section);
     }
+
+    @Override
+    // dùng aop update progress
+    @UpdateProgress
+    public LectureResponse markFinish(String lectureId,Boolean finish) {
+        Lecture lecture = this.lectureRepository.findById(lectureId)
+        .orElseThrow(() -> new ErrorException("Bài học không tồn tại"));
+        lecture.setIsFinished(finish);
+        lecture = this.lectureRepository.save(lecture);
+        return this.courseMapper.toLectureResponse(lecture);
+    }
+    
     
 }

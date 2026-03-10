@@ -107,7 +107,7 @@ export default function CartItem({ course, handleDelete ,handleApply}: Props) {
                 left: "50%",
                 transform: "translate(-50%, -50%)",
                 fontSize: 36,
-                color: "#fff",
+                color: "common.white",
                 opacity: 0.95,
                 pointerEvents: "none",
               }}
@@ -191,7 +191,7 @@ export default function CartItem({ course, handleDelete ,handleApply}: Props) {
                 mt={2}
                 onClick={(e) => e.stopPropagation()}
                 sx={{
-                  backgroundColor: "#fafafa",
+                  backgroundColor: "grey.50",
                   borderRadius: 2,
                   p: 2,
                 }}

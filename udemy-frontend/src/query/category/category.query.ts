@@ -1,6 +1,6 @@
 import api from "@/api/api";
 import type { IApiResponse } from "@/type/api.response";
-import type { ICategory, ICategoryParentResponse, ICategoryResponse } from "@/type/category.module";
+import type { ICategory, ICategoryCourseResponse, ICategoryParentResponse, ICategoryResponse } from "@/type/category.module";
 import type { IPagination, IPaginationResponse } from "@/type/pagination";
 import { activate, create, getAll, getAllNoPage, getById, update } from "../api.crud.query";
 import type { ICourseSearchResponse, IFilterRequest } from "@/type/course.module";
@@ -11,7 +11,11 @@ export const getCategoriesParent = async () =>{
          await api.get("/client/categories/get-all-parents?active=true&keyword=");
          return res.data
 }
-
+export const getCategoiesChild = async () =>{
+        const res : IApiResponse<ICategoryCourseResponse[]> =
+         await api.get("/client/categories/get-all-children");
+         return res.data
+}
 export const getCategoriesNoPage = async () =>{
         return getAllNoPage<ICategoryResponse[]>({
             url:`/admin/categories/no-page`

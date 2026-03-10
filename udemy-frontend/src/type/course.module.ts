@@ -60,6 +60,7 @@ export interface ILectureResponse{
     second: number;
     path: string;
     sectionId?: string;
+    isFinished?: boolean;
 }
 
 export interface ICourseSearchResponse{

@@ -11,6 +11,7 @@ import com.jwhisper.udemy.dto.course.LectureRequest;
 import com.jwhisper.udemy.dto.course.LectureResponse;
 import com.jwhisper.udemy.dto.course.SectionRequest;
 import com.jwhisper.udemy.dto.course.SectionResponse;
+import com.jwhisper.udemy.dto.learning.LearningResponse;
 import com.jwhisper.udemy.model.Course;
 import com.jwhisper.udemy.model.Lecture;
 import com.jwhisper.udemy.model.Section;
@@ -26,5 +27,6 @@ public interface CourseMapper {
     Section toSection(SectionRequest request);
     Lecture toLecture(LectureRequest request);
     CourseInfoResponse toCourseInfoResponse(Course course);
+    LearningResponse toLearningResponse(Course course);
 }
 

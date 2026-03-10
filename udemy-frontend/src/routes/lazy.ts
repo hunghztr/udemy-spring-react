@@ -32,6 +32,12 @@ export const PaySuccessPage = lazy(
 export const PaySuccess = lazy(
   () => import("../utils/pay.success")
 )
+export const MyLearningPage = lazy(
+  () => import("../screens/user/my.learning.page")
+)
+export const DetailLearningPage = lazy(
+  () => import("../screens/user/detail.learning.page")
+)
 /* ================= ADMIN ================= */
 export const AdminLayout = lazy(
   () => import("../components/admin/layout/admin.layout")

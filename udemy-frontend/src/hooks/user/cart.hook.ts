@@ -15,14 +15,14 @@ export const useCartHook = () => {
   const { mutate: deleteCourse, isPending: isDeleted } =
     useSave<boolean, string>("carts/delete-from-cart", deleteFromCart);
 
-  const { mutate: add, isPending } =
+  const { mutateAsync: add, isPending } =
     useSave<boolean, string>("carts/add-to-cart", addToCart);
 
   const { data, isPending: isList } =
     useGetAll<ICartResponse>("carts/get-cart", getCart);
 
-  const handleAdd = (courseId: string) => {
-    add(courseId, {
+  const handleAdd = async (courseId: string) => {
+    await add(courseId, {
       onSuccess: () => {
         showToast("Thêm vào giỏ hàng thành công");
         query.invalidateQueries({ queryKey: ["carts/get-cart"] });

@@ -8,6 +8,7 @@ import {
   MenuItem,
   Divider,
   Avatar,
+  Popover,
 } from "@mui/material";
 
 import ExploreIcon from "@mui/icons-material/Explore";
@@ -20,6 +21,7 @@ import { showToast } from "@/utils/toast";
 import { query } from "@/main";
 import NotifyDropdown from "@/components/notification/notify.dropdown";
 import SearchInput from "../course/search.input";
+import HomeCategoryHeader from "../home/home.category.header";
 
 export default function Header() {
   const user = useAppSelector((state) => state.currentUser);
@@ -30,12 +32,27 @@ export default function Header() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
 
+  
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
+  };
+
+
+  // explore
+  const [exploreAnchor, setExploreAnchor] = useState<null | HTMLElement>(null);
+
+  const openExplore = Boolean(exploreAnchor);
+
+  const handleOpenExplore = (event: React.MouseEvent<HTMLElement>) => {
+    setExploreAnchor(event.currentTarget);
+  };
+
+  const handleCloseExplore = () => {
+    setExploreAnchor(null);
   };
 
   // ===== LOGOUT =====
@@ -58,7 +75,17 @@ export default function Header() {
   };
 
   return (
-    <AppBar position="static" color="inherit" elevation={1} sx={{ width: "100%" }}>
+        <AppBar
+        position="sticky"
+        color="inherit"
+        elevation={0}
+        sx={{
+          width: "100%",
+          top: 0,
+          zIndex: 1200,
+          boxShadow: "0 10px 30px rgba(0,0,0,0.25)"
+        }}
+      >
       <Toolbar
         sx={{
           display: "flex",
@@ -80,6 +107,7 @@ export default function Header() {
 
           <Button
             color="inherit"
+            onClick={handleOpenExplore}
             sx={{
               whiteSpace: "nowrap",
               display: { xs: "none", md: "inline-flex" },
@@ -247,6 +275,29 @@ export default function Header() {
             </Link>
           )}
         </Box>
+        <Popover
+          open={openExplore}
+          anchorEl={exploreAnchor}
+          onClose={handleCloseExplore}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+          PaperProps={{
+            sx: {
+              mt: 1,
+              borderRadius: 2,
+              boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+              overflow: "visible",
+            },
+          }}
+        >
+          <HomeCategoryHeader />
+        </Popover>
       </Toolbar>
     </AppBar>
   );

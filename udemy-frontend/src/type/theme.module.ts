@@ -9,29 +9,32 @@ declare module "@mui/material/styles" {
       active: string;
       border: string;
     };
+
     hero: {
       background: string;
       text: string;
       chipBg: string;
     };
+
     courseStatus: {
       pending: string;
       published: string;
       rejected: string;
     };
+
     banner: {
       background: string;
       accent: string;
       highlight: string;
     };
+
+    courseContent: {
+      sectionBg: string;
+      sectionHover: string;
+    };
   }
 
   interface PaletteOptions {
-    hero?: {
-      background: string;
-      text: string;
-      chipBg: string;
-    };
     sidebar?: {
       main: string;
       text: string;
@@ -40,15 +43,27 @@ declare module "@mui/material/styles" {
       border: string;
     };
 
+    hero?: {
+      background: string;
+      text: string;
+      chipBg: string;
+    };
+
     courseStatus?: {
       pending: string;
       published: string;
       rejected: string;
     };
+
     banner?: {
       background: string;
       accent: string;
       highlight: string;
+    };
+
+    courseContent?: {
+      sectionBg: string;
+      sectionHover: string;
     };
   }
 }

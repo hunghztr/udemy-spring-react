@@ -59,7 +59,7 @@ export default function CategoryManagementPage() {
               >
                 <Table>
                   <TableHead>
-                    <TableRow sx={{ backgroundColor: "#fafafa" }}>
+                    <TableRow sx={{ backgroundColor: "grey.50" }}>
                       <TableCell sx={{ fontWeight: 700 }}>Mã</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Tên</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Danh mục cha</TableCell>

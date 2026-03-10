@@ -32,10 +32,10 @@ export default function FeaturedCourses() {
             top: "50%",
             left: -20,
             transform: "translateY(-50%)",
-            bgcolor: "#fff",
-            boxShadow: "0 2px 8px rgba(0,0,0,.2)",
+            bgcolor: "background.paper",
+            boxShadow: 2,
             zIndex: 2,
-            "&:hover": { bgcolor: "#fff" },
+            "&:hover": { bgcolor: "background.paper" },
             display: { xs: "none", md: "flex" }
           }}
         >
@@ -50,10 +50,10 @@ export default function FeaturedCourses() {
             top: "50%",
             right: -20,
             transform: "translateY(-50%)",
-            bgcolor: "#fff",
-            boxShadow: "0 2px 8px rgba(0,0,0,.2)",
+            bgcolor: "background.paper",
+            boxShadow: 2,
             zIndex: 2,
-            "&:hover": { bgcolor: "#fff" },
+            "&:hover": { bgcolor: "background.paper" },
             display: { xs: "none", md: "flex" }
           }}
         >

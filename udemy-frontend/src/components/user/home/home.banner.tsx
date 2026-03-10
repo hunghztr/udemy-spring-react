@@ -60,7 +60,7 @@ export default function HomeBanner() {
         gridTemplateColumns: { xs: "1fr", md: "1.2fr 1fr" },
         alignItems: "center",
         gap: 6,
-        color: "#fff",
+        color: "common.white",
         background:
           theme.palette.banner.background,
         overflow: "hidden",

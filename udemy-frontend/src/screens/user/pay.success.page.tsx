@@ -10,6 +10,7 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { query } from "@/main";
 
 const MotionPaper = motion(Paper);
 const MotionBox = motion(Box);
@@ -18,7 +19,11 @@ const MotionButton = motion(Button);
 export default function PaySuccessPage() {
   const theme = useTheme();
   const navigate = useNavigate();
-
+  // xoá cache my learning
+  query.invalidateQueries({
+              predicate: (q) =>
+                q.queryKey[0]?.toString().startsWith("learnings/get-all") ?? false
+            });
   return (
     <MotionBox
       initial={{ opacity: 0 }}

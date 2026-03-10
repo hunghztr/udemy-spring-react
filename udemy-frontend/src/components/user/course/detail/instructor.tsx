@@ -31,7 +31,6 @@ export default function Instructor({
       getProfile,
       author.id || ""
     );
-    console.log(profileData)
   const avatar =
     `${import.meta.env.VITE_CLOUDINARY_WATCH_IMG}/${profileData?.avatarPath}`;
 

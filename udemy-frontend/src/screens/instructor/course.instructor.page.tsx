@@ -16,13 +16,11 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useGetPaging, useSave } from "@/query/use.crud.query";
 import { disableCourseByIns, enableCourseByIns, getCoursesByAuthor } from "@/query/course/course.query";
 import Loading from "@/components/loading";
-import type { IMetaResponse } from "@/type/pagination";
-import type { ICourseResponse } from "@/type/course.module";
 import PaginationComponent from "@/components/admin/layout/pagination.component";
 import { Chip } from "@mui/material";
 import { getCourseStatusMap } from "@/constants/course.status";
@@ -44,13 +42,7 @@ export default function CourseInstructorPage() {
   const [filter, setFilter] = useState<"newest" | "oldest">("newest");
   const [active, setActive] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const [meta, setMeta] = useState<IMetaResponse>({
-    currentPage: 1,
-    pageSize: 10,
-    elementTotals: 0,
-    pageTotals: 0,
-  });
-  const [courses, setCourses] = useState<ICourseResponse[] | null>(null);
+  
   const { isLoading, data } = useGetPaging(
     "courses/get-all-by-author",
     getCoursesByAuthor,
@@ -59,13 +51,9 @@ export default function CourseInstructorPage() {
   const {mutateAsync:deleteCourse,isPending:isDeleted} = 
   useSave<boolean,string>('courses/delete',disableCourseByIns);
   const {mutateAsync:activateCourse,isPending:isActive} = useSave<boolean,string>('courses/activate',enableCourseByIns)
-  useEffect(() => {
-    if (data && !isLoading) {
-      setCourses(data.elements);
-      setMeta(data.meta);
-    }
-  }, [data, isLoading]);
 
+  const courses = data?.elements ?? [];
+  const meta = data?.meta;
   if (isLoading) return <Loading />;
   const isEmpty = (data?.elements.length ?? 0) === 0;
 
@@ -118,7 +106,7 @@ export default function CourseInstructorPage() {
           to={"/instructor/create-course"}
           variant="contained"
           startIcon={<AddIcon />}
-          sx={{ bgcolor: "#6c2bd9", "&:hover": { bgcolor: "#5a22b5" } }}
+          sx={{ bgcolor: "primary.main", "&:hover": { bgcolor: "primary.main" } }}
         >
           Khoá học mới
         </Button>
@@ -153,7 +141,7 @@ export default function CourseInstructorPage() {
                     variant="outlined"
                     sx={{
                       p: 3,
-                      borderColor: "#d8d8f0",
+                      borderColor: "divider",
                       cursor: "pointer",
                       transition: "0.15s",
                       "&:hover": {
@@ -166,7 +154,7 @@ export default function CourseInstructorPage() {
                     }
                   >
                     <Stack direction="row" spacing={3} alignItems="center">
-                      <DescriptionOutlinedIcon sx={{ fontSize: 48, color: "#666" }} />
+                      <DescriptionOutlinedIcon sx={{ fontSize: 48, color: "text.secondary" }} />
 
                       <Box flex={1}>
                         <Tooltip title={c.name} arrow placement="top">
@@ -208,7 +196,7 @@ export default function CourseInstructorPage() {
                         <Chip
                           label={STATUS_MAP[c.status].label}
                           sx={{
-                            backgroundColor: "#fff",
+                            backgroundColor: "divider",
                             border: `1px solid ${STATUS_MAP[c.status].borderColor}`,
                             color: STATUS_MAP[c.status].textColor,
                             borderRadius: "6px",

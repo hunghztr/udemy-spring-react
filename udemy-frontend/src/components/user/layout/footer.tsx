@@ -2,7 +2,13 @@ import { Box, Grid, Container, Typography, Link } from "@mui/material";
 
 export default function Footer() {
   return (
-    <Box sx={{ backgroundColor: "#1c1d1f", color: "#fff", py: 6 }}>
+    <Box
+      sx={(theme) => ({
+        backgroundColor: theme.palette.hero.background,
+        color: theme.palette.hero.text,
+        py: 6
+      })}
+    >
       <Container maxWidth="lg">
         {/* TOP LINKS */}
         <Grid container spacing={4}>
@@ -50,7 +56,8 @@ export default function Footer() {
             justifyContent: "space-between",
             alignItems: "center",
             mt: 6,
-            borderTop: "1px solid #3e4143",
+            borderTop: "1px solid",
+            borderColor: "sidebar.border",
             pt: 4,
           }}
         >

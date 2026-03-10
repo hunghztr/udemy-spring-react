@@ -82,7 +82,7 @@ export default function UserManagement() {
                 
                 <Table>
                   <TableHead>
-                    <TableRow sx={{ backgroundColor: "#fafafa" }}>
+                    <TableRow sx={{ backgroundColor: "grey.50" }}>
                       <TableCell sx={{ fontWeight: 700 }}>Mã</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>
                         Tài khoản

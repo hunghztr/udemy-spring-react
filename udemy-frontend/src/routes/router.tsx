@@ -7,7 +7,9 @@ import { AdminHomePage, AdminLayout, AdminNotifyPage, AuthPage, CategoryManageme
      SearchPage, UserManagementPage, CourseDetailPage, 
      CategoryCoursePage,
      CartPage,
-     PaySuccess} from "./lazy";
+     PaySuccess,
+     MyLearningPage,
+     DetailLearningPage} from "./lazy";
 import ProtectedLayout from "@/components/admin/layout/protected.layout";
 import PaySuccessPage from "@/screens/user/pay.success.page";
 
@@ -27,7 +29,9 @@ export const router = createBrowserRouter([
       { path: "/category/:slug", element: <CategoryCoursePage /> },
       { path: "/cart", element: <CartPage />},
       { path: "/payment-success", element: <PaySuccessPage />},
-      { path: "/payment-result", element: <PaySuccess />}
+      { path: "/payment-result", element: <PaySuccess />},
+      { path: "/my-learning", element: <MyLearningPage />},
+      { path: "/learn/:slug", element: <DetailLearningPage />}
     ],
   },
   {

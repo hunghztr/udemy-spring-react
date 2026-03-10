@@ -23,6 +23,7 @@ import com.jwhisper.udemy.helper.mapper.CourseMapper;
 import com.jwhisper.udemy.helper.mapper.ESCourseMapper;
 import com.jwhisper.udemy.model.Category;
 import com.jwhisper.udemy.model.Course;
+import com.jwhisper.udemy.projection.category.CategoryCourseProjection;
 import com.jwhisper.udemy.redis.HomeRedisService;
 import com.jwhisper.udemy.redis.InterestedRedisService;
 import com.jwhisper.udemy.repository.CategoryRepository;
@@ -123,5 +124,10 @@ public class HomeServiceImpl implements HomeService {
         Category category = this.categoryRepository.findById(id)
         .orElseThrow(() -> new ErrorException("Thể loại không tồn tại"));
         return this.searchService.getCoursesByCategory(category.getName(),pageable, filterRequest);
+    }
+    @Override
+    public List<CategoryCourseProjection> getAllChildren() {
+        Pageable pageable = PageRequest.of(0,10);
+        return categoryRepository.findTopCategories(pageable);
     }
 }

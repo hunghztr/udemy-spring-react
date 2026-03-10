@@ -2,7 +2,7 @@ import type { IMetaResponse } from '@/type/pagination'
 import { Box, Pagination, Typography } from '@mui/material'
 
 export default function PaginationComponent({meta,page,setPage,isLoading}:{
-    meta : IMetaResponse,page : number,setPage : (value : number) => void, isLoading : boolean
+    meta : IMetaResponse|undefined,page : number,setPage : (value : number) => void, isLoading : boolean
 }) {
   return (
     <>
@@ -14,12 +14,12 @@ export default function PaginationComponent({meta,page,setPage,isLoading}:{
   mt={2}
 >
   <Typography variant="body2" color="text.secondary">
-    Tổng {meta.elementTotals} phần tử
+    Tổng {meta?.elementTotals} phần tử
   </Typography>
 
   <Pagination
     page={page}
-    count={meta.pageTotals}
+    count={meta?.pageTotals}
     color="primary"
     shape="rounded"
     onChange={(_, value) => setPage(value)}

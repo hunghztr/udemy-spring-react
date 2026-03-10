@@ -38,7 +38,8 @@ export default function CartSummary({courses, total, price }: Props) {
       elevation={0}
       sx={{
         p: 3,
-        border: "1px solid #eee",
+        border: "1px solid",
+        borderColor: "common.white",
         borderRadius: 2
       }}
     >

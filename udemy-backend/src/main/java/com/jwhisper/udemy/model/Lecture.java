@@ -33,7 +33,7 @@ public class Lecture extends DefaultModel {
   @Column(columnDefinition = "DECIMAL(5,2)")
   double second;
   String path;
-  boolean isFinished;
+  Boolean isFinished;
   Integer position;
   @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)

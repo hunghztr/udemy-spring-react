@@ -11,5 +11,5 @@ public class LectureResponse {
     String name;
     double second;
     String path;
-    boolean isFinish;
+    Boolean isFinished;
 }

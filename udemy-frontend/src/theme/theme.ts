@@ -10,6 +10,10 @@ const theme = createTheme({
       dark: "#4b0082",
       contrastText: "#ffffff",
     },
+    courseContent: {
+      sectionBg: "#f7f9fa",
+      sectionHover: "#f1f3f5"
+    },
     hero: {
       background: "#1c1d1f",
       text: "#ffffff",

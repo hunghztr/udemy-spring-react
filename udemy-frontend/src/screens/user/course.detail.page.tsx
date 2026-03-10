@@ -125,6 +125,7 @@ export default function CourseDetailPage() {
         }}
       >
         <CoursePurchaseCard
+          courseName={data.name}
           courseId={data.id}
           price={data.price}
           image={data.imagePath}

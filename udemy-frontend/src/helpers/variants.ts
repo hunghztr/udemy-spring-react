@@ -110,3 +110,28 @@ export const gridItemVariants = {
     y: -10,
   },
 };
+
+
+// variant của learning
+export const container : Variants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.07
+      }
+    }
+  };
+
+export const item : Variants = {
+    hidden: { opacity: 0, y: 20, scale: 0.98 },
+    show: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.35,
+        ease: "easeOut"
+      }
+    }
+  };

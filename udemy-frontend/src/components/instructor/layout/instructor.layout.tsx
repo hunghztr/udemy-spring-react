@@ -19,7 +19,8 @@ export default function InstructorLayout() {
         sx={{
           width: SIDEBAR_WIDTH,
           flexShrink: 0,
-          borderRight: "1px solid #eee",
+          borderRight: "1px solid",
+          borderColor: "divider"
         }}
       >
         <InstructorSidebar />

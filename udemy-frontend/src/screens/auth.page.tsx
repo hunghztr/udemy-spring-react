@@ -21,7 +21,7 @@ export default function AuthPage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#f7f7f7",
+        background: "background.default",
         p: 2,
       }}
     >

@@ -16,3 +16,8 @@ export interface ICategoryParentResponse{
         name : string;
     }[]
 }
+export interface ICategoryCourseResponse{
+    id:string;
+    name:string;
+    courseCount:number;
+}

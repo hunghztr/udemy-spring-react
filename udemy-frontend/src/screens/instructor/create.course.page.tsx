@@ -73,7 +73,7 @@ export default function CreateCoursePage() {
             sx={{
               height: 8,
               borderRadius: 5,
-              backgroundColor: "#eee",
+              backgroundColor: "divider",
               "& .MuiLinearProgress-bar": { borderRadius: 5 },
             }}
           />
