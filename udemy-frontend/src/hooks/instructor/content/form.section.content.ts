@@ -1,4 +1,5 @@
 import { createSection, updateSectionName } from "@/query/course/course.query";
+import { query } from "@/query/queryClient";
 import { useSave } from "@/query/use.crud.query";
 import type {
   ICourseDetailResponse,
@@ -7,7 +8,6 @@ import type {
 } from "@/type/course.module";
 import { showToast } from "@/utils/toast";
 import { useState } from "react";
-import { query } from "@/main";
 
 export const useFormSection = (course: ICourseDetailResponse | null) => {
   // create section

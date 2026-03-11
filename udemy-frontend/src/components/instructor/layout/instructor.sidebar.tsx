@@ -1,15 +1,11 @@
 import { Box, Stack, Typography, useTheme } from "@mui/material";
 import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
-import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined"; // ✅ PROFILE ICON
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { query } from "@/main";
 import { persistor } from "@/redux/store";
 import { logOut } from "@/redux/thunks/auth.thunk";
 import { showToast } from "@/utils/toast";
@@ -18,9 +14,6 @@ import NotifyIcon from "@/components/notification/notify.icon";
 
 const menuItems = [
   { label: "Courses", icon: <SchoolOutlinedIcon />, path: "/instructor/course" },
-  { label: "Communication", icon: <ChatBubbleOutlineOutlinedIcon />, path: "/instructor/communication" },
-  { label: "Performance", icon: <BarChartOutlinedIcon />, path: "/instructor/performance" },
-  { label: "Tools", icon: <BuildOutlinedIcon />, path: "/instructor/tools" },
   { label: "Notification", icon: <NotifyIcon />, path: "/instructor/notification" },
   { label: "Profile", icon: <PersonOutlineOutlinedIcon />, path: "/instructor/profile" },
 ];
@@ -174,10 +167,6 @@ export default function InstructorSidebar() {
             },
           })}
           onClick={async () => {
-            query.removeQueries({
-                  queryKey: ["courses/get-all-by-author"],
-                  exact: false
-                });
                 await persistor.purge();
                 dispatch(logOut());
                 navigate("/auth");

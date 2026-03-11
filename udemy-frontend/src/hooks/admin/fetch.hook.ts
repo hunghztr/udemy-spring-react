@@ -1,7 +1,7 @@
 import {  useEffect, useState } from "react"
 import type { IMetaResponse, IPagination, IPaginationResponse } from "@/type/pagination";
 import { useGetPaging } from "@/query/use.crud.query";
-import { query } from "@/main";
+import { query } from "@/query/queryClient";
 
 interface IUseFetchHookProps<Res> {
   fetchMethod: (data : IPagination) => Promise<IPaginationResponse<Res>>;

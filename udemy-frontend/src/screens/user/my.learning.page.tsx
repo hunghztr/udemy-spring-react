@@ -9,12 +9,12 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import type { ILearningResponse } from "@/type/course.module";
 import LearningCard from "@/components/user/course/card/learning.card";
 import { useGetAll } from "@/query/use.crud.query";
 import { getAllLearnings } from "@/query/learning/learning.query";
 import { container, item } from "@/helpers/variants";
 import SkeletonLearningCard from "@/components/user/course/card/skeleton.learing.card";
+import type { ILearningResponse } from "@/type/learning.module";
 
 export default function MyLearningPage() {
 

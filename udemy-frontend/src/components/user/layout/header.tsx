@@ -18,7 +18,6 @@ import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { persistor } from "@/redux/store";
 import { logOut } from "@/redux/thunks/auth.thunk";
 import { showToast } from "@/utils/toast";
-import { query } from "@/main";
 import NotifyDropdown from "@/components/notification/notify.dropdown";
 import SearchInput from "../course/search.input";
 import HomeCategoryHeader from "../home/home.category.header";
@@ -57,10 +56,6 @@ export default function Header() {
 
   // ===== LOGOUT =====
   const handleLogOut = async () => {
-    query.removeQueries({
-      queryKey: ["courses/get-all-by-author"],
-      exact: false
-    });
     await persistor.purge();
     dispatch(logOut());
     navigate("/auth");

@@ -1,5 +1,5 @@
-import { query } from "@/main";
 import { deleteLecture, deleteSection } from "@/query/course/course.query";
+import { query } from "@/query/queryClient";
 import { useSave } from "@/query/use.crud.query";
 import type {
   ICourseDetailResponse,

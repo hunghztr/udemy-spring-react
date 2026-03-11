@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.dto.category.CategoryChildResponse;
+import com.jwhisper.udemy.dto.category.CategoryCourseResponse;
 import com.jwhisper.udemy.dto.category.CategoryParentResponse;
 import com.jwhisper.udemy.dto.course.CourseInfoResponse;
 import com.jwhisper.udemy.dto.course.CourseSearchResponse;
@@ -23,7 +24,6 @@ import com.jwhisper.udemy.helper.mapper.CourseMapper;
 import com.jwhisper.udemy.helper.mapper.ESCourseMapper;
 import com.jwhisper.udemy.model.Category;
 import com.jwhisper.udemy.model.Course;
-import com.jwhisper.udemy.projection.category.CategoryCourseProjection;
 import com.jwhisper.udemy.redis.HomeRedisService;
 import com.jwhisper.udemy.redis.InterestedRedisService;
 import com.jwhisper.udemy.repository.CategoryRepository;
@@ -46,6 +46,7 @@ public class HomeServiceImpl implements HomeService {
     private final SecurityHelper securityHelper;
     private final SearchService searchService;
     private final String KEY = "home:categories";
+    private final String CHILD_KEY = "home:categories-child";
     public HomeServiceImpl(CourseRepository courseRepository,
          CourseMapper courseMapper, HomeRedisService homeRedisService,
          CategoryRepository categoryRepository, CategoryMapper categoryMapper,
@@ -71,16 +72,12 @@ public class HomeServiceImpl implements HomeService {
     @Override
     public Pagination<CategoryParentResponse> getAllParents(Pageable pageable, boolean isActive) 
      {
-        long start = System.currentTimeMillis();
         Pagination<CategoryParentResponse> cPagination = this.homeRedisService.get(this.KEY, 
             new TypeReference<Pagination<CategoryParentResponse>>() {}
         );
         if(cPagination != null){
-            long end = System.currentTimeMillis();
-            log.info(">>> GET FROM REDIS: {} ms", (end - start));
              return cPagination;
         }
-        long dbStart = System.currentTimeMillis();
         Page<Category> cPage =
          this.categoryRepository.findAllByIsActiveAndCategoryParentIsNull(isActive, pageable);
          List<CategoryParentResponse> categoryResponses = cPage.getContent()
@@ -103,8 +100,6 @@ public class HomeServiceImpl implements HomeService {
         pagination.setMeta(meta);
         this.homeRedisService.set(this.KEY, pagination, 1);
 
-        long dbEnd = System.currentTimeMillis();
-        log.info(">>> GET FROM DB: {} ms", (dbEnd - dbStart));
         return pagination;
     }
     @Override
@@ -126,8 +121,18 @@ public class HomeServiceImpl implements HomeService {
         return this.searchService.getCoursesByCategory(category.getName(),pageable, filterRequest);
     }
     @Override
-    public List<CategoryCourseProjection> getAllChildren() {
+    public List<CategoryCourseResponse> getAllChildren() {
+        List<CategoryCourseResponse> cProjections = this.homeRedisService.get(this.CHILD_KEY, 
+            new TypeReference<List<CategoryCourseResponse>>() {}
+        );
+        if(cProjections != null){
+             return cProjections;
+        }
         Pageable pageable = PageRequest.of(0,10);
-        return categoryRepository.findTopCategories(pageable);
+        List<Category> categories = categoryRepository.findTopCategories(pageable);
+        List<CategoryCourseResponse> responses = categories.stream()
+        .map(c -> this.categoryMapper.toCategoryCourseResponse(c)).toList();
+        this.homeRedisService.set(this.CHILD_KEY, responses, 1);
+        return responses;
     }
 }

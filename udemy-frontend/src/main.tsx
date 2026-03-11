@@ -9,20 +9,12 @@ import theme from "./theme/theme.ts";
 import { CssBaseline } from "@mui/material";
 import { PersistGate } from "redux-persist/integration/react";
 import AuthInitializer from "./utils/auth.initializer.tsx";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {  QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { router } from "./routes/router.tsx";
+import { query } from "./query/queryClient.ts";
 
-export const query = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      retry: 1,
-      staleTime: 60 * 1000 * 5,
-      gcTime: 30 * 60 * 1000,
-    },
-  },
-});
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={query}>

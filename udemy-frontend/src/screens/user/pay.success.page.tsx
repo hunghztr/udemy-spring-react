@@ -10,7 +10,7 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { query } from "@/main";
+import { query } from "@/query/queryClient";
 
 const MotionPaper = motion(Paper);
 const MotionBox = motion(Box);
@@ -116,7 +116,7 @@ export default function PaySuccessPage() {
                 }}
                 whileTap={{ scale: 0.96 }}
                 transition={{ type: "spring", stiffness: 300 }}
-                onClick={() => navigate("/my-courses")}
+                onClick={() => navigate("/my-learning")}
                 sx={{ px: 4 }}
               >
                 Bắt đầu học

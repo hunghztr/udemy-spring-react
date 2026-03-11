@@ -2,13 +2,15 @@ import { Box, Paper, Typography } from "@mui/material";
 import Hls from "hls.js";
 import { useEffect, useRef } from "react";
 import type { ILectureResponse } from "@/type/course.module";
+import { useAppSelector } from "@/redux/hook";
 
 interface Props {
   lecture: ILectureResponse | null;
 }
 
 export default function VideoPlayer({ lecture }: Props) {
-
+  const username = useAppSelector(state => state.currentUser.username)
+  const progressKey = `${username}-lecture-progress-${lecture?.id}`;
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const hlsRef = useRef<Hls | null>(null);
 
@@ -43,29 +45,58 @@ export default function VideoPlayer({ lecture }: Props) {
       hls.attachMedia(video);
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
+
+        const savedTime = localStorage.getItem(progressKey);
+
+        if (savedTime) {
+          video.currentTime = Number(savedTime);
+        }
+
         video.play().catch(()=>{});
       });
 
-    }
+    } 
     else if (video.canPlayType("application/vnd.apple.mpegurl")) {
 
       video.src = src;
 
-      video.addEventListener("loadedmetadata",()=>{
+      video.addEventListener("loadedmetadata", () => {
+
+        const savedTime = localStorage.getItem(progressKey);
+
+        if (savedTime) {
+          video.currentTime = Number(savedTime);
+        }
+
         video.play().catch(()=>{});
       });
 
     }
 
-    return ()=>{
-      if(hlsRef.current){
+    const saveProgress = () => {
+
+      const current = video.currentTime;
+
+      if(current > 1){ // tránh ghi 0
+        localStorage.setItem(progressKey, String(current));
+      }
+
+    };
+
+    video.addEventListener("timeupdate", saveProgress);
+
+    return () => {
+
+      video.removeEventListener("timeupdate", saveProgress);
+
+      if (hlsRef.current) {
         hlsRef.current.destroy();
         hlsRef.current = null;
       }
-    }
+
+    };
 
   }, [lecture]);
-
   return (
     <Paper sx={{ p: 2 }}>
 

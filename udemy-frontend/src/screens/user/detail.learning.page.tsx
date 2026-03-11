@@ -10,6 +10,7 @@ import type { ICourseInfoResponse, ILectureResponse } from "@/type/course.module
 import VideoPlayer from "@/components/user/course/learning/video.player";
 import CourseContent from "@/components/user/course/learning/course.content";
 import CourseInfo from "@/components/user/course/learning/course.info";
+import RatingList from "@/components/user/course/learning/rating.list";
 
 
 export default function DetailLearningPage() {
@@ -71,6 +72,7 @@ export default function DetailLearningPage() {
         <Grid size={{ xs: 12, md: 8 }}>
           <VideoPlayer lecture={currentLecture}/>
           <CourseInfo course={data} />
+          <RatingList courseId={data.id} />
         </Grid>
 
         <Grid size={{ xs: 12, md: 4 }}>
@@ -79,7 +81,7 @@ export default function DetailLearningPage() {
           sections={data.sections}
           currentLecture={currentLecture||undefined}
           setCurrentLecture={setCurrentLecture}
-        />
+          />
         </Grid>
 
       </Grid>

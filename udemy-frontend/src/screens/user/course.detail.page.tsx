@@ -21,7 +21,7 @@ import WhatLearn from "@/components/user/course/detail/what.learn";
 import Requirement from "@/components/user/course/detail/requirement";
 import Content from "@/components/user/course/detail/content";
 import Instructor from "@/components/user/course/detail/instructor";
-import FeaturedCourses from "@/components/user/course/featured.courses";
+import RatingList from "@/components/user/course/learning/rating.list";
 
 const splitToList = (value?: string) =>
   value
@@ -30,7 +30,6 @@ const splitToList = (value?: string) =>
 
 export default function CourseDetailPage() {
   const { slug } = useParams<{ slug: string }>();
-
   const courseId = useMemo(() => {
     if (!slug) return null;
     const match = slug.match(/([0-9a-fA-F-]{36})\.html$/);
@@ -131,13 +130,14 @@ export default function CourseDetailPage() {
           image={data.imagePath}
         />
       </Grid>
+      
 
-      {/* FEATURED COURSES */}
-      <Grid sx={{ xs: "12", md: "8" }}>
-        <FeaturedCourses />
-      </Grid>
 
     </Grid>
+    <Box sx={{width:"50%"}}>
+        <RatingList courseId={data.id} isRate={false}  />
+    </Box>
+    
       </Container>
     </>
   );

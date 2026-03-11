@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.jwhisper.udemy.model.Category;
-import com.jwhisper.udemy.projection.category.CategoryCourseProjection;
 import com.jwhisper.udemy.projection.category.CategoryProjection;
 
 @Repository
@@ -24,14 +23,11 @@ public interface CategoryRepository extends JpaRepository<Category, String> {
     CategoryProjection findProjectById(String id);
     List<CategoryProjection> findAllBy();
     @Query("""
-    SELECT 
-        c.id AS id,
-        c.name AS name,
-        COUNT(co.id) AS courseCount
+    SELECT c
     FROM Course co
     JOIN co.categories c
-    GROUP BY c.id, c.name
+    GROUP BY c
     ORDER BY COUNT(co.id) DESC
     """)
-    List<CategoryCourseProjection> findTopCategories(Pageable pageable);
+    List<Category> findTopCategories(Pageable pageable);
 }

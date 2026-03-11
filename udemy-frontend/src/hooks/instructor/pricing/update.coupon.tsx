@@ -1,5 +1,5 @@
-import { query } from "@/main";
 import { createCoupon, deleteCoupon, getCouponsNoPage, updateCoupon } from "@/query/coupon/coupon.query";
+import { query } from "@/query/queryClient";
 import { useGetById, useSave } from "@/query/use.crud.query";
 import type { ICouponResponse, ICourseDetailResponse } from "@/type/course.module";
 import { showToast } from "@/utils/toast";

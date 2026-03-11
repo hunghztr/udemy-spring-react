@@ -1,5 +1,6 @@
-import type { ICourseInfoResponse, ILearningResponse } from "@/type/course.module"
+import type { ICourseInfoResponse } from "@/type/course.module"
 import { getAllNoPage, getById } from "../api.crud.query"
+import type { ILearningResponse } from "@/type/learning.module"
 
 export const getAllLearnings = (filter : "in-progress"|"completed"|"all") =>{
     return getAllNoPage<ILearningResponse[]>({

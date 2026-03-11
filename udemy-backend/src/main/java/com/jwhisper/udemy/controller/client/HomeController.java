@@ -1,5 +1,7 @@
 package com.jwhisper.udemy.controller.client;
 
+import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jwhisper.udemy.dto.Pagination;
+import com.jwhisper.udemy.dto.category.CategoryCourseResponse;
 import com.jwhisper.udemy.dto.category.CategoryParentResponse;
 import com.jwhisper.udemy.dto.course.FilterRequest;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
@@ -39,8 +42,8 @@ public class HomeController {
     @GetMapping("/categories/get-all-children")
     @ApiMessage("Lấy danh sách danh mục con thành công")
     public ResponseEntity<?> getAllChildren() {
-    
-        return ResponseEntity.ok(null);
+        List<CategoryCourseResponse> projections = this.homeService.getAllChildren();
+        return ResponseEntity.ok(projections);
     }
     
     @GetMapping("/get-course-detail/{id}")

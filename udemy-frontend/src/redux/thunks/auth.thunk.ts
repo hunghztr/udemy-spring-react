@@ -1,4 +1,5 @@
 import api from "@/api/api";
+import { query } from "@/query/queryClient";
 import type { IApiResponse, IResult } from "@/type/api.response";
 import type { ILogin, IRegister, IUserToken } from "@/type/auth.module";
 import { createAsyncThunk } from "@reduxjs/toolkit";
@@ -90,6 +91,7 @@ export const logOut = createAsyncThunk(
       roleName:''
     }
     delete api.defaults.headers.common['Authorization'];
+    query.clear();
     return {
       user
     }

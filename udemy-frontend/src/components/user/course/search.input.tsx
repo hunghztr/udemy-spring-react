@@ -14,7 +14,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { useQueryClient } from "@tanstack/react-query";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
 
 import { useGetAll, useGetById, useSave } from "@/query/use.crud.query";
 import {
@@ -24,6 +24,7 @@ import {
 } from "@/query/course/search.query";
 import type { IRecommendResponse } from "@/type/course.module";
 import { useDebounce } from "@/hooks/debounce.hook";
+import { query } from "@/query/queryClient";
 
 const MotionPaper = motion(Paper);
 const MotionBox = motion(Box);
@@ -34,7 +35,7 @@ const HISTORY_LIMIT = 5;
 export default function SearchInput() {
   const theme = useTheme();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   const [inputValue, setInputValue] = useState("");
   const [open, setOpen] = useState(false);
   const [deletingItem, setDeletingItem] = useState<string | null>(null);
@@ -108,7 +109,7 @@ export default function SearchInput() {
     navigate(`/search?keyword=${encodeURIComponent(value)}`);
 
     // chỉ cần refresh history
-    queryClient.invalidateQueries({ queryKey: ["search/history"] });
+    query.invalidateQueries({ queryKey: ["search/history"] });
   };
 
   const { mutate } = useSave<boolean, string>(
@@ -122,7 +123,7 @@ export default function SearchInput() {
 
     mutate(keyword, {
       onSuccess: () => {
-        queryClient.setQueryData<IRecommendResponse[]>(
+        query.setQueryData<IRecommendResponse[]>(
           ["search/history"],
           old => old?.filter(item => item.keyword !== keyword) ?? []
         );

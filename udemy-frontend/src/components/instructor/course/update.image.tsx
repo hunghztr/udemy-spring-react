@@ -26,7 +26,7 @@ import type { ICourse, ICourseDetailResponse } from "@/type/course.module";
 import { useEffect, useRef, useState } from "react";
 import Loading from "@/components/loading";
 import { showToast } from "@/utils/toast";
-import { query } from "@/main";
+import { query } from "@/query/queryClient";
 
 interface IProps {
   course: ICourseDetailResponse | null;

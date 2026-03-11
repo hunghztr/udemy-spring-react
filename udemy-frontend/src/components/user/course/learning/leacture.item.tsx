@@ -10,7 +10,7 @@ import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import type { ILectureResponse, ISectionResponse } from "@/type/course.module";
 import { useSave } from "@/query/use.crud.query";
 import { markFinish } from "@/query/course/course.query";
-import { query } from "@/main";
+import { query } from "@/query/queryClient";
 
 interface Props {
   courseId:string;
@@ -31,6 +31,12 @@ export default function LectureItem({
       { lectureId: lecture?.id || "", finish },
       {
         onSuccess:(data : ILectureResponse)=>{
+
+          // ⭐ xoá progress khi finish
+          if(finish){
+            localStorage.removeItem(`lecture-progress-${data.id}`);
+          }
+
           query.setQueryData(
             ["learnings/learn",courseId],
             (old:any)=>{
@@ -49,10 +55,12 @@ export default function LectureItem({
               }
             }
           )
+
           query.invalidateQueries({
             predicate: (q) =>
               q.queryKey[0]?.toString().startsWith("learnings/get-all") ?? false
           });
+
         }
       }
     )

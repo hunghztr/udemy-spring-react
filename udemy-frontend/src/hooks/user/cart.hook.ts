@@ -1,5 +1,5 @@
-import { query } from "@/main";
 import { addToCart, deleteFromCart, getCart, getSalePrice } from "@/query/cart/cart.query";
+import { query } from "@/query/queryClient";
 import { useGetAll, useSave } from "@/query/use.crud.query";
 import type { ICartResponse } from "@/type/cart.module";
 import { showToast } from "@/utils/toast";

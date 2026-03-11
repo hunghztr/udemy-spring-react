@@ -57,6 +57,9 @@ export const CategoryManagementPage = lazy(
 export const AdminNotifyPage = lazy(
   () => import("../screens/admin/admin.notify.page")
 );
+export const AdminRatingPage = lazy(
+  () => import("../screens/admin/admin.rating.page")
+)
 
 /* ============== INSTRUCTOR =============== */
 export const InstructorLayout = lazy(

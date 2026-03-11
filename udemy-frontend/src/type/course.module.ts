@@ -43,6 +43,14 @@ export interface ISectionResponse{
     hour: number;
     lectures: ILectureResponse[];
 }
+export interface ILectureResponse{
+    id?: string;
+    name: string;
+    second: number;
+    path: string;
+    sectionId?: string;
+    isFinished?: boolean;
+}
 export interface ISection{
     id?: string;
     name?: string;
@@ -54,14 +62,7 @@ export interface ILecture{
     path?: string;
     second?: number;
 }
-export interface ILectureResponse{
-    id?: string;
-    name: string;
-    second: number;
-    path: string;
-    sectionId?: string;
-    isFinished?: boolean;
-}
+
 
 export interface ICourseSearchResponse{
     id:string;
@@ -75,14 +76,7 @@ export interface ICourseSearchResponse{
     price:number;
     categories:string[]
 }
-export interface ILearningResponse{
-    id : string;
-    imagePath: string;
-    name : string;
-    progress : number;
-    star:number;
 
-}
 export interface IRecommendResponse{
     keyword:string;
     type:"HISTORY"|"TRENDING"

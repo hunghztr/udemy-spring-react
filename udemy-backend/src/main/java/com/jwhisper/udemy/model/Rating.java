@@ -22,7 +22,7 @@ public class Rating extends DefaultModel {
   @EmbeddedId
   UserCourseKey id;
   @Column(columnDefinition = "DECIMAL(2,1)")
-  double star;
+  Double star;
   @Column(columnDefinition = "TEXT")
   String message;
 

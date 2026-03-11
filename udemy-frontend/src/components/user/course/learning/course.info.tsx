@@ -19,7 +19,7 @@ export default function CourseInfo({ course }: Props) {
       <Stack direction="row" spacing={2} mt={1} alignItems="center">
 
         <Typography color="text.secondary">
-          Created by <b>{course.author.fullname}</b>
+          Tạo bởi <b>{course.author.fullname}</b>
         </Typography>
 
         <Typography color="text.secondary">
@@ -27,7 +27,7 @@ export default function CourseInfo({ course }: Props) {
         </Typography>
 
         <Typography color="text.secondary">
-          👨‍🎓 {course.sold} students
+          👨‍🎓 {course.sold} học viên
         </Typography>
 
       </Stack>
@@ -49,7 +49,7 @@ export default function CourseInfo({ course }: Props) {
 
       {/* Description */}
       <Typography variant="h6" fontWeight={600} mb={1}>
-        Description
+        Mô tả
       </Typography>
 
       <Typography color="text.secondary">
@@ -60,7 +60,7 @@ export default function CourseInfo({ course }: Props) {
 
       {/* Requirement */}
       <Typography variant="h6" fontWeight={600} mb={1}>
-        Requirements
+        Yêu cầu
       </Typography>
 
       <Typography color="text.secondary">

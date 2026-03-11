@@ -11,8 +11,8 @@ import {
 import StarIcon from "@mui/icons-material/Star";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import { useNavigate } from "react-router-dom";
-import type { ILearningResponse } from "@/type/course.module";
 import { slugify } from "@/helpers/slugify";
+import type { ILearningResponse } from "@/type/learning.module";
 
 interface Props {
   course: ILearningResponse;

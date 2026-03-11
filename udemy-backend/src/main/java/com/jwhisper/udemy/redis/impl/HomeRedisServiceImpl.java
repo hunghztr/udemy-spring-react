@@ -12,37 +12,49 @@ import com.jwhisper.udemy.redis.HomeRedisService;
 
 @Service
 public class HomeRedisServiceImpl implements HomeRedisService {
-    private final RedisTemplate<String,Object> redisTemplate;
+
+    private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper;
-    public HomeRedisServiceImpl(RedisTemplate<String,Object> redisTemplate,
-        ObjectMapper objectMapper
-    ){
+
+    public HomeRedisServiceImpl(
+            RedisTemplate<String, String> redisTemplate,
+            ObjectMapper objectMapper
+    ) {
         this.redisTemplate = redisTemplate;
         this.objectMapper = objectMapper;
     }
+
     @Override
-    public void set(String key, Object value, long ttlSeconds) {
-        this.redisTemplate.opsForValue().set(key, value, ttlSeconds,TimeUnit.HOURS);
+    public void set(String key, Object value, long ttlHours) {
+        try {
+            String json = objectMapper.writeValueAsString(value);
+            redisTemplate.opsForValue().set(key, json, ttlHours, TimeUnit.HOURS);
+        } catch (Exception e) {
+            throw new RuntimeException("Redis serialize error", e);
+        }
     }
+
     @Override
-   public <T> T get(String key, TypeReference<T> typeRef) {
-      Object val = redisTemplate.opsForValue().get(key);
-      if (val == null) return null;
-      return objectMapper.convertValue(val, typeRef);
-   }
+    public <T> T get(String key, TypeReference<T> typeRef) {
+        try {
+            String json = redisTemplate.opsForValue().get(key);
+            if (json == null) return null;
+            return objectMapper.readValue(json, typeRef);
+        } catch (Exception e) {
+            throw new RuntimeException("Redis deserialize error", e);
+        }
+    }
 
     @Override
     public void delete(String key) {
-        this.redisTemplate.delete(key);
+        redisTemplate.delete(key);
     }
 
     @Override
     public void deleteByPattern(String pattern) {
-        Set<String> keys = this.redisTemplate.keys(pattern);
+        Set<String> keys = redisTemplate.keys(pattern);
         if (keys != null && !keys.isEmpty()) {
-            this.redisTemplate.delete(keys);
+            redisTemplate.delete(keys);
         }
     }
-
-    
 }

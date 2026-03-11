@@ -5,39 +5,34 @@ import { EffectCoverflow, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 
+import { useGetAll } from "@/query/use.crud.query";
+import type { ICategoryCourseResponse } from "@/type/category.module";
+import { getCategoiesChild } from "@/query/category/category.query";
+import Loading from "@/components/loading";
+
 export default function PopularCategories() {
-  const categories = [
-    {
-      name: "Frontend",
-      courses: 120,
-      color: "linear-gradient(135deg,#2ec6ff,#2b9fff,#1bd8b6)"
-    },
-    {
-      name: "Backend",
-      courses: 95,
-      color: "linear-gradient(135deg,#ff7a00,#ffb347,#ff5e8a)"
-    },
-    {
-      name: "DevOps",
-      courses: 60,
-      color: "linear-gradient(135deg,#6a11cb,#2575fc)"
-    },
-    {
-      name: "Mobile",
-      courses: 80,
-      color: "linear-gradient(135deg,#11998e,#38ef7d)"
-    },
-    {
-      name: "AI",
-      courses: 70,
-      color: "linear-gradient(135deg,#fc466b,#3f5efb)"
-    }
+
+  const { data, isPending } = useGetAll<ICategoryCourseResponse[]>(
+    "categories/get-children",
+    getCategoiesChild
+  );
+
+  const colors = [
+    "linear-gradient(135deg,#2ec6ff,#2b9fff,#1bd8b6)",
+    "linear-gradient(135deg,#ff7a00,#ffb347,#ff5e8a)",
+    "linear-gradient(135deg,#6a11cb,#2575fc)",
+    "linear-gradient(135deg,#11998e,#38ef7d)",
+    "linear-gradient(135deg,#fc466b,#3f5efb)"
   ];
+
+  if (isPending) {
+    return <Loading />;
+  }
 
   return (
     <Box
       sx={{
-        py:4,
+        py: 4,
         px: { xs: 2, md: 8 },
         background: (theme) => theme.palette.background.default,
         overflow: "hidden"
@@ -73,8 +68,8 @@ export default function PopularCategories() {
           paddingBottom: "80px"
         }}
       >
-        {categories.map((item, i) => (
-          <SwiperSlide key={i}>
+        {data?.map((item, i) => (
+          <SwiperSlide key={item.id}>
             <Paper
               sx={{
                 height: 300,
@@ -85,7 +80,7 @@ export default function PopularCategories() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 textAlign: "center",
-                background: item.color,
+                background: colors[i % colors.length],
                 color: "white",
                 backdropFilter: "blur(20px)",
                 boxShadow: "0 20px 60px rgba(0,0,0,0.5)"
@@ -97,9 +92,9 @@ export default function PopularCategories() {
               </Typography>
 
               <Box display="flex" alignItems="center" gap={2}>
-                <Avatar src="https://i.pravatar.cc/100?img=3" />
+                <Avatar src={`https://i.pravatar.cc/100?img=${i + 1}`} />
                 <Typography fontWeight={600}>
-                  {item.courses}+ khóa học
+                  {item.courseCount}+ khóa học
                 </Typography>
               </Box>
             </Paper>

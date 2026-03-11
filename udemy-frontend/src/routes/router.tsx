@@ -9,7 +9,8 @@ import { AdminHomePage, AdminLayout, AdminNotifyPage, AuthPage, CategoryManageme
      CartPage,
      PaySuccess,
      MyLearningPage,
-     DetailLearningPage} from "./lazy";
+     DetailLearningPage,
+     AdminRatingPage} from "./lazy";
 import ProtectedLayout from "@/components/admin/layout/protected.layout";
 import PaySuccessPage from "@/screens/user/pay.success.page";
 
@@ -57,6 +58,7 @@ export const router = createBrowserRouter([
           { path: "/admin/courses", element: <CourseManagementPage /> },
           { path: "/admin/categories", element: <CategoryManagementPage /> },
           { path: "/admin/notifications", element: <AdminNotifyPage /> },
+          { path: "/admin/ratings/:courseId", element: <AdminRatingPage />}
         ],
       },
       {

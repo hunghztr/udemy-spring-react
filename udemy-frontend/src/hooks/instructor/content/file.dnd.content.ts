@@ -1,4 +1,3 @@
-import { query } from "@/main";
 import {
   reorderLectures,
   updateLectureVideo,
@@ -10,6 +9,7 @@ import {
   useUploadSignature,
   useUploadSignatureDestroy,
 } from "@/query/file/use.file.query";
+import { query } from "@/query/queryClient";
 import { useSave } from "@/query/use.crud.query";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { resetUpload, setUploadPercent } from "@/redux/slices/file.slice";

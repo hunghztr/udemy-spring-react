@@ -1,5 +1,5 @@
-import { query } from "@/main";
 import { updatePrice } from "@/query/course/course.query";
+import { query } from "@/query/queryClient";
 import {  useSave } from "@/query/use.crud.query";
 import type {  ICourse, ICourseDetailResponse } from "@/type/course.module";
 import { showToast } from "@/utils/toast";

@@ -1,5 +1,5 @@
-import { query } from "@/main";
 import { updateCourseDesc } from "@/query/course/course.query";
+import { query } from "@/query/queryClient";
 import {  useSave } from "@/query/use.crud.query";
 import type { ICourseDetailResponse } from "@/type/course.module";
 import { showToast } from "@/utils/toast";

@@ -1,6 +1,6 @@
 import { useActionHook } from '@/hooks/admin/action.hook';
-import { query } from '@/main';
 import { disableCourse, enableCourse } from '@/query/course/course.query';
+import { query } from '@/query/queryClient';
 import { useGetById } from '@/query/use.crud.query';
 import { getUserByCourse } from '@/query/user/user.query';
 import type { ICourseDetailResponse, Status } from '@/type/course.module';
