@@ -2,7 +2,7 @@ import type { ICategory, ICategoryResponse } from "@/type/category.module";
 import { useEffect, useState } from "react";
 import { useFormHook } from "../form.hook";
 import { useGetAll, useGetById } from "@/query/use.crud.query";
-import { createCategory, getAllCategoriesNoPage, getCategoryById, updateCategory } from "@/query/category/category.query";
+import { createCategory, getCategoriesNoPage, getCategoryById, updateCategory } from "@/query/category/category.query";
 
 interface IUseFormHookProps{
     categoryId?: string;
@@ -16,7 +16,7 @@ export const useCategoryFormHook =  ({categoryId}
             'categories/get-by-id',getCategoryById,categoryId || ""
         )
     const {error:getListError,data:cateData,isLoading:isLoadingCategories} = useGetAll<ICategoryResponse[]>(
-            'categories/get-all-no-page',getAllCategoriesNoPage
+            'categories/get-all-no-page',getCategoriesNoPage
         )
     useEffect(() =>{
         if(cateData && !isLoadingCategories){

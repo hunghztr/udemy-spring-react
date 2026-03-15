@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.dto.user.WalletResponse;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
+import com.jwhisper.udemy.helper.annotation.CheckPermission;
 import com.jwhisper.udemy.service.UserService;
 
 @RestController
@@ -23,6 +24,7 @@ public class WalletController {
     }
     @GetMapping()
     @ApiMessage("Lấy danh sách ví thành công")
+    @CheckPermission("get list wallet")
     public ResponseEntity<?> getAll(@PageableDefault(
         page = 0, size = 10,sort = "createdAt",direction = Sort.Direction.ASC
     ) Pageable pageable) {
@@ -31,6 +33,7 @@ public class WalletController {
     }
     @GetMapping("/{userId}")
     @ApiMessage("Lấy ví của người dùng thành công")
+    @CheckPermission("get wallet by user")
     public ResponseEntity<?> getWallet(@PathVariable("userId") String userId) {
         return ResponseEntity.ok(this.userService.getWallet(userId));
     }

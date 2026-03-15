@@ -1,0 +1,83 @@
+============ADMIN==========
+get list course, COURSE, /api/v1/admin/courses, GET
+delete soft course, COURSE, /api/v1/admin/courses/delete/{id}, POST
+activate course, COURSE, /api/v1/admin/courses/active/{id}, POST
+
+remove rating, RATING, /api/v1/admin/learnings/{userId}/{courseId}, DELETE
+get ratings by user, RATING, /api/v1/admin/learnings/get-rating-by-user/{userId}/{courseId}, GET
+
+get list category, CATEGORY, /api/v1/admin/categories, GET
+create category, CATEGORY, /api/v1/admin/categories, POST
+update category, CATEGORY, /api/v1/admin/categories/{id}, PUT
+get category, CATEGORY, /api/v1/admin/categories/{id}, GET
+delete soft category, CATEGORY, /api/v1/admin/categories/delete/{id}, POST
+activate category, CATEGORY, /api/v1/admin/categories/active/{id}, POST
+
+get list role, ROLE, /api/v1/admin/roles, GET
+
+get list user, USER, /api/v1/admin/users, GET
+create user, USER, /api/v1/admin/users, POST
+get user, USER, /api/v1/admin/users/{id}, GET
+update user, USER, /api/v1/admin/users/{id}, PUT
+delete soft user, USER, /api/v1/admin/users/delete/{id}, POST
+activate user, USER, /api/v1/admin/users/active/{id}, POST
+get user by course, USER, /api/v1/admin/users/get-by-course/{courseId}, GET
+get bought course, USER, /api/v1/admin/users/get-bought-courses/{username}, GET
+
+get list wallet, Wallet, /api/v1/admin/wallets, GET
+get wallet by user, Wallet, /api/v1/admin/wallets/{userId}, GET
+
+==============INSTRUCTOR===========
+create coupon, COUPON, /api/v1/instructor/coupons/{courseId}, POST
+get list coupoon, COUPON, /api/v1/instructor/coupons/{courseId}, GET
+remove coupon, COUPON, /api/v1/instructor/coupons/delete/{id}, POST
+update coupon, COUPON, /api/v1/instructor/coupons/{courseId}/update/{id}, PUT
+
+create course, COURSE, /api/v1/instructor/courses, POST
+get list course by instructor, COURSE, /api/v1/instructor/courses/get-courses-by-author, GET
+get course, COURSE, /api/v1/instructor/courses/{id}, GET
+update desc course, COURSE, /api/v1/instructor/courses/description/{id}, PUT
+create section, COURSE, /api/v1/instructor/courses/section/{courseId}, POST
+update section name, COURSE, /api/v1/instructor/courses/{courseId}/section/{id}, PUT
+update lecture name, COURSE, /api/v1/instructor/courses/{courseId}/lecture/{id}, PUT
+remove section, COURSE, /api/v1/instructor/courses/{courseId}/delete/section/{id}, DELETE
+remove lecture, COURSE, /api/v1/instructor/courses/{courseId}/delete/lecture/{id}, DELETE
+create lecture, COURSE, /api/v1/instructor/courses/lecture/{id}, POST
+update lecture video, COURSE, /api/v1/instructor/courses/{courseId}/lecture-video/{id}, PUT
+sort lecture, COURSE, /api/v1/instructor/courses/{sectionId}/reorder-lectures, POST
+update image course, COURSE, /api/v1/instructor/courses/update-image/{id}, PUT
+update price course, COURSE, /api/v1/instructor/courses/update-price/{id}, PUT
+delete soft course, COURSE, /api/v1/instructor/courses/delete/{id}, POST
+activate course, COURSE, /api/v1/instructor/courses/active/{id}, POST
+get list category no page, CATEGORY, /api/v1/instructor/courses/categories/no-page, GET
+
+=======USER========
+get info user, AUTH, /api/v1/me, GET
+
+add to cart, CART, /api/v1/carts/{courseId}, POST
+get cart, CART, /api/v1/carts, GET
+remove from cart, CART, /api/v1/carts/{courseId}, DELETE
+get sale price, CART, /api/v1/carts/{courseId}/discount/{code}, GET
+check exist course, CART, /api/v1/carts/check-course-in-order, POST
+
+get list learning, LEARNING, /api/v1/learnings, GET
+use learning, LEARNING, /api/v1/learnings/learn/{courseId}, GET
+mark finish lecture, LEARNING, /api/v1/learnings/lecture/{id}, PUT
+rate course, LEARNING, /api/v1/learnings/rate/{courseId}, POST
+get list quiz, LEARNING, /api/v1/learnings/quiz/{sectionId}, GET
+
+send notify, NOTIFY, /api/v1/notifications, POST
+get list notify, NOTIFY, /api/v1/notifications, GET
+mark read, NOTIFY, /api/v1/notifications/{id}, POST
+get new, NOTIFY, /api/v1/notifications/get-new, GET
+remove notify, NOTIFY, /api/v1/notifications/{id}, DELETE
+
+create payment, PAYMENT, /api/v1/payments/vnpay, POST
+save order, PAYMENT, /api/v1/payments , POST
+
+update profile, PROFILE, /api/v1/profiles/{id}, PUT
+get revenu, PROFILE, /api/v1/profiles/get-pay, GET
+connect bank, PROFILE, /api/v1/profiles/wallet, POST
+
+connect sse, SSE, /api/v1/sse/subscribe, GET
+

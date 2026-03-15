@@ -1,5 +1,6 @@
 package com.jwhisper.udemy.aop;
 
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,21 +22,21 @@ public class PermissionAspect {
     @Autowired
     private UserRepository userRepository;
 
-    @Before("@annotation(com.jwhisper.udemy.helper.annotation.CheckPermission)")
-    public void check(CheckPermission checkPermission) {
+    @Before("@annotation(checkPermission)")
+    public void check(JoinPoint joinPoint, CheckPermission checkPermission) {
 
         String username = securityHelper.getCurrentUsername();
 
         User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new ErrorException("Người dùng không tồn tại"));
+                .orElseThrow(() -> new ErrorException("Người dùng không tồn tại"));
 
         boolean hasPermission = user.getRole()
-            .getPermissions()
-            .stream()
-            .anyMatch(p -> p.getName().equals(checkPermission.value()));
+                .getPermissions()
+                .stream()
+                .anyMatch(p -> p.getName().equals(checkPermission.value()));
 
-        if(!hasPermission){
-            throw new ErrorException("Bạn không có quyền");
+        if (!hasPermission) {
+            throw new ErrorException("Bạn không có quyền truy cập vào tài nguyên này ,"+checkPermission.value());
         }
     }
 }

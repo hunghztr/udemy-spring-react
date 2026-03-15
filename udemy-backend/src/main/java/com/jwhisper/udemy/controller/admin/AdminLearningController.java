@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jwhisper.udemy.dto.rating.RatingResponse;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
+import com.jwhisper.udemy.helper.annotation.CheckPermission;
 import com.jwhisper.udemy.service.LearningService;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -22,6 +23,7 @@ public class AdminLearningController {
     }
     @DeleteMapping("/{userId}/{courseId}")
     @ApiMessage("Xoá đánh giá không hợp lệ thành công")
+    @CheckPermission("remove rating")
     public ResponseEntity<?> delete(@PathVariable("userId") String userId,
     @PathVariable("courseId") String courseId){
         this.learningService.delete(userId, courseId);
@@ -29,6 +31,7 @@ public class AdminLearningController {
     }
     @GetMapping("/get-rating-by-user/{userId}/{courseId}")
     @ApiMessage("Lấy đánh giá theo người dùng")
+    @CheckPermission("get ratings by user")
     public ResponseEntity<?> getRating(@PathVariable("userId") String userId,
     @PathVariable("courseId") String courseId) {
         RatingResponse response = this.learningService.getByUserAndCourse(userId,courseId);

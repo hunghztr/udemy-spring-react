@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
+import com.jwhisper.udemy.helper.annotation.CheckPermission;
 import com.jwhisper.udemy.projection.role.RoleProject;
 import com.jwhisper.udemy.service.RoleService;
 
@@ -26,6 +27,7 @@ public class RoleController {
 
     @GetMapping()
     @ApiMessage("Lấy danh sách vai trò thành công")
+    @CheckPermission("get list role")
     public ResponseEntity<?> getAll(@PageableDefault(page = 0,size = 10,sort = "createdAt",
     direction = Sort.Direction.ASC) Pageable pageable,
     @RequestParam("active") boolean isActive,

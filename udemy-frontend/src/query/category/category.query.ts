@@ -18,7 +18,7 @@ export const getCategoiesChild = async () =>{
 }
 export const getCategoriesNoPage = async () =>{
         return getAllNoPage<ICategoryResponse[]>({
-            url:`/admin/categories/no-page`
+            url:`/instructor/courses/categories/no-page`
         })
 }
 
@@ -42,11 +42,11 @@ export const getAllCategories = (data : IPagination) =>{
     pagination : data
     })
 }
-export const getAllCategoriesNoPage = () =>{
-    return getAllNoPage<ICategoryResponse[]>({
-        url:"/admin/categories/no-page"
-    })
-}
+// export const getAllCategoriesNoPage = () =>{
+//     return getAllNoPage<ICategoryResponse[]>({
+//         url:"/instructor/categories/no-page"
+//     })
+// }
 export const getCategoryById = (id : string) =>{
     return getById<ICategoryResponse>({
     url:"/admin/categories",

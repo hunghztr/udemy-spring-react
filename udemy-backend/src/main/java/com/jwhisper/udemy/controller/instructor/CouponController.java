@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jwhisper.udemy.dto.coupon.CouponRequest;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
+import com.jwhisper.udemy.helper.annotation.CheckPermission;
 import com.jwhisper.udemy.service.CouponService;
 
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ public class CouponController {
 
     @PostMapping("/{courseId}")
     @ApiMessage("Tạo mới mã giảm giá thành công")
+    @CheckPermission("create coupon")
     public ResponseEntity<?> create(@PathVariable("courseId") String courseId,
         @RequestBody CouponRequest request) {
         boolean isCreated = this.couponService.isCreated(courseId,request);
@@ -32,12 +34,14 @@ public class CouponController {
     }
     @GetMapping("/{courseId}")
     @ApiMessage("Lấy danh sách mã giảm giá thành công")
+    @CheckPermission("get list coupon")
     public ResponseEntity<?> getAll(@PathVariable("courseId") String courseId) {
         return ResponseEntity.ok(this.couponService.getAllByCourseId(courseId));
     }
     
     @PostMapping("/{courseId}/delete/{id}")
     @ApiMessage("Xoá mã giảm giá thành công")
+    @CheckPermission("remove coupon")
     public ResponseEntity<?> delete(@PathVariable("courseId") String courseId,
     @PathVariable("id") String id) {
         boolean iseDeleted = this.couponService.isDeleted(courseId, id);
@@ -45,6 +49,7 @@ public class CouponController {
     }
     @PutMapping("{courseId}/update/{id}")
     @ApiMessage("Cập nhật mã giảm giá thành công")
+    @CheckPermission("update coupon")
     public ResponseEntity<?> update(@PathVariable("courseId") String courseId,
      @RequestBody CouponRequest request) {
         boolean isUpdated = this.couponService.isUpdated(courseId,request);

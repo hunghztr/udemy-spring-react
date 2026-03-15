@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.helper.annotation.ApiMessage;
+import com.jwhisper.udemy.helper.annotation.CheckPermission;
 import com.jwhisper.udemy.projection.course.CourseProject;
 import com.jwhisper.udemy.service.CourseService;
 
@@ -27,8 +28,10 @@ public class AdminCourseController {
     ){
         this.courseService = courseService;
     }
+    
     @GetMapping()
     @ApiMessage("Lấy danh sách khoá học thành công")
+    @CheckPermission("get list course")
     public ResponseEntity<?> getAll(@PageableDefault(
         page = 0, size = 10,sort = "createdAt",direction = Sort.Direction.ASC
     ) Pageable pageable,@RequestParam("active") boolean isActive,
@@ -39,12 +42,14 @@ public class AdminCourseController {
     
     @PostMapping("/delete/{id}")
     @ApiMessage("Xoá mềm khoá học thành công")
+    @CheckPermission("delete soft course")
     public ResponseEntity<?> delete(@PathVariable("id") String id)  {
         boolean isDeleted = this.courseService.delete(id);
         return ResponseEntity.ok().body(isDeleted);
     }
     @PostMapping("/active/{id}")
     @ApiMessage("Kích hoạt khoá học thành công")
+    @CheckPermission("activate course")
     public ResponseEntity<?> active(@PathVariable("id") String id)  {
         boolean isActivated = this.courseService.active(id);
         return ResponseEntity.ok().body(isActivated);

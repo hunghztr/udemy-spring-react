@@ -13,12 +13,18 @@ import { AdminHomePage, AdminLayout, AdminNotifyPage, AuthPage, CategoryManageme
      AdminRatingPage,
      PayPage,
      AdminWalletPage,
-     AdminWalletUserPage} from "./lazy";
+     AdminWalletUserPage,
+     ForbiddenPage} from "./lazy";
 import ProtectedLayout from "@/components/admin/layout/protected.layout";
 import PaySuccessPage from "@/screens/user/pay.success.page";
 
 export const router = createBrowserRouter([
   {
+      element:<ForbiddenPage />,
+      path: "/403"
+    },
+  {
+    
     element: (
       <Suspense fallback={<Loading />}>
         <Layout />
