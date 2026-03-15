@@ -4,7 +4,7 @@ import com.jwhisper.udemy.dto.course.SectionRequest;
 import com.jwhisper.udemy.dto.course.SectionResponse;
 
 public interface SectionService {
-    SectionResponse updateName(SectionRequest request,String courseId);
-    SectionResponse create(SectionRequest request,String courseId);
-    boolean isDeleted(String id,String courseId);
+    SectionResponse updateName(String courseId,SectionRequest request);
+    SectionResponse create(String courseId,SectionRequest request);
+    boolean isDeleted(String courseId,String id);
 }

@@ -27,7 +27,7 @@ public class CouponController {
     @ApiMessage("Tạo mới mã giảm giá thành công")
     public ResponseEntity<?> create(@PathVariable("courseId") String courseId,
         @RequestBody CouponRequest request) {
-        boolean isCreated = this.couponService.isCreated(request, courseId);
+        boolean isCreated = this.couponService.isCreated(courseId,request);
         return ResponseEntity.ok(isCreated);
     }
     @GetMapping("/{courseId}")
@@ -47,7 +47,7 @@ public class CouponController {
     @ApiMessage("Cập nhật mã giảm giá thành công")
     public ResponseEntity<?> update(@PathVariable("courseId") String courseId,
      @RequestBody CouponRequest request) {
-        boolean isUpdated = this.couponService.isUpdated(request, courseId);
+        boolean isUpdated = this.couponService.isUpdated(courseId,request);
         return ResponseEntity.ok(isUpdated);
     }
 }

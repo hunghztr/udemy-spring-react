@@ -29,3 +29,22 @@ export interface IProfile{
     avatarPath: string,
     roleName? : string
 }
+export interface IBank{
+    account : string;
+    bankName : string;
+}
+export interface IBankResponse{
+    id:string;
+    account:string;
+    bankName:string;
+    amount:number;
+}
+
+export interface IWalletResponse{
+    id:string;
+    username:string;
+    fullname:string;
+    account:string;
+    bankName:string;
+    amount:number;
+}

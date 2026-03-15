@@ -1,8 +1,6 @@
 package com.jwhisper.udemy.aop;
 
-import java.util.List;
 import java.util.Optional;
-
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,6 +15,7 @@ import com.jwhisper.udemy.model.User;
 import com.jwhisper.udemy.repository.CourseRepository;
 import com.jwhisper.udemy.repository.LearningRepository;
 import com.jwhisper.udemy.repository.LectureRepository;
+import com.jwhisper.udemy.repository.UserLectureProgressRepository;
 import com.jwhisper.udemy.repository.UserRepository;
 import com.jwhisper.udemy.security.SecurityHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -30,16 +29,19 @@ public class CheckingAspect {
     private final CourseRepository courseRepository;
     private final LearningRepository learningRepository;
     private final LectureRepository lectureRepository;
+    private final UserLectureProgressRepository userLectureProgressRepository;
     public CheckingAspect(SecurityHelper securityHelper,
                                   UserRepository userRepository,
                                   CourseRepository courseRepository,
                                 LearningRepository learningRepository,
-                            LectureRepository lectureRepository) {
+                            LectureRepository lectureRepository,
+                        UserLectureProgressRepository userLectureProgressRepository) {
         this.securityHelper = securityHelper;
         this.userRepository = userRepository;
         this.courseRepository = courseRepository;
         this.learningRepository = learningRepository;
         this.lectureRepository = lectureRepository;
+        this.userLectureProgressRepository = userLectureProgressRepository;
     }
     @Before("@annotation(com.jwhisper.udemy.helper.annotation.CheckCourseOwner)")
     public void checkCourseOwner(JoinPoint joinPoint) {
@@ -47,9 +49,12 @@ public class CheckingAspect {
         String username = securityHelper.getCurrentUsername();
 
         var user = userRepository.findProjectByUsername(username);
+        
+
         if (user == null) {
             throw new ErrorException("Người dùng không tồn tại");
         }
+        if(user.getRoleName().equals("ADMIN")) return;
         Optional<Course> optional = this.courseRepository.findByIdAndAuthorId(courseId, user.getId());
         if(optional.isEmpty()) throw new ErrorException("Khoá học này không thuộc về bạn");
     }
@@ -103,19 +108,20 @@ public class CheckingAspect {
                 .findByCustomerAndCourse(user, course)
                 .orElseThrow(() -> new ErrorException("Learning không tồn tại"));
 
-        List<Lecture> lectures = course.getSections()
-                .stream()
-                .flatMap(s -> s.getLectures().stream())
-                .toList();
+        long finished = userLectureProgressRepository
+                .countByUserAndLecture_Section_CourseAndIsFinishedTrue(user, course);
 
-        long finished = lectures.stream()
-                .filter(Lecture::getIsFinished)
-                .count();
+        long total = lectureRepository.countBySection_Course(course);
 
-        int progress = (int) ((double) finished / lectures.size() * 100);
+        int progress = 0;
 
-        learning.setProgress(progress);
+        if (total > 0) {
+            progress = (int)((double) finished / total * 100);
+        }
 
-        learningRepository.save(learning);
+        if (learning.getProgress() != progress) {
+            learning.setProgress(progress);
+            learningRepository.save(learning);
+        }
     }
 }

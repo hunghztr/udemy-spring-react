@@ -60,7 +60,12 @@ export const AdminNotifyPage = lazy(
 export const AdminRatingPage = lazy(
   () => import("../screens/admin/admin.rating.page")
 )
-
+export const AdminWalletPage = lazy(
+  () => import("../screens/admin/admin.wallet.page")
+)
+export const AdminWalletUserPage = lazy(
+  () => import("../screens/admin/admin.wallet.user.page")
+)
 /* ============== INSTRUCTOR =============== */
 export const InstructorLayout = lazy(
   () => import("../components/instructor/layout/instructor.layout")
@@ -80,6 +85,9 @@ export const EditCoursePage = lazy(
 export const InstructorNotifyPage = lazy(
   () => import("../screens/instructor/instructor.notify.page")
 );
+export const PayPage = lazy(
+  () => import("../screens/instructor/pay.page")
+)
 
 /* ================= MISC ================== */
 export const OAuth2Callback = lazy(

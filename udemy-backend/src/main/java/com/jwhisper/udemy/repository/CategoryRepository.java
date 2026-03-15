@@ -2,6 +2,7 @@ package com.jwhisper.udemy.repository;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,10 +11,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.jwhisper.udemy.model.Category;
+import com.jwhisper.udemy.projection.category.CategoryCourseProjection;
 import com.jwhisper.udemy.projection.category.CategoryProjection;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, String> {
+    Optional<Category> findByName(String name);
     boolean existsByName(String name);
     boolean existsByNameAndIdNot(String name,String id);
     Page<CategoryProjection> findAllByIsActiveAndNameContaining
@@ -23,11 +26,13 @@ public interface CategoryRepository extends JpaRepository<Category, String> {
     CategoryProjection findProjectById(String id);
     List<CategoryProjection> findAllBy();
     @Query("""
-    SELECT c
+    SELECT c.id as id,
+        c.name as name,
+        COUNT(co.id) as courseCount
     FROM Course co
     JOIN co.categories c
-    GROUP BY c
-    ORDER BY COUNT(co.id) DESC
+    GROUP BY c.id, c.name
+    ORDER BY courseCount DESC
     """)
-    List<Category> findTopCategories(Pageable pageable);
+    List<CategoryCourseProjection> findTopCategories(Pageable pageable);
 }

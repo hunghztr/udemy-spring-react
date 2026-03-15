@@ -170,8 +170,7 @@ export default function Header() {
               {/* AVATAR */}
               <IconButton
                 sx={{ p: 0 }}
-                onMouseEnter={handleOpenMenu}
-                onClick={() => navigate("/instructor/profile")}
+                onClick={handleOpenMenu}
               >
                 <Avatar
                   src={`${import.meta.env.VITE_CLOUDINARY_WATCH_IMG}/${user.avatarPath}`}
@@ -192,7 +191,6 @@ export default function Header() {
                 anchorEl={anchorEl}
                 open={openMenu}
                 onClose={handleCloseMenu}
-                MenuListProps={{ onMouseLeave: handleCloseMenu }}
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 transformOrigin={{ vertical: "top", horizontal: "right" }}
                 PaperProps={{

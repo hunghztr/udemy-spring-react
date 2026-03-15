@@ -6,8 +6,8 @@ import com.jwhisper.udemy.dto.coupon.CouponRequest;
 import com.jwhisper.udemy.projection.coupon.CouponProject;
 
 public interface CouponService {
-    boolean isCreated(CouponRequest couponRequest,String courseId);
+    boolean isCreated(String courseId, CouponRequest couponRequest);
     boolean isDeleted(String courseId,String id);
-    boolean isUpdated(CouponRequest request,String courseId);
+    boolean isUpdated(String courseId,CouponRequest request);
     List<CouponProject> getAllByCourseId(String courseId);
 }

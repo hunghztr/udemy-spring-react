@@ -11,6 +11,7 @@ import type { ILectureResponse, ISectionResponse } from "@/type/course.module";
 import { useSave } from "@/query/use.crud.query";
 import { markFinish } from "@/query/course/course.query";
 import { query } from "@/query/queryClient";
+import type { IFinishResponse } from "@/type/learning.module";
 
 interface Props {
   courseId:string;
@@ -25,16 +26,16 @@ export default function LectureItem({
   active,
   onClick
 }: Props) {
-  const {mutate} = useSave<ILectureResponse,{lectureId:string,finish:boolean}>('lectures/mark-finish',markFinish);
+  const {mutate} = useSave<IFinishResponse,{lectureId:string,finish:boolean}>('lectures/mark-finish',markFinish);
   const handleMark = (finish:boolean) =>{
     mutate(
       { lectureId: lecture?.id || "", finish },
       {
-        onSuccess:(data : ILectureResponse)=>{
+        onSuccess:(data : IFinishResponse)=>{
 
           // ⭐ xoá progress khi finish
           if(finish){
-            localStorage.removeItem(`lecture-progress-${data.id}`);
+            localStorage.removeItem(`lecture-progress-${data.lectureId}`);
           }
 
           query.setQueryData(
@@ -47,7 +48,7 @@ export default function LectureItem({
                 sections: old.sections.map((section:ISectionResponse)=>({
                   ...section,
                   lectures: section.lectures.map((l:ILectureResponse)=>
-                    l.id === data.id
+                    l.id === data.lectureId
                       ? { ...l, isFinished: finish }
                       : l
                   )

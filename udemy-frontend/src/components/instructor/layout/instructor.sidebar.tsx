@@ -2,7 +2,7 @@ import { Box, Stack, Typography, useTheme } from "@mui/material";
 import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-
+import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,11 +13,11 @@ import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import NotifyIcon from "@/components/notification/notify.icon";
 
 const menuItems = [
-  { label: "Courses", icon: <SchoolOutlinedIcon />, path: "/instructor/course" },
-  { label: "Notification", icon: <NotifyIcon />, path: "/instructor/notification" },
-  { label: "Profile", icon: <PersonOutlineOutlinedIcon />, path: "/instructor/profile" },
+  { label: "Khoá học", icon: <SchoolOutlinedIcon />, path: "/instructor/course" },
+  { label: "Thông báo", icon: <NotifyIcon />, path: "/instructor/notification" },
+  { label: "Ví", icon: <AccountBalanceWalletOutlinedIcon />, path: "/instructor/wallet" },
+  { label: "Hồ sơ", icon: <PersonOutlineOutlinedIcon />, path: "/instructor/profile" },
 ];
-
 const MotionBox = motion(Box);
 
 export default function InstructorSidebar() {

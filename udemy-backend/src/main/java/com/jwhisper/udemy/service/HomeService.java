@@ -17,4 +17,5 @@ public interface HomeService {
     CourseInfoResponse getCourseDetail(String id);
     Pagination<CategoryParentResponse> getAllParents(Pageable pageable, boolean isActive);
     List<CategoryCourseResponse> getAllChildren();
+    List<CourseSearchResponse> getRecommend();
 }

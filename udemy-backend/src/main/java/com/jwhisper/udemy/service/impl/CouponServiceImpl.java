@@ -30,7 +30,7 @@ public class CouponServiceImpl implements CouponService {
     // aop check khoá học có thuộc về user hay không, nếu không sẽ trả về lỗi
     @Override
     @CheckCourseOwner
-    public boolean isCreated(CouponRequest request,String courseId) {
+    public boolean isCreated(String courseId,CouponRequest request) {
         if(this.couponRepository.existsByCodeAndCourseId(request.getCode(),courseId)) 
             throw new ErrorException("Code này đã tồn tại");
         if(this.couponRepository.count() == 10)
@@ -57,7 +57,7 @@ public class CouponServiceImpl implements CouponService {
     }
     @Override
     @CheckCourseOwner
-    public boolean isUpdated(CouponRequest request, String courseId) {
+    public boolean isUpdated( String courseId,CouponRequest request) {
         Coupon coupon = this.couponRepository.findById(request.getId())
         .orElseThrow(() -> new ErrorException("Mã giảm giá không tồn tại"));
         coupon.setCode(request.getCode());

@@ -145,8 +145,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @CheckCourseOwner
     @LogActivity(action = ActivityAction.UPDATE_COURSE, resource = "Course")
-    public CourseResponse updateDesc(CourseRequest request)  {
-        Course course = this.courseRepository.findById(request.getId())
+    public CourseResponse updateDesc(String courseId,CourseRequest request)  {
+        Course course = this.courseRepository.findById(courseId)
         .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
         String desc = this.parseToList(request.getDescription());
         String require = this.parseToList(request.getRequirement());
@@ -172,7 +172,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @CheckCourseOwner
     @LogActivity(action = ActivityAction.UPDATE_COURSE, resource = "Course")
-    public CourseResponse updateImage(CourseRequest request) {
+    public CourseResponse updateImage(String courseId,CourseRequest request) {
         Course course = this.courseRepository.findById(request.getId())
         .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
         course.setImagePath(request.getImagePath());
@@ -183,8 +183,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @CheckCourseOwner
     @LogActivity(action = ActivityAction.UPDATE_COURSE, resource = "Course")
-    public CourseResponse updatePrice(CourseRequest request) {
-        Course course = this.courseRepository.findById(request.getId())
+    public CourseResponse updatePrice(String courseId,CourseRequest request) {
+        Course course = this.courseRepository.findById(courseId)
         .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
         course.setPrice(request.getPrice());
         course = this.courseRepository.save(course);

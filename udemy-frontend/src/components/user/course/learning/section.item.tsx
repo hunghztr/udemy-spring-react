@@ -10,6 +10,7 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import type { ILectureResponse, ISectionResponse } from "@/type/course.module";
 import LectureItem from "./leacture.item";
+import QuizRow from "./quiz/quiz.row";
 
 interface Props {
   courseId:string;
@@ -77,17 +78,21 @@ export default function SectionItem({
 
         <List disablePadding>
 
-          {section.lectures.map((lecture) => (
-            <LectureItem
-              key={lecture.id}
-              courseId={courseId}
-              lecture={lecture}
-              active={lecture.id === currentLecture?.id}
-              onClick={() => setCurrentLecture(lecture)}
-            />
-          ))}
+        {section.lectures.map((lecture) => (
+          <LectureItem
+            key={lecture.id}
+            courseId={courseId}
+            lecture={lecture}
+            active={lecture.id === currentLecture?.id}
+            onClick={() => setCurrentLecture(lecture)}
+          />
+        ))}
 
-        </List>
+        {section.lectures.length >= 2 && (
+          <QuizRow sectionId={section.id||""} />
+        )}
+
+      </List>
 
       </AccordionDetails>
 

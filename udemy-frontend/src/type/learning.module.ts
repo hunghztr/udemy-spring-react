@@ -22,3 +22,13 @@ export interface IRating{
     star : number;
     message : string;
 }
+export interface IFinishResponse{
+    lectureId : string;
+    isFinish: boolean;
+}
+export interface IQuizz{
+    id : string;
+    question: string;
+    answer : string;
+    options : string[];
+}

@@ -1,5 +1,6 @@
 package com.jwhisper.udemy.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -7,16 +8,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.jwhisper.udemy.dto.Pagination;
+import com.jwhisper.udemy.dto.user.BankRequest;
+import com.jwhisper.udemy.dto.user.BankResonse;
 import com.jwhisper.udemy.dto.user.ProfileRequest;
 import com.jwhisper.udemy.dto.user.UserRequest;
+import com.jwhisper.udemy.dto.user.WalletResponse;
 import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.helper.mapper.UserMapper;
+import com.jwhisper.udemy.model.InstructorPayout;
 import com.jwhisper.udemy.model.Role;
 import com.jwhisper.udemy.model.User;
 import com.jwhisper.udemy.projection.user.UserDetail;
 import com.jwhisper.udemy.projection.user.UserProject;
+import com.jwhisper.udemy.repository.InstructorPayoutRepository;
 import com.jwhisper.udemy.repository.RoleRepository;
 import com.jwhisper.udemy.repository.UserRepository;
+import com.jwhisper.udemy.security.SecurityHelper;
 import com.jwhisper.udemy.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -27,12 +34,17 @@ public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
   private final RoleRepository roleRepository;
+  private final SecurityHelper securityHelper;
+  private final InstructorPayoutRepository instructorPayoutRepository;
   public UserServiceImpl(UserRepository userRepository,
-      UserMapper userMapper,RoleRepository roleRepository
+      UserMapper userMapper,RoleRepository roleRepository, SecurityHelper securityHelper,
+      InstructorPayoutRepository instructorPayoutRepository
   ) {
     this.userRepository = userRepository;
     this.userMapper = userMapper;
     this.roleRepository = roleRepository;
+    this.securityHelper = securityHelper;
+    this.instructorPayoutRepository = instructorPayoutRepository;
   }
 
   @Override
@@ -145,6 +157,55 @@ public class UserServiceImpl implements UserService {
     UserDetail userDetail = this.userRepository.findProjectionById(id);
     if(userDetail == null) throw new ErrorException("Người dùng không tồn tại");
     return userDetail;
+  }
+
+  @Override
+  public BankResonse getPay() {
+    String username = this.securityHelper.getCurrentUsername();
+    User user = this.userRepository.findByUsername(username)
+    .orElseThrow(() -> new ErrorException("Người dùng không tồn tại"));
+    List<InstructorPayout> instructorPayouts = this.instructorPayoutRepository.findAllByInstructor(user);
+    Double amount = instructorPayouts.stream()
+        .mapToDouble(InstructorPayout::getAmount)
+        .sum();
+    BankResonse resonse = new BankResonse();
+    resonse.setId(user.getId());
+    resonse.setAccount(user.getAccount());
+    resonse.setBankName(user.getBankName());
+    resonse.setAmount(amount);
+    return resonse;
+  }
+
+  @Override
+  public void connectWallet(BankRequest request) {
+    String username = this.securityHelper.getCurrentUsername();
+    User user = this.userRepository.findByUsername(username)
+    .orElseThrow(() -> new ErrorException("Người dùng không tồn tại"));
+    user.setAccount(request.getAccount());
+    user.setBankName(request.getBankName());
+    this.userRepository.save(user);
+  }
+
+  @Override
+  public Pagination<WalletResponse> getAllWallet(Pageable pageable) {
+      Page<User> page = this.userRepository.findAll(pageable);
+      Pagination<WalletResponse> pagination = new Pagination<>();
+      List<WalletResponse> wList = page.stream().map(p -> this.userMapper.toWalletResponse(p)).toList();
+      pagination.setElements(wList);
+      return pagination;
+  }
+
+  @Override
+  public WalletResponse getWallet(String userId) {
+    User user = this.userRepository.findById(userId)
+    .orElseThrow(() -> new ErrorException("Người dùng không tồn tại"));
+    List<InstructorPayout> instructorPayouts = this.instructorPayoutRepository.findAllByInstructor(user);
+    Double amount = instructorPayouts.stream()
+        .mapToDouble(InstructorPayout::getAmount)
+        .sum();
+    var wallet = this.userMapper.toWalletResponse(user);
+    wallet.setAmount(amount);
+    return wallet;
   }
 
 }

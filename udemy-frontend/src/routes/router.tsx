@@ -10,7 +10,10 @@ import { AdminHomePage, AdminLayout, AdminNotifyPage, AuthPage, CategoryManageme
      PaySuccess,
      MyLearningPage,
      DetailLearningPage,
-     AdminRatingPage} from "./lazy";
+     AdminRatingPage,
+     PayPage,
+     AdminWalletPage,
+     AdminWalletUserPage} from "./lazy";
 import ProtectedLayout from "@/components/admin/layout/protected.layout";
 import PaySuccessPage from "@/screens/user/pay.success.page";
 
@@ -58,7 +61,9 @@ export const router = createBrowserRouter([
           { path: "/admin/courses", element: <CourseManagementPage /> },
           { path: "/admin/categories", element: <CategoryManagementPage /> },
           { path: "/admin/notifications", element: <AdminNotifyPage /> },
-          { path: "/admin/ratings/:courseId", element: <AdminRatingPage />}
+          { path: "/admin/ratings/:courseId", element: <AdminRatingPage />},
+          { path: "/admin/wallets", element: <AdminWalletPage />},
+          { path: "/admin/wallet/:id", element: <AdminWalletUserPage />}
         ],
       },
       {
@@ -76,6 +81,10 @@ export const router = createBrowserRouter([
             path: "/instructor/notification",
             element: <InstructorNotifyPage />,
           },
+          {
+            path: "/instructor/wallet",
+            element: <PayPage />
+          }
         ],
       },
     ],

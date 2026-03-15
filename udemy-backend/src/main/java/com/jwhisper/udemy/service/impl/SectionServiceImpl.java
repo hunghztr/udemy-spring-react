@@ -32,7 +32,7 @@ public class SectionServiceImpl implements SectionService {
     @Override
     @CheckCourseOwner
     @Transactional
-    public SectionResponse create(SectionRequest request,String courseId) {
+    public SectionResponse create(String courseId,SectionRequest request) {
         Course course = this.courseRepository.findById(courseId)
         .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
         course.setTotalSection(course.getTotalSection() + 1);
@@ -44,7 +44,7 @@ public class SectionServiceImpl implements SectionService {
     @Override
     @Transactional
     @CheckCourseOwner
-    public boolean isDeleted(String id,String courseId) {
+    public boolean isDeleted(String courseId,String id) {
         Course course = this.courseRepository.findById(courseId)
         .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
         course.setTotalSection(course.getTotalSection() - 1);
@@ -56,7 +56,7 @@ public class SectionServiceImpl implements SectionService {
     }
     @Override
     @CheckCourseOwner
-    public SectionResponse updateName(SectionRequest request, String courseId) {
+    public SectionResponse updateName( String courseId,SectionRequest request) {
         Section section = this.sectionRepository.findById(request.getId())
         .orElseThrow(() -> new ErrorException("Chương học không tồn tại"));
         section.setName(request.getName());

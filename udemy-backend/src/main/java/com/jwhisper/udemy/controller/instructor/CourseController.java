@@ -71,15 +71,14 @@ public class CourseController {
     @PutMapping("/description/{id}")
     @ApiMessage("Cập nhật thông tin khoá học thành công")
     public ResponseEntity<?> putDescription(@PathVariable("id") String id, @RequestBody CourseRequest entity)  {
-        entity.setId(id);
-        this.courseService.updateDesc(entity);
+        this.courseService.updateDesc(id,entity);
         return ResponseEntity.ok(true);
     }
     @PostMapping("/section/{courseId}")
     @ApiMessage("Thêm mới chương học thành công")
     public ResponseEntity<?> createSection(@PathVariable("courseId") String courseId,
     @RequestBody SectionRequest request) {
-        SectionResponse sectionResponse = this.sectionService.create(request, courseId);
+        SectionResponse sectionResponse = this.sectionService.create( courseId,request);
         return ResponseEntity.ok(sectionResponse);
     }
     @PutMapping("/{courseId}/section/{id}")
@@ -87,15 +86,16 @@ public class CourseController {
     public ResponseEntity<?> updateSection(@PathVariable("id") String id,@PathVariable("courseId") String courseId,
     @RequestBody SectionRequest request) {
         request.setId(id);
-        SectionResponse sectionResponse = this.sectionService.updateName(request,courseId);
+        SectionResponse sectionResponse = this.sectionService.updateName(courseId,request);
         return ResponseEntity.ok(sectionResponse);
     }
+    // gen quizz
     @PutMapping("/{courseId}/lecture/{id}")
     @ApiMessage("Cập nhật tên bài học thành công")
     public ResponseEntity<?> updateLectureName(@PathVariable String id, @PathVariable("courseId") String courseId,
     @RequestBody LectureRequest request) {
         request.setId(id);
-        SectionResponse sectionResponse = this.lectureService.updateName(request, courseId);
+        SectionResponse sectionResponse = this.lectureService.updateName(courseId,request);
         return ResponseEntity.ok(sectionResponse);
     }
     @DeleteMapping("/{courseId}/delete/section/{id}")
@@ -105,19 +105,20 @@ public class CourseController {
         boolean isDeleted = this.sectionService.isDeleted(id, courseId);
         return ResponseEntity.ok(isDeleted);
     }
+    // gen quizz
     @DeleteMapping("/{courseId}/delete/lecture/{id}")
     @ApiMessage("Xoá bài học thành công")
     public ResponseEntity<?> deleteLecture(@PathVariable("courseId") String courseId,
     @PathVariable("id") String id) {
-        SectionResponse sectionResponse = this.lectureService.delete(id, courseId);
+        SectionResponse sectionResponse = this.lectureService.delete(courseId,id);
         return ResponseEntity.ok(sectionResponse);
     }
-    
+    // gen quizz
     @PostMapping("/lecture/{id}")
     @ApiMessage("Thêm mới bài học thành công")
     public ResponseEntity<?> createLecture(@PathVariable("id") String courseId,
     @RequestBody LectureRequest request) {
-        SectionResponse sectionResponse = this.lectureService.create(request, courseId);
+        SectionResponse sectionResponse = this.lectureService.create(courseId,request);
         return ResponseEntity.ok(sectionResponse);
     }
     @PutMapping("/{courseId}/lecture-video/{id}")
@@ -126,7 +127,7 @@ public class CourseController {
     @PathVariable("id") String id,
      @RequestBody LectureRequest request) {
         request.setId(id);
-        var section = this.lectureService.updatedVideo(request, courseId);
+        var section = this.lectureService.updatedVideo( courseId,request);
         return ResponseEntity.ok(section);
     }
     @PostMapping("/{sectionId}/reorder-lectures")
@@ -139,15 +140,13 @@ public class CourseController {
     @PutMapping("/update-image/{id}")
     @ApiMessage("Cập nhật hình ảnh khoá học thành công")
     public ResponseEntity<?> updateImage(@PathVariable("id") String id, @RequestBody CourseRequest request) {
-        request.setId(id);
-        this.courseService.updateImage(request);
+        this.courseService.updateImage(id,request);
         return ResponseEntity.ok(true);
     }
     @PutMapping("/update-price/{id}")
     @ApiMessage("Cập nhật giá tiền")
     public ResponseEntity<?> updatePrice(@PathVariable("id") String id, @RequestBody CourseRequest request) {
-        request.setId(id);
-        this.courseService.updatePrice(request);
+        this.courseService.updatePrice(id,request);
         return ResponseEntity.ok(true);
     }
     @PostMapping("/delete/{id}")

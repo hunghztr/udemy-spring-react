@@ -8,4 +8,5 @@ export const PUBLIC_ENDPOINTS = [
   "/auth/change-password",
   "/files/avatars",
   "/files/videos",
+  "/client"
 ];

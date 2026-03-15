@@ -22,7 +22,7 @@ export default function CartSummary({courses, total, price }: Props) {
         "payment_courses",
         JSON.stringify(paymentCourses)
       );
-      const existCourse : IApiResponse<boolean> = await api.post("/client/carts/check-course-in-order",coursesId);
+      const existCourse : IApiResponse<boolean> = await api.post("/carts/check-course-in-order",coursesId);
       if(!existCourse.data){
         const res: IApiResponse<IResult> =
         await api.post(`/payments/vnpay?price=${price}`);

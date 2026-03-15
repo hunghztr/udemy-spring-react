@@ -1,7 +1,51 @@
-import type { IProfile, IUser, IUserDetailResponse, IUserResponse } from "@/type/user.module";
+import type { IBank, IBankResponse, IProfile, IUser, IUserDetailResponse, IUserResponse, IWalletResponse } from "@/type/user.module";
 import { activate, create, getAll, getById, update } from "../api.crud.query";
-import type { IPagination, } from "@/type/pagination";
+import type { IPagination } from "@/type/pagination";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import type { IApiResponse } from "@/type/api.response";
+import api from "@/api/api";
+import type { ICourseSearchResponse } from "@/type/course.module";
 
+export const getRecommend = () =>{
+    return useQuery({
+        queryKey:['courses/get-recommend'],
+        queryFn:async () =>{
+            const res : IApiResponse<ICourseSearchResponse[]> = await api.get("/client/get-recommend");
+            return res.data;
+        }
+    })
+}
+
+export const getWallet = (userId : string) =>{
+    return getById<IWalletResponse>({
+        url:`/admin/wallets`,
+        id:userId
+    })
+}
+export const getAllWallets = () =>{
+    return getAll<IWalletResponse>({
+        url: `/admin/wallets`
+    })
+}
+
+export const getPay = () =>{
+    return useQuery({
+        queryKey:['pays/get'],
+        queryFn: async () =>{
+            const res : IApiResponse<IBankResponse> = await api.get("/profiles/get-pay");
+            return res.data;
+        }
+    })
+}
+export const connectWallet = () =>{
+    return useMutation({
+        mutationKey:['pays/connect'],
+        mutationFn: async (data : IBank) =>{
+            const res : IApiResponse<boolean> = await api.post("/profiles/wallet",data);
+            return res.data;
+        }
+    })
+}
 export const updateProfile = (data: IProfile) => {
   return update<IProfile>({
     url: "/profiles",
@@ -11,7 +55,7 @@ export const updateProfile = (data: IProfile) => {
 };
 export const getProfile = (id : string) =>{
     return getById<IUserDetailResponse>({
-        url:"/profiles",
+        url:"/client/profiles",
         id
     })
 }

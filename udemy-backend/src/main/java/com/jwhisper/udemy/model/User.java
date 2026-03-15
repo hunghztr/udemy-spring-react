@@ -41,7 +41,8 @@ public class User extends DefaultModel {
   String avatarPath;
   @Column(columnDefinition = "TEXT")
   String description;
-
+  String account;
+  String bankName;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "role_id")
   Role role;
@@ -77,4 +78,8 @@ public class User extends DefaultModel {
   @JsonIgnore
   @OneToMany(mappedBy = "instructor")
   List<InstructorPayout> instructorPayouts;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "user",fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+  List<UserLectureProgress> userLectureProgresses;
 }

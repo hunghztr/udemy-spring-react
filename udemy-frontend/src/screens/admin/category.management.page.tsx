@@ -12,7 +12,7 @@ import PaginationComponent from "@/components/admin/layout/pagination.component"
 import CategoryCreateDialog from "@/components/admin/category/category.create.dialog";
 import CategoryUpdateDialog from "@/components/admin/category/category.update.dialog";
 import { disableCategory, enableCategory, getAllCategories } from "@/query/category/category.query";
-import { query } from "@/main";
+import { query } from "@/query/queryClient";
 
 
 export default function CategoryManagementPage() {

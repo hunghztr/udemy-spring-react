@@ -21,10 +21,10 @@ import UserCreateDialog from "@/components/admin/user/user.create.dialog";
 import UserUpdateDialog from "@/components/admin/user/user.update.dialog";
 import { disableUser, enableUser, getAllUsers } from "@/query/user/user.query";
 import { useActionHook } from "@/hooks/admin/action.hook";
-import { query } from "@/main";
 import { type ICourseResponse } from "@/type/course.module";
 import type { IApiResponse } from "@/type/api.response";
 import api from "@/api/api";
+import { query } from "@/query/queryClient";
 
 
 export default function UserManagement() {

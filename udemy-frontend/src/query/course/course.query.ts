@@ -1,8 +1,9 @@
 import api from "@/api/api";
 import type { IApiResponse } from "@/type/api.response";
-import { type ICourseInfoResponse, type ICourse, type ICourseDetailResponse, type ICourseResponse, type ILecture, type ISection, type ISectionResponse, type ICourseSearchResponse, type ILectureResponse } from "@/type/course.module";
+import { type ICourseInfoResponse, type ICourse, type ICourseDetailResponse, type ICourseResponse, type ILecture, type ISection, type ISectionResponse, type ICourseSearchResponse } from "@/type/course.module";
 import type { IPagination, IPaginationResponse } from "@/type/pagination";
 import { activate, create, getAll, getAllNoPage, getById, remove, update } from "../api.crud.query";
+import type { IFinishResponse } from "@/type/learning.module";
 
 
 export const getCoursesByAuthor = async ({
@@ -159,7 +160,7 @@ export const enableCourse = (id : string) =>{
     })
 }
 export const markFinish = ({lectureId,finish}:{lectureId : string,finish:boolean}) =>{
-    return update<{finish:boolean},ILectureResponse>({
+    return update<{finish:boolean},IFinishResponse>({
         url: `/learnings/lecture`,
         id: lectureId,
         data:{finish}

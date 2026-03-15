@@ -1,6 +1,8 @@
 package com.jwhisper.udemy.service.impl;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -17,12 +19,16 @@ import com.jwhisper.udemy.helper.mapper.CourseMapper;
 import com.jwhisper.udemy.helper.mapper.RatingMapper;
 import com.jwhisper.udemy.model.Course;
 import com.jwhisper.udemy.model.Learning;
+import com.jwhisper.udemy.model.Quizz;
 import com.jwhisper.udemy.model.Rating;
 import com.jwhisper.udemy.model.User;
 import com.jwhisper.udemy.model.UserCourseKey;
+import com.jwhisper.udemy.model.UserLectureProgress;
 import com.jwhisper.udemy.repository.CourseRepository;
 import com.jwhisper.udemy.repository.LearningRepository;
+import com.jwhisper.udemy.repository.QuizzRepository;
 import com.jwhisper.udemy.repository.RatingRepository;
+import com.jwhisper.udemy.repository.UserLectureProgressRepository;
 import com.jwhisper.udemy.repository.UserRepository;
 import com.jwhisper.udemy.security.SecurityHelper;
 import com.jwhisper.udemy.service.LearningService;
@@ -36,10 +42,14 @@ public class LearningServiceImpl implements LearningService {
     private final CourseRepository courseRepository;
     private final RatingRepository ratingRepository;
     private final RatingMapper ratingMapper;
+    private final UserLectureProgressRepository userLectureProgressRepository;
+    private final QuizzRepository quizzRepository;
     public LearningServiceImpl(LearningRepository learningRepository,
         SecurityHelper securityHelper, UserRepository userRepository,
         CourseMapper courseMapper, CourseRepository courseRepository,
-        RatingRepository ratingRepository, RatingMapper ratingMapper
+        RatingRepository ratingRepository, RatingMapper ratingMapper,
+        UserLectureProgressRepository userLectureProgressRepository,
+        QuizzRepository quizzRepository
     ){
         this.learningRepository = learningRepository;
         this.securityHelper = securityHelper;
@@ -48,6 +58,8 @@ public class LearningServiceImpl implements LearningService {
         this.courseRepository = courseRepository;
         this.ratingRepository = ratingRepository;
         this.ratingMapper = ratingMapper;
+        this.userLectureProgressRepository = userLectureProgressRepository;
+        this.quizzRepository = quizzRepository;
     }
     @Override
     public List<LearningResponse> getAll(String status) {
@@ -86,9 +98,41 @@ public class LearningServiceImpl implements LearningService {
     @Override
     @CheckLearningOwner
     public CourseInfoResponse learning(String courseId) {
-        Course course = this.courseRepository.findById(courseId)
-        .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
-        return this.courseMapper.toCourseInfoResponse(course);
+
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
+
+        String username = securityHelper.getCurrentUsername();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ErrorException("Người dùng không tồn tại"));
+
+        // lấy progress của user
+        List<UserLectureProgress> progresses =
+                userLectureProgressRepository
+                        .findAllByUserAndLecture_Section_Course(user, course);
+
+        // convert sang map để lookup nhanh
+        Map<String, Boolean> progressMap =
+                progresses.stream()
+                        .collect(Collectors.toMap(
+                                p -> p.getLecture().getId(),
+                                UserLectureProgress::getIsFinished
+                        ));
+
+        CourseInfoResponse response = courseMapper.toCourseInfoResponse(course);
+
+        // inject isFinished vào lecture response
+        response.getSections().forEach(section ->
+                section.getLectures().forEach(lecture -> {
+
+                    boolean finished = progressMap.getOrDefault(lecture.getId(), false);
+
+                    lecture.setIsFinished(finished);
+                })
+        );
+
+        return response;
     }
     @Override
     public SliceResponse<RatingResponse> getRatings(String courseId, Pageable pageable) {
@@ -143,5 +187,10 @@ public class LearningServiceImpl implements LearningService {
         .orElseThrow(() -> new ErrorException("Khoá học không tồn tại"));
         Rating rating = this.ratingRepository.findByCustomerAndCourse(user,course);
         return this.ratingMapper.toRatingResponse(rating);
+    }
+    @Override
+    public List<Quizz> getQuizsBySection(String sectionId) {
+        List<Quizz> quizzs = this.quizzRepository.findAllBySectionId(sectionId);
+        return quizzs;
     }
 }

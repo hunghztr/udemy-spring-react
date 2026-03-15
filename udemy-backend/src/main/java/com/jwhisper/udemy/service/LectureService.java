@@ -3,14 +3,14 @@ package com.jwhisper.udemy.service;
 import java.util.List;
 
 import com.jwhisper.udemy.dto.course.LectureRequest;
-import com.jwhisper.udemy.dto.course.LectureResponse;
 import com.jwhisper.udemy.dto.course.SectionResponse;
+import com.jwhisper.udemy.dto.learning.FinishResponse;
 
 public interface LectureService {
-    SectionResponse create(LectureRequest request,String courseId);    
+    SectionResponse create(String courseId, LectureRequest request);    
     SectionResponse delete(String id , String courseId);
-    SectionResponse updatedVideo(LectureRequest request,String courseId);
-    SectionResponse updateName(LectureRequest request,String courseId);
+    SectionResponse updatedVideo(String courseId,LectureRequest request);
+    SectionResponse updateName(String courseId,LectureRequest request);
     SectionResponse reorder(List<String> lectureIds,String sectionId);
-    LectureResponse markFinish(String lectureId,Boolean finish);
+    FinishResponse markFinish(String lectureId,boolean finish);
 }

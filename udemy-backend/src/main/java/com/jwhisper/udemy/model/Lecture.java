@@ -33,7 +33,7 @@ public class Lecture extends DefaultModel {
   @Column(columnDefinition = "DECIMAL(5,2)")
   double second;
   String path;
-  Boolean isFinished;
+  // Boolean isFinished;
   Integer position;
   @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
@@ -43,4 +43,8 @@ public class Lecture extends DefaultModel {
   @JsonIgnore
   @OneToMany(mappedBy = "lecture", fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
   List<Comment> comments;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "lecture",fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+  List<UserLectureProgress> userLectureProgresses;
 }

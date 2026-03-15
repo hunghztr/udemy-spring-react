@@ -10,20 +10,20 @@ export const getAll = async <Res>({
   filters,
 }: {
   url: string;
-  pagination: IPagination;
+  pagination?: IPagination;
   filters?: IFilterRequest;
 }) => {
 
   const params: Record<string, any> = {
-    page: pagination.page,
-    size: pagination.size,
+    page: pagination?.page,
+    size: pagination?.size,
   };
 
-  if (pagination.keyword) {
+  if (pagination?.keyword) {
     params.keyword = pagination.keyword;
   }
 
-  if (pagination.active !== undefined) {
+  if (pagination?.active !== undefined) {
     params.active = pagination.active;
   }
 

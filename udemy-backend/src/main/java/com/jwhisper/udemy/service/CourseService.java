@@ -14,9 +14,9 @@ import com.jwhisper.udemy.projection.course.CourseProject;
 
 public interface CourseService {
     
-    CourseResponse updateImage(CourseRequest request);
-    CourseResponse updateDesc(CourseRequest request);
-    CourseResponse updatePrice(CourseRequest request);
+    CourseResponse updateImage(String courseId,CourseRequest request);
+    CourseResponse updateDesc(String courseId,CourseRequest request);
+    CourseResponse updatePrice(String courseId,CourseRequest request);
     CourseResponse create(CourseRequest request);
     boolean delete(String id);
     boolean active(String id);

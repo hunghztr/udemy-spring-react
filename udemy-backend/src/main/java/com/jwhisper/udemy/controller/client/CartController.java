@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 
 @RestController
-@RequestMapping("/api/v1/client/carts")
+@RequestMapping("/api/v1/carts")
 public class CartController {
     private final CartService cartService;
     private final OrderService orderService;

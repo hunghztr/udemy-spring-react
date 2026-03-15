@@ -44,4 +44,8 @@ public class Section extends DefaultModel {
   @OrderBy("position ASC")
   @OneToMany(mappedBy = "section", fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
   List<Lecture> lectures;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "section",fetch = FetchType.LAZY)
+  List<Quizz> quizzs;
 }

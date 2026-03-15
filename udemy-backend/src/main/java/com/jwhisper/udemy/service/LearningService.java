@@ -9,6 +9,7 @@ import com.jwhisper.udemy.dto.course.CourseInfoResponse;
 import com.jwhisper.udemy.dto.learning.LearningResponse;
 import com.jwhisper.udemy.dto.rating.RatingRequest;
 import com.jwhisper.udemy.dto.rating.RatingResponse;
+import com.jwhisper.udemy.model.Quizz;
 
 public interface LearningService {
     List<LearningResponse> getAll(String status);
@@ -18,4 +19,5 @@ public interface LearningService {
     long countRatings(String courssId);
     void delete(String userId, String courseId);
     RatingResponse getByUserAndCourse(String userId,String courseId);
+    List<Quizz> getQuizsBySection(String sectionId);
 }

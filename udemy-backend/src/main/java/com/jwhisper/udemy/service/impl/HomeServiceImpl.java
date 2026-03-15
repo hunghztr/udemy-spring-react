@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -24,6 +25,7 @@ import com.jwhisper.udemy.helper.mapper.CourseMapper;
 import com.jwhisper.udemy.helper.mapper.ESCourseMapper;
 import com.jwhisper.udemy.model.Category;
 import com.jwhisper.udemy.model.Course;
+import com.jwhisper.udemy.projection.category.CategoryCourseProjection;
 import com.jwhisper.udemy.redis.HomeRedisService;
 import com.jwhisper.udemy.redis.InterestedRedisService;
 import com.jwhisper.udemy.repository.CategoryRepository;
@@ -47,11 +49,12 @@ public class HomeServiceImpl implements HomeService {
     private final SearchService searchService;
     private final String KEY = "home:categories";
     private final String CHILD_KEY = "home:categories-child";
+    private final RedisTemplate<String,Object> redisTemplate;
     public HomeServiceImpl(CourseRepository courseRepository,
          CourseMapper courseMapper, HomeRedisService homeRedisService,
          CategoryRepository categoryRepository, CategoryMapper categoryMapper,
          InterestedRedisService interestedRedisService, ESCourseMapper esCourseMapper,
-         SecurityHelper securityHelper, SearchService searchService
+         SecurityHelper securityHelper, SearchService searchService, RedisTemplate<String,Object> redisTemplate
          ){ 
          this.homeRedisService = homeRedisService;
          this.categoryMapper = categoryMapper;
@@ -62,6 +65,7 @@ public class HomeServiceImpl implements HomeService {
         this.courseMapper = courseMapper;
         this.categoryRepository = categoryRepository;
         this.searchService = searchService;
+        this.redisTemplate = redisTemplate;
     }
     @Override
     public CourseInfoResponse getCourseDetail(String id) {
@@ -129,10 +133,34 @@ public class HomeServiceImpl implements HomeService {
              return cProjections;
         }
         Pageable pageable = PageRequest.of(0,10);
-        List<Category> categories = categoryRepository.findTopCategories(pageable);
-        List<CategoryCourseResponse> responses = categories.stream()
-        .map(c -> this.categoryMapper.toCategoryCourseResponse(c)).toList();
+        List<CategoryCourseProjection> projections =
+        categoryRepository.findTopCategories(pageable);
+
+        List<CategoryCourseResponse> responses =
+                projections.stream()
+                .map(p -> {
+                    CategoryCourseResponse r = new CategoryCourseResponse();
+                    r.setId(p.getId());
+                    r.setName(p.getName());
+                    r.setCourseCount(p.getCourseCount());
+                    return r;
+                }).toList();
         this.homeRedisService.set(this.CHILD_KEY, responses, 1);
         return responses;
+    }
+    @Override
+    public List<CourseSearchResponse> getRecommend() {
+        String username = this.securityHelper.getCurrentUsername();
+        String key = "recommend:" + username;
+
+        List<Object> list = redisTemplate.opsForList().range(key, 0, -1);
+
+        if (list == null || list.isEmpty()) {
+            return List.of();
+        }
+
+        return list.stream()
+                .map(o -> (CourseSearchResponse) o)
+                .toList();
     }
 }

@@ -16,7 +16,7 @@ export const useGetRatings = ({ courseId, pagination }: {
     queryFn: async ({ pageParam = 0 }) => {
 
       const res: IApiResponse<ISliceResponse<IRatingResponse>> =
-        await api.get(`/learnings/get-ratings/${courseId}`, {
+        await api.get(`/client/get-ratings/${courseId}`, {
           params: {
             page: pageParam,
             size: pagination.size
@@ -46,7 +46,7 @@ export const createRating = ({courseId,rating} : {courseId : string,rating: IRat
 
 export const getCount = (courseId : string) =>{
     return getById<number>({
-        url:`/learnings/ratings/get-count`,
+        url:`/client/ratings/get-count`,
         id:courseId
     })
 }

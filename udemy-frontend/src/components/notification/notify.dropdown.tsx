@@ -28,7 +28,9 @@ export default function NotifyDropdown() {
     <>
       {/* ICON */}
       <Box
-        onMouseEnter={(e) => setAnchorEl(e.currentTarget)}
+        onClick={(e) =>
+          setAnchorEl(anchorEl ? null : e.currentTarget)
+        }
         sx={{ cursor: "pointer" }}
       >
         <NotifyIcon />

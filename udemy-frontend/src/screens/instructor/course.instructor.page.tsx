@@ -31,7 +31,7 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import { showToast } from "@/utils/toast";
 import type { AxiosError } from "axios";
 import type { IApiResponse } from "@/type/api.response";
-import { query } from "@/main";
+import { query } from "@/query/queryClient";
 
 export default function CourseInstructorPage() {
 

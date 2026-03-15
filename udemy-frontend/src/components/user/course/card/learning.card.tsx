@@ -114,12 +114,7 @@ export default function LearningCard({ course }: Props) {
         <Typography
           fontWeight={600}
           fontSize={15}
-          sx={{
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden"
-          }}
+          noWrap
         >
           {course.name}
         </Typography>
