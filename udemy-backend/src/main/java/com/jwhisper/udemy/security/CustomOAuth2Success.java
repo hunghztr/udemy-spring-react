@@ -20,7 +20,8 @@ public class CustomOAuth2Success implements AuthenticationSuccessHandler {
   private final AuthService authService;
   @Value("${whisper.jwt.refresh-token-validity-in-seconds}")
   private long refreshTokenExpiration;
-
+  @Value("${app.frontend-url}")
+  private String frontendUrl;
   public CustomOAuth2Success(AuthService authService) {
     this.authService = authService;
   }
@@ -43,7 +44,7 @@ public class CustomOAuth2Success implements AuthenticationSuccessHandler {
         .maxAge(this.refreshTokenExpiration)
         .build();
     response.addHeader("Set-Cookie", refreshCookie.toString());
-    response.sendRedirect("http://localhost:5173" + "/oauth2/callback");
+    response.sendRedirect(this.frontendUrl + "/oauth2/callback");
   }
 
 }
