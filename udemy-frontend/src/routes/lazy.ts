@@ -66,6 +66,9 @@ export const AdminWalletPage = lazy(
 export const AdminWalletUserPage = lazy(
   () => import("../screens/admin/admin.wallet.user.page")
 )
+export const AdminDashBoardPage = lazy(
+  () => import("../screens/admin/admin.dashboard.page")
+)
 /* ============== INSTRUCTOR =============== */
 export const InstructorLayout = lazy(
   () => import("../components/instructor/layout/instructor.layout")

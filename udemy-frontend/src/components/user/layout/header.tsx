@@ -21,7 +21,7 @@ import { showToast } from "@/utils/toast";
 import NotifyDropdown from "@/components/notification/notify.dropdown";
 import SearchInput from "../course/search.input";
 import HomeCategoryHeader from "../home/home.category.header";
-import logo from "@/assets/logo-udemy.svg";
+import logo from "@/assets/udemy-logo.png";
 
 export default function Header() {
   const user = useAppSelector((state) => state.currentUser);

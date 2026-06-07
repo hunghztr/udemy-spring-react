@@ -14,7 +14,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import FlagIcon from "@mui/icons-material/Flag";
 
-import { useState } from "react";
+import {  useState } from "react";
 
 import { useGetById, useSave } from "@/query/use.crud.query";
 
@@ -33,6 +33,7 @@ import Loading from "@/components/loading";
 import { useAppSelector } from "@/redux/hook";
 import { showToast } from "@/utils/toast";
 import { createNotification } from "@/query/notification/notification.query";
+import { checkCourse } from "@/query/course/course.query";
 
 interface Props {
   courseId: string;
@@ -44,7 +45,7 @@ export default function RatingList({ courseId, isRate = true }: Props) {
   const user = useAppSelector((state) => state.currentUser);
 
   const isInstructor = user?.roleName === "INSTRUCTOR";
-
+  const {data:isTrue,error} = useGetById<boolean>('courses/check-course',checkCourse,courseId);
   const { mutate: sendNotify, isPending } =
     useSave<boolean, INotification>(
       "notifications/create",
@@ -196,7 +197,9 @@ export default function RatingList({ courseId, isRate = true }: Props) {
                   {/* Instructor report */}
 
                   {isInstructor &&
-                    rating.id.userId !== user?.id && (
+                  isTrue &&
+                  !error &&
+                  rating.id.userId !== user?.id && (
 
                       <Box mt={1}>
 

@@ -22,6 +22,16 @@ export interface IUserDetailResponse{
     roleName : string,
     description : string
 }
+export interface IInstructorProfileResponse {
+  id: string;
+  fullname: string;
+  avatarPath: string;
+  description: string;
+  roleName: string;
+  totalCourses: number;
+  totalStudents: number;
+  avgRating: number;
+}
 export interface IProfile{
     id?: string,
     fullname: string,

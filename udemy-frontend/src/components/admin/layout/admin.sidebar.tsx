@@ -5,20 +5,30 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
+
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import PeopleIcon from "@mui/icons-material/People";
 import SchoolIcon from "@mui/icons-material/School";
 import LogoutIcon from "@mui/icons-material/Logout";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import CategoryIcon from "@mui/icons-material/Category";
+
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../redux/hook";
 import { useTheme } from "@mui/material/styles";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { showToast } from "@/utils/toast";
 import { logOut } from "@/redux/thunks/auth.thunk";
 import NotifyIcon from "@/components/notification/notify.icon";
 
+import { motion, AnimatePresence } from "framer-motion";
+
 const SIDEBAR_WIDTH = 240;
+const COLLAPSED_WIDTH = 72;
 
 export default function AdminSidebar() {
   const navigate = useNavigate();
@@ -27,6 +37,8 @@ export default function AdminSidebar() {
   const theme = useTheme();
 
   const roleName = useAppSelector((state) => state.currentUser.roleName);
+
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     if (roleName === "") {
@@ -56,100 +68,140 @@ export default function AdminSidebar() {
     },
   };
 
+  const renderItem = (
+    label: string,
+    icon: React.ReactNode,
+    path: string
+  ) => {
+    const selected = location.pathname.startsWith(path);
+
+    return (
+      <Tooltip title={collapsed ? label : ""} placement="right">
+        <ListItemButton
+          selected={selected}
+          onClick={() => navigate(path)}
+          sx={{
+            ...menuItemStyle,
+            justifyContent: collapsed ? "center" : "flex-start",
+          }}
+        >
+          <ListItemIcon
+            sx={{
+              color: theme.palette.sidebar.text,
+              minWidth: collapsed ? "auto" : 40,
+              justifyContent: "center",
+            }}
+          >
+            {icon}
+          </ListItemIcon>
+
+          {/* ✨ ANIMATED TEXT */}
+          <AnimatePresence mode="wait">
+            {!collapsed && (
+              <motion.div
+                key="text"
+                initial={{ opacity: 0, x: -10, filter: "blur(2px)" }}
+                animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, x: -10, filter: "blur(2px)" }}
+                transition={{ duration: 0.18, ease: "easeInOut" }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                <ListItemText primary={label} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </ListItemButton>
+      </Tooltip>
+    );
+  };
+
   return (
-    <Box
-      sx={{
-        width: SIDEBAR_WIDTH,
+    <motion.div
+      animate={{ width: collapsed ? COLLAPSED_WIDTH : SIDEBAR_WIDTH }}
+      transition={{ duration: 0.25, ease: "easeInOut" }}
+      style={{
         height: "100vh",
-        bgcolor: theme.palette.sidebar.main,
+        background: theme.palette.sidebar.main,
         color: theme.palette.sidebar.text,
-        display: "flex",
-        flexDirection: "column",
         position: "fixed",
         top: 0,
         left: 0,
-        zIndex: 1200,
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
       }}
     >
-      {/* Header */}
-      <Box sx={{ p: 2 }}>
-        <Typography variant="h6" fontWeight="bold">
-          TRANG QUẢN TRỊ
-        </Typography>
+      {/* HEADER */}
+      <Box
+        sx={{
+          p: 2,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: collapsed ? "center" : "space-between",
+        }}
+      >
+        {!collapsed && (
+          <Typography fontWeight="bold">TRANG QUẢN TRỊ</Typography>
+        )}
+
+        <IconButton
+          size="small"
+          onClick={() => setCollapsed((prev) => !prev)}
+          sx={{ color: theme.palette.sidebar.text }}
+        >
+          {collapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+        </IconButton>
       </Box>
 
-      {/* Menu */}
+      {/* MENU */}
       <List sx={{ flex: 1 }}>
-        {/* Users */}
-        <ListItemButton
-          selected={location.pathname.startsWith("/admin/users")}
-          onClick={() => navigate("/admin/users")}
-          sx={menuItemStyle}
-        >
-          <ListItemIcon>
-            <PeopleIcon />
-          </ListItemIcon>
-          <ListItemText primary="Quản lý Người dùng" />
-        </ListItemButton>
-
-        {/* Courses */}
-        <ListItemButton
-          selected={location.pathname.startsWith("/admin/courses")}
-          onClick={() => navigate("/admin/courses")}
-          sx={menuItemStyle}
-        >
-          <ListItemIcon>
-            <SchoolIcon />
-          </ListItemIcon>
-          <ListItemText primary="Quản lý Khóa học" />
-        </ListItemButton>
-
-        {/* Categories */}
-        <ListItemButton
-          selected={location.pathname.startsWith("/admin/categories")}
-          onClick={() => navigate("/admin/categories")}
-          sx={menuItemStyle}
-        >
-          <ListItemIcon>
-            <PeopleIcon />
-          </ListItemIcon>
-          <ListItemText primary="Quản lý Danh mục" />
-        </ListItemButton>
-
-        {/* Wallet */}
-        <ListItemButton
-          selected={location.pathname.startsWith("/admin/wallets")}
-          onClick={() => navigate("/admin/wallets")}
-          sx={menuItemStyle}
-        >
-          <ListItemIcon>
-            <AccountBalanceWalletIcon />
-          </ListItemIcon>
-          <ListItemText primary="Quản lý doanh thu" />
-        </ListItemButton>
-
-        {/* Notifications */}
-        <ListItemButton
-          selected={location.pathname.startsWith("/admin/notifications")}
-          onClick={() => navigate("/admin/notifications")}
-          sx={menuItemStyle}
-        >
-          <ListItemIcon>
-            <NotifyIcon />
-          </ListItemIcon>
-          <ListItemText primary="Thông báo" />
-        </ListItemButton>
+        {renderItem("Thống kê", <DashboardIcon />, "/admin/dashboard")}
+        {renderItem("Quản lý Người dùng", <PeopleIcon />, "/admin/users")}
+        {renderItem("Quản lý Khóa học", <SchoolIcon />, "/admin/courses")}
+        {renderItem("Quản lý Danh mục", <CategoryIcon />, "/admin/categories")}
+        {renderItem("Thông báo", <NotifyIcon />, "/admin/notifications")}
       </List>
 
-      {/* Logout */}
+      {/* LOGOUT */}
       <List>
-        <ListItemButton onClick={handleLogout} sx={menuItemStyle}>
-          <ListItemIcon>
-            <LogoutIcon />
-          </ListItemIcon>
-          <ListItemText primary="Đăng xuất" />
-        </ListItemButton>
+        <Tooltip title={collapsed ? "Đăng xuất" : ""} placement="right">
+          <ListItemButton
+            onClick={handleLogout}
+            sx={{
+              ...menuItemStyle,
+              justifyContent: collapsed ? "center" : "flex-start",
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                color: theme.palette.sidebar.text,
+                minWidth: collapsed ? "auto" : 40,
+                justifyContent: "center",
+              }}
+            >
+              <LogoutIcon />
+            </ListItemIcon>
+
+            <AnimatePresence>
+              {!collapsed && (
+                <motion.div
+                  initial={{ opacity: 0, x: -10, filter: "blur(2px)" }}
+                  animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, x: -10, filter: "blur(2px)" }}
+                  transition={{ duration: 0.18 }}
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <ListItemText primary="Đăng xuất" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </ListItemButton>
+        </Tooltip>
       </List>
-    </Box>
+    </motion.div>
   );
 }

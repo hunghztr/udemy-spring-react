@@ -118,30 +118,30 @@ export default function ProfileInstructorPage() {
 
         <Box component="form" onSubmit={handleSubmit}>
           <Stack spacing={3}>
-            {/* ===== FULL NAME ===== */}
-            <TextField
-              label="Họ và tên"
-              value={fullname}
-              onChange={(e) => setFullname(e.target.value)}
-              placeholder="Nguyễn Văn A"
-              fullWidth
-            />
+            <Stack direction="row" spacing={2}>
+              <TextField
+                label="Họ và tên"
+                value={fullname}
+                onChange={(e) => setFullname(e.target.value)}
+                placeholder="Nguyễn Văn A"
+                fullWidth
+              />
 
-            {/* ===== ROLE ===== */}
-            <FormControl fullWidth data-tour="role">
-              <InputLabel id="role-label">
-                Bạn muốn làm học viên hay giảng viên?
-              </InputLabel>
-              <Select
-                labelId="role-label"
-                label="Bạn muốn làm học viên hay giảng viên?"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-              >
-                <MenuItem value="USER">Học viên</MenuItem>
-                <MenuItem value="INSTRUCTOR">Giảng viên</MenuItem>
-              </Select>
-            </FormControl>
+              <FormControl fullWidth data-tour="role">
+                <InputLabel id="role-label">
+                  Bạn muốn làm học viên hay giảng viên?
+                </InputLabel>
+                <Select
+                  labelId="role-label"
+                  label="Bạn muốn làm học viên hay giảng viên?"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                >
+                  <MenuItem value="USER">Học viên</MenuItem>
+                  <MenuItem value="INSTRUCTOR">Giảng viên</MenuItem>
+                </Select>
+              </FormControl>
+            </Stack>
 
             {/* ===== AVATAR ===== */}
             <Stack spacing={1}>

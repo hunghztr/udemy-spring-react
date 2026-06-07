@@ -9,10 +9,9 @@ import {
 import StarIcon from "@mui/icons-material/Star";
 import GroupsIcon from "@mui/icons-material/Groups";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-import ReviewsIcon from "@mui/icons-material/Reviews";
 
 import type {
-  IUserDetailResponse,
+  IInstructorProfileResponse,
   IUserResponse,
 } from "@/type/user.module";
 
@@ -26,14 +25,13 @@ export default function Instructor({
 }) {
 
   const { data: profileData } =
-    useGetById<IUserDetailResponse>(
+    useGetById<IInstructorProfileResponse>(
       "profiles/get-by-id",
       getProfile,
       author.id || ""
     );
   const avatar =
     `${import.meta.env.VITE_CLOUDINARY_WATCH_IMG}/${profileData?.avatarPath}`;
-    console.log(profileData)
   return (
     <Paper
       sx={(theme) => ({
@@ -45,7 +43,7 @@ export default function Instructor({
     >
       {/* TITLE */}
       <Typography variant="h5" fontWeight={700} mb={2}>
-        Instructor
+        Giảng viên
       </Typography>
 
       {/* NAME */}
@@ -61,7 +59,7 @@ export default function Instructor({
       </Typography>
 
       <Typography variant="body2" color="text.secondary" mb={3}>
-        {profileData?.roleName || author.roleName}
+        {author.roleName ? "Giảng viên":""}
       </Typography>
 
       {/* INFO */}
@@ -80,28 +78,21 @@ export default function Instructor({
           <Stack direction="row" spacing={1} alignItems="center">
             <StarIcon fontSize="small" />
             <Typography variant="body2">
-              4.7 Instructor Rating
-            </Typography>
-          </Stack>
-
-          <Stack direction="row" spacing={1} alignItems="center">
-            <ReviewsIcon fontSize="small" />
-            <Typography variant="body2">
-              1,043,227 Reviews
+              {profileData?.avgRating.toFixed(1)} Instructor Rating
             </Typography>
           </Stack>
 
           <Stack direction="row" spacing={1} alignItems="center">
             <GroupsIcon fontSize="small" />
             <Typography variant="body2">
-              3,399,739 Students
+              {profileData?.totalStudents.toLocaleString()} Students
             </Typography>
           </Stack>
 
           <Stack direction="row" spacing={1} alignItems="center">
             <PlayCircleIcon fontSize="small" />
             <Typography variant="body2">
-              8 Courses
+              {profileData?.totalCourses} Courses
             </Typography>
           </Stack>
         </Stack>

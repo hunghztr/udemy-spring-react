@@ -70,7 +70,7 @@ export default function InstructorSidebar() {
             >
               U
             </Typography>
-            {/* DEMY */}
+            {/* NiDev */}
             <AnimatePresence>
               {!collapsed && (
                 <motion.span
@@ -91,7 +91,7 @@ export default function InstructorSidebar() {
                     lineHeight={1}
                     letterSpacing={0.5}
                   >
-                    DEMY
+                    NIDEV
                   </Typography>
                 </motion.span>
               )}

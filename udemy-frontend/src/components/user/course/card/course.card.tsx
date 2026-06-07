@@ -51,21 +51,25 @@ function CourseCard({ course }: { course: ICourseSearchResponse }) {
         }}
       >
         {/* BLUR PLACEHOLDER */}
+        {/* REAL IMAGE */}
         {imgSrc && (
           <Box
             component="img"
             src={imgSrc}
-            alt="blur"
+            alt={course.name}
+            loading="lazy"
+            onLoad={() => setLoaded(true)}
             sx={{
-              position: "absolute",
-              inset: 0,
               width: "100%",
               height: "100%",
               objectFit: "cover",
-              filter: "blur(18px)",
-              transform: "scale(1.1)",
-              opacity: loaded ? 0 : 1,
-              transition: "opacity .4s"
+              position: "relative",
+              opacity: loaded ? 1 : 0,
+              transition: "opacity .4s, transform .4s",
+
+              ".MuiBox-root:hover &": {
+                transform: "scale(1.06)"
+              }
             }}
           />
         )}

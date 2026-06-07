@@ -210,19 +210,15 @@ export default function CoursePurchaseCard({
           {/* COURSE INFO */}
           <Stack spacing={1.5}>
             <Typography fontSize={14}>
-              ⬇ 5 downloadable resources
+              📱 Học trên điện thoại, máy tính bảng và TV
             </Typography>
 
             <Typography fontSize={14}>
-              📱 Access on mobile and TV
+              ♾ Truy cập trọn đời khóa học
             </Typography>
 
             <Typography fontSize={14}>
-              ♾ Full lifetime access
-            </Typography>
-
-            <Typography fontSize={14}>
-              🏆 Certificate of completion
+              🏆 Mỗi bài học đều có quizz để thực hành
             </Typography>
           </Stack>
         </Box>

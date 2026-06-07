@@ -137,18 +137,19 @@ export default function CategoryCoursePage() {
         {isLoading && (
           <Grid container spacing={3}>
             {Array.from(new Array(8)).map((_, index) => (
-              <Grid sx={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
+              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
                 <SkeletonCard />
               </Grid>
             ))}
           </Grid>
         )}
 
+
         {/* COURSE GRID */}
         {!isLoading && (
           <Grid container spacing={3}>
             {data?.elements.map((course) => (
-              <Grid sx={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={course.id}>
+              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={course.id}>
                 <CourseCard course={course} />
               </Grid>
             ))}

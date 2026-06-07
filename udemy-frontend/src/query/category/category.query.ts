@@ -1,6 +1,6 @@
 import api from "@/api/api";
 import type { IApiResponse } from "@/type/api.response";
-import type { ICategory, ICategoryCourseResponse, ICategoryParentResponse, ICategoryResponse } from "@/type/category.module";
+import { type ICategoryStudentResponse, type ICategory, type ICategoryCourseResponse, type ICategoryParentResponse, type ICategoryResponse } from "@/type/category.module";
 import type { IPagination, IPaginationResponse } from "@/type/pagination";
 import { activate, create, getAll, getAllNoPage, getById, update } from "../api.crud.query";
 import type { ICourseSearchResponse, IFilterRequest } from "@/type/course.module";
@@ -22,7 +22,11 @@ export const getCategoriesNoPage = async () =>{
         })
 }
 
-
+export const getCategoriesByDash = async () =>{
+    return getAllNoPage<ICategoryCourseResponse[]>({
+        url:`/admin/dashboard/get-categories`
+    })
+}
 export const updateCategory = (data : ICategory) =>{
     return update<ICategory>({
     url:"/admin/categories",
@@ -52,6 +56,12 @@ export const getCategoryById = (id : string) =>{
     url:"/admin/categories",
     id
     })
+}
+export const getByMonths = async(categoryId : string) =>{
+        return getById<ICategoryStudentResponse[]>({
+            url: `/admin/dashboard/get-student-by-months`,
+            id:categoryId
+        })
 }
 export const disableCategory = (id : string) =>{
     return activate({

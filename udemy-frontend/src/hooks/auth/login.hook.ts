@@ -40,7 +40,7 @@ export const useLoginHook = () =>{
     
   };
   useEffect(() =>{
-    if(roleName === 'ADMIN') navigate("/admin/users");
+    if(roleName === 'ADMIN') navigate("/admin/dashboard");
     if(roleName === 'USER' || roleName === 'INSTRUCTOR') navigate("/");
   },[roleName])
   const handleGoogleLogin = async () => {

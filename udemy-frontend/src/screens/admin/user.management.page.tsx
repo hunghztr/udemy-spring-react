@@ -25,9 +25,14 @@ import { type ICourseResponse } from "@/type/course.module";
 import type { IApiResponse } from "@/type/api.response";
 import api from "@/api/api";
 import { query } from "@/query/queryClient";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import InstructorRevenueDialog from "@/components/admin/user/revenue.dialog";
 
 
 export default function UserManagement() {
+  // state revenue dialog
+const [openRevenue, setOpenRevenue] = useState(false);
+const [selectedInstructorId, setSelectedInstructorId] = useState("");
   // fetch hook
   const {data,page,active,handleToggle,keyword,setKeyword
     ,isLoading,setPage,meta
@@ -140,12 +145,28 @@ export default function UserManagement() {
                             spacing={1}
                             justifyContent="center"
                           >
+                            {user.roleName === "INSTRUCTOR" && (
+                              <Tooltip title="Xem doanh thu">
+                                <IconButton
+                                  size="small"
+                                  color="success"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedInstructorId(user.id);
+                                    setOpenRevenue(true);
+                                  }}
+                                >
+                                  <AttachMoneyIcon />
+                                </IconButton>
+                              </Tooltip>
+                            )}
                             {/* ✏️ Edit */}
                             <Tooltip title="Sửa thông tin">
                               <IconButton
                                 size="small"
                                 color="primary"
-                                onClick={() => {
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   setSelectedDataId(user.id);
                                   setOpenUpdate(true);
                                 }}
@@ -160,8 +181,10 @@ export default function UserManagement() {
                                   size="small"
                                   color="warning"
                                   disabled={user.roleName === "ADMIN" || isPendingDisable}
-                                  onClick={async () => {
+                                  onClick={async (e) => {
+                                    e.stopPropagation();
                                     await handleDisable(user.id)
+                                    
                                     query.invalidateQueries({queryKey:["users/fetch-all"]})
                                   }}
                                 >
@@ -176,7 +199,8 @@ export default function UserManagement() {
                                   size="small"
                                   color="success"
                                   disabled={isPendingEnable}
-                                  onClick={async () => {
+                                  onClick={async (e) => {
+                                    e.stopPropagation();
                                     await handleEnable(user.id)
                                     query.invalidateQueries({queryKey:["users/fetch-all"]})
                                   }}
@@ -288,6 +312,14 @@ export default function UserManagement() {
         </Button>
       </DialogActions>
     </Dialog>
+    <InstructorRevenueDialog
+      open={openRevenue}
+      onClose={() => {
+        setOpenRevenue(false);
+        setSelectedInstructorId("");
+      }}
+      instructorId={selectedInstructorId}
+    />
     </Box>
   );
 }

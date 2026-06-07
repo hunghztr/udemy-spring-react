@@ -1,10 +1,11 @@
-import type { IBank, IBankResponse, IProfile, IUser, IUserDetailResponse, IUserResponse, IWalletResponse } from "@/type/user.module";
+import type { IBank, IBankResponse, IInstructorProfileResponse, IProfile, IUser, IUserResponse, IWalletResponse } from "@/type/user.module";
 import { activate, create, getAll, getById, update } from "../api.crud.query";
 import type { IPagination } from "@/type/pagination";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { IApiResponse } from "@/type/api.response";
 import api from "@/api/api";
-import type { ICourseSearchResponse } from "@/type/course.module";
+import type { ICourseResponse, ICourseSearchResponse } from "@/type/course.module";
+import type { InstructorRevenueResponse } from "@/type/revenue.module";
 
 export const getRecommend = () =>{
     return useQuery({
@@ -31,6 +32,15 @@ export const getAllWallets = (params?: {
     filters:params
   });
 };
+export const getDashBoard = (params?: {
+  startDate?: string;
+  endDate?: string;
+}) => {
+  return getAll<ICourseResponse>({
+    url: `/admin/dashboard`,
+    filters:params
+  });
+};
 export const getPay = (startDate?: string, endDate?: string) => {
   return useQuery({
     queryKey: ["pays/get", startDate, endDate],
@@ -48,6 +58,29 @@ export const getPay = (startDate?: string, endDate?: string) => {
     }
   });
 };
+export const getInstructorRevenue = () => {
+  return useQuery({
+    queryKey: ["instructors/revenue"],
+    queryFn: async () => {
+      const res: IApiResponse<InstructorRevenueResponse> = await api.get(
+        "/instructors/revenue"
+      );
+      return res.data;
+    }
+  });
+};
+export const getInstructorRevenueById = (instructorId: string) => {
+  return useQuery({
+    queryKey: ["instructor/revenue", instructorId],
+    queryFn: async () => {
+      const res: IApiResponse<InstructorRevenueResponse> = await api.get(
+        `/instructors/revenue/${instructorId}`
+      );
+      return res.data;
+    },
+    enabled: !!instructorId // chỉ gọi khi có instructorId
+  });
+}
 export const connectWallet = () =>{
     return useMutation({
         mutationKey:['pays/connect'],
@@ -65,7 +98,7 @@ export const updateProfile = (data: IProfile) => {
   });
 };
 export const getProfile = (id : string) =>{
-    return getById<IUserDetailResponse>({
+    return getById<IInstructorProfileResponse>({
         url:"/client/profiles",
         id
     })

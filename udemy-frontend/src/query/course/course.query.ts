@@ -166,3 +166,9 @@ export const markFinish = ({lectureId,finish}:{lectureId : string,finish:boolean
         data:{finish}
     })
 }
+export const checkCourse = (courseId : string) =>{
+    return getById<boolean>({
+        url:`/instructor/courses/check-course-instructor`,
+        id : courseId
+    })
+}

@@ -21,3 +21,9 @@ export interface ICategoryCourseResponse{
     name:string;
     courseCount:number;
 }
+export interface ICategoryStudentResponse{
+    id: string;
+    name: string;
+    students: number;
+    month: number;
+}
