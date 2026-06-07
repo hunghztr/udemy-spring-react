@@ -13,6 +13,7 @@ import com.jwhisper.udemy.dto.course.CourseInfoResponse;
 import com.jwhisper.udemy.dto.learning.LearningResponse;
 import com.jwhisper.udemy.dto.rating.RatingRequest;
 import com.jwhisper.udemy.dto.rating.RatingResponse;
+import com.jwhisper.udemy.elasticsearch.SearchService;
 import com.jwhisper.udemy.helper.annotation.CheckLearningOwner;
 import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.helper.mapper.CourseMapper;
@@ -44,12 +45,13 @@ public class LearningServiceImpl implements LearningService {
     private final RatingMapper ratingMapper;
     private final UserLectureProgressRepository userLectureProgressRepository;
     private final QuizzRepository quizzRepository;
+    private final SearchService searchService;
     public LearningServiceImpl(LearningRepository learningRepository,
         SecurityHelper securityHelper, UserRepository userRepository,
         CourseMapper courseMapper, CourseRepository courseRepository,
         RatingRepository ratingRepository, RatingMapper ratingMapper,
         UserLectureProgressRepository userLectureProgressRepository,
-        QuizzRepository quizzRepository
+        QuizzRepository quizzRepository, SearchService searchService
     ){
         this.learningRepository = learningRepository;
         this.securityHelper = securityHelper;
@@ -60,6 +62,7 @@ public class LearningServiceImpl implements LearningService {
         this.ratingMapper = ratingMapper;
         this.userLectureProgressRepository = userLectureProgressRepository;
         this.quizzRepository = quizzRepository;
+        this.searchService = searchService;
     }
     @Override
     public List<LearningResponse> getAll(String status) {
@@ -164,6 +167,10 @@ public class LearningServiceImpl implements LearningService {
         rating.setCourse(course);
         rating.setCustomer(user);
         rating = this.ratingRepository.save(rating);
+        Double avgStar = this.ratingRepository.getAverageStar(courseId);
+        course.setStar(avgStar != null ? avgStar : 0.0);
+        this.courseRepository.save(course);
+        this.searchService.indexCourse(course.getId());
         return this.ratingMapper.toRatingResponse(rating);
     }
     @Override

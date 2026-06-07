@@ -1,5 +1,6 @@
 package com.jwhisper.udemy.repository;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,4 +36,25 @@ public interface CourseRepository extends JpaRepository<Course, String>, JpaSpec
     WHERE c.id = :courseId
     """)
     void increaseSold(@Param("courseId") String courseId);
+    
+    @Query("""
+    SELECT c
+    FROM Course c
+    JOIN c.orders o
+    WHERE (:startDate IS NULL OR o.createdAt >= :startDate)
+    AND (:endDate IS NULL OR o.createdAt <= :endDate)
+    """)
+    Page<Course> findTopCoursesBySoldWithTime(
+            @Param("startDate") Instant startDate,
+            @Param("endDate") Instant endDate,
+            Pageable pageable
+    );
+    @Query("SELECT COUNT(c) FROM Course c WHERE c.author.id = :instructorId")
+long countByAuthorId(@Param("instructorId") String instructorId);
+
+@Query("SELECT COALESCE(SUM(c.sold), 0) FROM Course c WHERE c.author.id = :instructorId")
+long sumSoldByAuthorId(@Param("instructorId") String instructorId);
+
+@Query("SELECT COALESCE(AVG(c.star), 0) FROM Course c WHERE c.author.id = :instructorId")
+double avgStarByAuthorId(@Param("instructorId") String instructorId);
 }

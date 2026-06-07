@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useGetPaging } from "@/query/use.crud.query";
 import { getAllWallets } from "@/query/user/user.query";
 import type { IWalletResponse } from "@/type/user.module";
@@ -8,32 +9,57 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  TableBody
+  TableBody,
+  TextField,
+  Stack
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 
 export default function AdminWalletPage() {
 
-  const navigate = useNavigate();
 
-  const { data } = useGetPaging<IWalletResponse, undefined>(
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  const { data } = useGetPaging<IWalletResponse, any>(
     "wallets/get-all",
     getAllWallets,
-    undefined
+    {
+      startDate,
+      endDate
+    }
   );
 
   const wallets = data?.elements || [];
 
-
-  const handleRowClick = (wallet: IWalletResponse) => {
-    navigate(`/admin/wallet/${wallet.id}`);
-  };
+  // const handleRowClick = (wallet: IWalletResponse) => {
+  //   navigate(`/admin/wallet/${wallet.id}`);
+  // };
 
   return (
     <Box sx={{ p: 4 }}>
       <Typography fontSize={28} fontWeight={700} mb={3}>
-        Quản lý yêu cầu rút tiền
+        Quản lý doanh thu
       </Typography>
+
+      {/* FILTER */}
+
+      <Stack direction="row" spacing={2} mb={3}>
+        <TextField
+          type="date"
+          label="Ngày bắt đầu"
+          InputLabelProps={{ shrink: true }}
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+
+        <TextField
+          type="date"
+          label="Ngày kết thúc"
+          InputLabelProps={{ shrink: true }}
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
+      </Stack>
 
       <Table>
         <TableHead>
@@ -50,7 +76,7 @@ export default function AdminWalletPage() {
             <TableRow
               key={wallet.id}
               hover
-              onClick={() => handleRowClick(wallet)}
+              // onClick={() => handleRowClick(wallet)}
               sx={{ cursor: "pointer" }}
             >
               <TableCell>{wallet.id}</TableCell>
@@ -61,8 +87,6 @@ export default function AdminWalletPage() {
           ))}
         </TableBody>
       </Table>
-
-
     </Box>
   );
 }

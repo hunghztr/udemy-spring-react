@@ -1,20 +1,25 @@
 package com.jwhisper.udemy.service.impl;
 
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.jwhisper.udemy.dto.Pagination;
-
 import com.jwhisper.udemy.dto.category.CategoryRequest;
+import com.jwhisper.udemy.dto.category.CategoryStudentResponse;
 import com.jwhisper.udemy.helper.expception.ErrorException;
 import com.jwhisper.udemy.helper.mapper.CategoryMapper;
 import com.jwhisper.udemy.model.Category;
+import com.jwhisper.udemy.projection.category.CategoryCourseProjection;
 import com.jwhisper.udemy.projection.category.CategoryProjection;
+import com.jwhisper.udemy.projection.category.CategoryStudentProjection;
 import com.jwhisper.udemy.redis.HomeRedisService;
 import com.jwhisper.udemy.repository.CategoryRepository;
 import com.jwhisper.udemy.service.CategoryService;
@@ -112,6 +117,34 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryProjection> getAllNoPage()  {
         return this.categoryRepository.findAllBy();
+    }
+    @Override
+    public List<CategoryCourseProjection> getByDashBoard() {
+        return this.categoryRepository.findCategoryWithCourseCount();
+    }
+    @Override
+    public List<CategoryStudentResponse> getByMonths(String categoryId) {
+
+        List<CategoryStudentProjection> raw = categoryRepository
+            .getStudentByMonth(categoryId);
+
+        Map<Integer, Long> map = raw.stream()
+            .collect(Collectors.toMap(
+                CategoryStudentProjection::getMonth,
+                CategoryStudentProjection::getStudents
+            ));
+
+        List<CategoryStudentResponse> result = new ArrayList<>();
+
+        for (int i = 1; i <= 12; i++) {
+            CategoryStudentResponse item = new CategoryStudentResponse();
+            item.setMonth(i);
+            item.setStudents(map.getOrDefault(i, 0L).intValue());
+            item.setId(categoryId); // optional
+            result.add(item);
+        }
+
+        return result;
     }
     
 }

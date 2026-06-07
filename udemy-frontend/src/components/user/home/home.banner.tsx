@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Stack,
   Typography,
   Paper,
@@ -20,24 +19,14 @@ export default function HomeBanner() {
   const theme = useTheme();
   const MotionPaper = motion(Paper);
 
-  /* ================= PARALLAX LOGIC ================= */
+  /* ================= PARALLAX ================= */
 
-  // raw direction (-1 → 1)
   const dirX = useMotionValue(0);
   const dirY = useMotionValue(0);
 
-  // spring cho mượt
-  const smoothX = useSpring(dirX, {
-    stiffness: 120,
-    damping: 20,
-  });
+  const smoothX = useSpring(dirX, { stiffness: 120, damping: 20 });
+  const smoothY = useSpring(dirY, { stiffness: 120, damping: 20 });
 
-  const smoothY = useSpring(dirY, {
-    stiffness: 120,
-    damping: 20,
-  });
-
-  // parallax strength
   const xSmall = useTransform(smoothX, [-1, 1], [-8, 8]);
   const ySmall = useTransform(smoothY, [-1, 1], [-8, 8]);
 
@@ -47,13 +36,11 @@ export default function HomeBanner() {
   const xLarge = useTransform(smoothX, [-1, 1], [-24, 24]);
   const yLarge = useTransform(smoothY, [-1, 1], [-24, 24]);
 
-  /* ================= RENDER ================= */
-
   return (
     <Box
       sx={{
         minHeight: 640,
-        pb:14,
+        pb: 14,
         px: { xs: 3, md: 8 },
         py: 6,
         display: "grid",
@@ -61,8 +48,7 @@ export default function HomeBanner() {
         alignItems: "center",
         gap: 6,
         color: "common.white",
-        background:
-          theme.palette.banner.background,
+        background: theme.palette.banner.background,
         overflow: "hidden",
         position: "relative",
       }}
@@ -82,87 +68,140 @@ export default function HomeBanner() {
         dirY.set(0);
       }}
     >
-      {/* ================= LEFT CONTENT ================= */}
+      {/* ================= LEFT ================= */}
+
+      <Stack
+      component={motion.div}
+      initial="hidden"
+      animate="visible"
+      variants={{
+        hidden: {},
+        visible: {
+          transition: {
+            staggerChildren: 0.2,
+          },
+        },
+      }}
+      spacing={3}
+    >
+      {/* TITLE */}
+
+      <Typography
+        component={motion.h1}
+        variants={{
+          hidden: { opacity: 0, y: 40 },
+          visible: { opacity: 1, y: 0 },
+        }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        sx={{
+          maxWidth: 720,
+          fontFamily: "'Inter', 'Be Vietnam Pro', sans-serif",
+          fontWeight: 700,
+          lineHeight: 1.3,
+          letterSpacing: "-0.5px",
+          fontSize: {
+            xs: "28px",
+            sm: "36px",
+            md: "48px",
+            lg: "56px",
+          },
+        }}
+      >
+        Nền tảng học trực tuyến
+        <br />
+        từ cơ bản đến nâng cao
+      </Typography>
+
+      {/* SUBTITLE */}
+
+      <Typography
+        component={motion.p}
+        variants={{
+          hidden: { opacity: 0, y: 30 },
+          visible: { opacity: 1, y: 0 },
+        }}
+        transition={{ duration: 0.6 }}
+        sx={{
+          color: "rgba(255,255,255,0.85)",
+          fontSize: 18,
+          maxWidth: 520,
+          lineHeight: 1.6,
+        }}
+      >
+        Khám phá hàng nghìn khóa học thực tế từ các chuyên gia
+        trong ngành. Học theo lộ trình rõ ràng, cập nhật liên tục
+        và truy cập trọn đời.
+      </Typography>
+
+      {/* CTA TEXT */}
+
       <Stack
         component={motion.div}
-        initial={{ opacity: 0, x: -40 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6 }}
-        spacing={3}
+        variants={{
+          hidden: { opacity: 0, y: 20 },
+          visible: { opacity: 1, y: 0 },
+        }}
+        transition={{ duration: 0.5 }}
+        spacing={1}
+        mt={1}
       >
-        <Typography variant="h3" fontWeight={800} lineHeight={1.2}>
-          Học Trực Tuyến Từ Cơ Bản Đến Nâng Cao{" "}
-        <Box component="span" sx={{ color: theme.palette.primary.light }}>
-          Cùng Chuyên Gia
-        </Box>
+        <Typography
+          sx={{
+            fontWeight: 600,
+            cursor: "pointer",
+            color: "#fff",
+            fontSize: 18,
+            transition: "0.2s",
+            "&:hover": {
+              color: theme.palette.primary.light,
+              transform: "translateX(4px)",
+            },
+          }}
+        >
+          Khám phá khóa học →
         </Typography>
-
-        <Typography color="rgba(255,255,255,0.8)" maxWidth={520}>
-          Khám phá hàng nghìn khóa học trực tuyến thực tiễn.
-          <br />
-          Học theo lộ trình rõ ràng, cập nhật liên tục, truy cập trọn đời.
-        </Typography>
-
-        {/* CTA */}
-        <Stack direction="row" spacing={2}>
-          <Button
-            size="large"
-            variant="contained"
-            sx={{
-              bgcolor: theme.palette.primary.main,
-              color:theme.palette.primary.contrastText,
-              textTransform: "none",
-              px: 3,
-              "&:hover": { bgcolor: theme.palette.primary.dark },
-            }}
-          >
-            Xem khóa học
-          </Button>
-
-          <Button
-            size="large"
-            variant="outlined"
-            sx={{
-              borderColor: "rgba(255,255,255,0.6)",
-              color: theme.palette.primary.contrastText,
-              textTransform: "none",
-              px: 3,
-              "&:hover": {
-                borderColor: theme.palette.primary.light,
-                backgroundColor: "rgba(255,255,255,0.08)",
-              },
-            }}
-          >
-            Xem đánh giá học viên
-          </Button>
-        </Stack>
-
-        {/* FEATURES */}
-        <Stack direction="row" spacing={4} mt={2}>
-          {[
-            "Video bài giảng theo yêu cầu",
-            "Cập nhật nội dung mới",
-            "Truy cập trọn đời",
-          ].map((item) => (
-            <Stack direction="row" spacing={1} key={item}>
-              <Box
-                sx={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  bgcolor: theme.palette.primary.light,
-                  mt: 1,
-                }}
-              />
-              <Typography fontSize={14}>{item}</Typography>
-            </Stack>
-          ))}
-        </Stack>
       </Stack>
 
-      {/* ================= RIGHT VISUAL ================= */}
+      {/* FEATURES */}
+
+      <Stack
+        component={motion.div}
+        variants={{
+          hidden: { opacity: 0 },
+          visible: { opacity: 1 },
+        }}
+        transition={{ duration: 0.8 }}
+        direction="row"
+        spacing={4}
+        mt={3}
+        flexWrap="wrap"
+      >
+        {[
+          "Video bài giảng theo yêu cầu",
+          "Cập nhật nội dung liên tục",
+          "Truy cập trọn đời",
+        ].map((item) => (
+          <Stack direction="row" spacing={1} key={item}>
+            <Box
+              sx={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                bgcolor: theme.palette.primary.light,
+                mt: 1,
+              }}
+            />
+            <Typography fontSize={14}>{item}</Typography>
+          </Stack>
+        ))}
+      </Stack>
+    </Stack>
+
+      {/* ================= RIGHT ================= */}
+
       <Box sx={{ position: "relative", height: 420 }}>
         {/* MAIN CARD */}
+
         <MotionPaper
           style={{ x: xLarge, y: yLarge }}
           initial={{ opacity: 0, y: 40 }}
@@ -177,7 +216,6 @@ export default function HomeBanner() {
             top: 40,
             overflow: "hidden",
             boxShadow: theme.shadows[10],
-            willChange: "transform",
           }}
         >
           <Box
@@ -192,8 +230,8 @@ export default function HomeBanner() {
           />
         </MotionPaper>
 
-
         {/* SMALL CARD */}
+
         <MotionPaper
           style={{ x: xMedium, y: yMedium }}
           initial={{ opacity: 0, scale: 0.9 }}
@@ -208,7 +246,6 @@ export default function HomeBanner() {
             top: 0,
             overflow: "hidden",
             boxShadow: theme.shadows[6],
-            willChange: "transform",
           }}
         >
           <Box
@@ -223,8 +260,8 @@ export default function HomeBanner() {
           />
         </MotionPaper>
 
-
         {/* STAT */}
+
         <MotionPaper
           style={{ x: xSmall, y: ySmall }}
           initial={{ opacity: 0, y: 20 }}
@@ -237,7 +274,6 @@ export default function HomeBanner() {
             bottom: 40,
             left: 40,
             borderRadius: 3,
-            willChange: "transform",
           }}
         >
           <Typography fontWeight={700} color={theme.palette.primary.main}>
@@ -246,6 +282,7 @@ export default function HomeBanner() {
           <Typography fontSize={14}>Khóa học trực tuyến</Typography>
         </MotionPaper>
       </Box>
+
       <AnimatedWaves />
     </Box>
   );

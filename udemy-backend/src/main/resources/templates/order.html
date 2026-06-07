@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Xác nhận đơn hàng</title>
+</head>
+
+<body style="margin:0;padding:0;background:#f6f9fc;font-family:Arial, sans-serif;">
+
+<div style="max-width:600px;margin:30px auto;background:#ffffff;padding:25px;border-radius:10px;">
+
+    <!-- Title -->
+    <h2 style="text-align:center;color:#333;">
+        🎉 Đặt hàng thành công!
+    </h2>
+
+    <!-- Greeting -->
+    <p>
+        Xin chào <b th:text="${name}">User</b>,
+    </p>
+
+    <p>
+        Cảm ơn bạn đã mua khóa học. Dưới đây là thông tin đơn hàng của bạn:
+    </p>
+
+    <!-- Order Info -->
+    <div style="background:#f4f6ff;padding:15px;border-radius:8px;margin-bottom:20px;">
+        <p><b>Mã đơn hàng:</b> <span th:text="${order.id}"></span></p>
+        <p><b>Tổng khóa học:</b> <span th:text="${order.total}"></span></p>
+        <p><b>Tổng tiền:</b> 
+            <span th:text="${#numbers.formatDecimal(order.price, 0, 'COMMA', 0, 'POINT')} + ' VND'"></span>
+        </p>
+    </div>
+
+    <!-- Course List -->
+    <h3 style="color:#444;">📚 Danh sách khóa học</h3>
+
+    <table width="100%" cellpadding="8" cellspacing="0" style="border-collapse:collapse;">
+        <thead>
+            <tr style="background:#4a6fff;color:white;">
+                <th align="left">Tên khóa học</th>
+                <th align="right">Giá</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr th:each="course : ${order.courses}" style="border-bottom:1px solid #eee;">
+                <td th:text="${course.name}">Course Name</td>
+                <td align="right" 
+                    th:text="${#numbers.formatDecimal(course.price, 0, 'COMMA', 0, 'POINT')} + ' VND'">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Note -->
+    <p style="margin-top:20px;">
+        Bạn có thể truy cập khóa học ngay trong hệ thống của chúng tôi.
+    </p>
+
+    <p style="color:red;">
+        Không chia sẻ tài khoản của bạn với người khác.
+    </p>
+
+    <hr>
+
+    <!-- Footer -->
+    <p style="font-size:12px;color:#888;text-align:center;">
+        Email được gửi tự động, vui lòng không trả lời.
+    </p>
+
+</div>
+
+</body>
+</html>

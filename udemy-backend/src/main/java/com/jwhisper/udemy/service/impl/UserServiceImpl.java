@@ -1,5 +1,9 @@
 package com.jwhisper.udemy.service.impl;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +13,8 @@ import org.springframework.stereotype.Service;
 
 import com.jwhisper.udemy.dto.Pagination;
 import com.jwhisper.udemy.dto.user.BankRequest;
-import com.jwhisper.udemy.dto.user.BankResonse;
+import com.jwhisper.udemy.dto.user.BankResponse;
+import com.jwhisper.udemy.dto.user.InstructorProfileResponse;
 import com.jwhisper.udemy.dto.user.ProfileRequest;
 import com.jwhisper.udemy.dto.user.UserRequest;
 import com.jwhisper.udemy.dto.user.WalletResponse;
@@ -18,8 +23,8 @@ import com.jwhisper.udemy.helper.mapper.UserMapper;
 import com.jwhisper.udemy.model.InstructorPayout;
 import com.jwhisper.udemy.model.Role;
 import com.jwhisper.udemy.model.User;
-import com.jwhisper.udemy.projection.user.UserDetail;
 import com.jwhisper.udemy.projection.user.UserProject;
+import com.jwhisper.udemy.repository.CourseRepository;
 import com.jwhisper.udemy.repository.InstructorPayoutRepository;
 import com.jwhisper.udemy.repository.RoleRepository;
 import com.jwhisper.udemy.repository.UserRepository;
@@ -36,15 +41,18 @@ public class UserServiceImpl implements UserService {
   private final RoleRepository roleRepository;
   private final SecurityHelper securityHelper;
   private final InstructorPayoutRepository instructorPayoutRepository;
+  private final CourseRepository courseRepository;
   public UserServiceImpl(UserRepository userRepository,
       UserMapper userMapper,RoleRepository roleRepository, SecurityHelper securityHelper,
-      InstructorPayoutRepository instructorPayoutRepository
+      InstructorPayoutRepository instructorPayoutRepository,
+      CourseRepository courseRepository
   ) {
     this.userRepository = userRepository;
     this.userMapper = userMapper;
     this.roleRepository = roleRepository;
     this.securityHelper = securityHelper;
     this.instructorPayoutRepository = instructorPayoutRepository;
+    this.courseRepository = courseRepository;
   }
 
   @Override
@@ -153,27 +161,71 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserDetail getProfile(String id) {
-    UserDetail userDetail = this.userRepository.findProjectionById(id);
-    if(userDetail == null) throw new ErrorException("Người dùng không tồn tại");
-    return userDetail;
+  public InstructorProfileResponse getProfile(String id) {
+      User user = userRepository.findById(id)
+          .orElseThrow(() -> new ErrorException("Người dùng không tồn tại"));
+
+      long totalCourses  = courseRepository.countByAuthorId(id);
+      long totalStudents = courseRepository.sumSoldByAuthorId(id);
+      double avgRating   = courseRepository.avgStarByAuthorId(id);
+
+      return InstructorProfileResponse.builder()
+          .id(user.getId())
+          .fullname(user.getFullname())
+          .avatarPath(user.getAvatarPath())
+          .description(user.getDescription())
+          .roleName(user.getRole().getName())
+          .totalCourses(totalCourses)
+          .totalStudents(totalStudents)
+          .avgRating(Math.round(avgRating * 10.0) / 10.0)
+          .build();
   }
 
   @Override
-  public BankResonse getPay() {
-    String username = this.securityHelper.getCurrentUsername();
-    User user = this.userRepository.findByUsername(username)
-    .orElseThrow(() -> new ErrorException("Người dùng không tồn tại"));
-    List<InstructorPayout> instructorPayouts = this.instructorPayoutRepository.findAllByInstructor(user);
-    Double amount = instructorPayouts.stream()
-        .mapToDouble(InstructorPayout::getAmount)
-        .sum();
-    BankResonse resonse = new BankResonse();
-    resonse.setId(user.getId());
-    resonse.setAccount(user.getAccount());
-    resonse.setBankName(user.getBankName());
-    resonse.setAmount(amount);
-    return resonse;
+  public BankResponse getPay(LocalDate startDate, LocalDate endDate) {
+
+      String username = this.securityHelper.getCurrentUsername();
+
+      User user = this.userRepository.findByUsername(username)
+              .orElseThrow(() -> new ErrorException("Người dùng không tồn tại"));
+
+      Instant startInstant = null;
+      Instant endInstant = null;
+
+      if (startDate != null) {
+          startInstant = startDate
+                  .atStartOfDay(ZoneId.systemDefault())
+                  .toInstant();
+      }
+
+      if (endDate != null) {
+          endInstant = endDate
+                  .atTime(LocalTime.MAX)
+                  .atZone(ZoneId.systemDefault())
+                  .toInstant();
+      }
+
+      List<InstructorPayout> instructorPayouts;
+
+      if (startInstant != null && endInstant != null) {
+          instructorPayouts = this.instructorPayoutRepository
+                  .findAllByInstructorAndCreatedAtBetween(user, startInstant, endInstant);
+      } else {
+          instructorPayouts = this.instructorPayoutRepository
+                  .findAllByInstructor(user);
+      }
+
+      Double amount = instructorPayouts.stream()
+              .mapToDouble(InstructorPayout::getAmount)
+              .sum();
+
+      BankResponse response = new BankResponse();
+      response.setId(user.getId());
+      response.setAccount(user.getAccount());
+      response.setBankName(user.getBankName());
+      response.setAmount(amount);
+
+      return response;
   }
 
   @Override
@@ -187,11 +239,55 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public Pagination<WalletResponse> getAllWallet(Pageable pageable) {
+  public Pagination<WalletResponse> getAllWallet(
+            Pageable pageable,
+            LocalDate startDate,
+            LocalDate endDate
+    ) {
+
       Page<User> page = this.userRepository.findAll(pageable);
+
+      Instant startInstant = null;
+      Instant endInstant = null;
+
+      if (startDate != null) {
+          startInstant = startDate
+                  .atStartOfDay(ZoneId.systemDefault())
+                  .toInstant();
+      }
+
+      if (endDate != null) {
+          endInstant = endDate
+                  .atTime(LocalTime.MAX)
+                  .atZone(ZoneId.systemDefault())
+                  .toInstant();
+      }
+
+      final Instant finalStartInstant = startInstant;
+      final Instant finalEndInstant = endInstant;
+
+            List<WalletResponse> wallets = page.stream().map(user -> {
+
+          Double amount;
+
+          if (finalStartInstant != null && finalEndInstant != null) {
+              amount = instructorPayoutRepository
+                      .sumAmountByInstructorAndDate(user, finalStartInstant, finalEndInstant);
+          } else {
+              amount = instructorPayoutRepository
+                      .sumAmountByInstructor(user);
+          }
+
+          WalletResponse res = userMapper.toWalletResponse(user);
+          res.setAmount(amount);
+
+          return res;
+
+      }).toList();
+
       Pagination<WalletResponse> pagination = new Pagination<>();
-      List<WalletResponse> wList = page.stream().map(p -> this.userMapper.toWalletResponse(p)).toList();
-      pagination.setElements(wList);
+      pagination.setElements(wallets);
+
       return pagination;
   }
 

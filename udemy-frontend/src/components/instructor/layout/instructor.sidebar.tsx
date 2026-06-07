@@ -15,7 +15,7 @@ import NotifyIcon from "@/components/notification/notify.icon";
 const menuItems = [
   { label: "Khoá học", icon: <SchoolOutlinedIcon />, path: "/instructor/course" },
   { label: "Thông báo", icon: <NotifyIcon />, path: "/instructor/notification" },
-  { label: "Ví", icon: <AccountBalanceWalletOutlinedIcon />, path: "/instructor/wallet" },
+  { label: "Doanh thu", icon: <AccountBalanceWalletOutlinedIcon />, path: "/instructor/wallet" },
   { label: "Hồ sơ", icon: <PersonOutlineOutlinedIcon />, path: "/instructor/profile" },
 ];
 const MotionBox = motion(Box);

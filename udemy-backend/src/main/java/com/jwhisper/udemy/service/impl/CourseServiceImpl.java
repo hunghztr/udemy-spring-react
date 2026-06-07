@@ -1,6 +1,9 @@
 package com.jwhisper.udemy.service.impl;
 
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -239,6 +242,46 @@ public class CourseServiceImpl implements CourseService {
     this.searchService.indexCourse(id);
     return true;
   }
-  
+    @Override
+    public Pagination<CourseResponse> getDashBoard(
+            Pageable pageable,
+            LocalDate startDate,
+            LocalDate endDate
+    ) {
+        Instant start = startDate != null
+                ? startDate.atStartOfDay(ZoneOffset.UTC).toInstant()
+                : Instant.EPOCH;
+
+        Instant end = endDate != null
+                ? endDate.atTime(23, 59, 59).toInstant(ZoneOffset.UTC)
+                : Instant.now();
+
+        Page<Course> page = courseRepository
+                .findTopCoursesBySoldWithTime(start, end, pageable);
+
+        List<CourseResponse> data = page.getContent()
+                .stream()
+                .map(courseMapper::toCourseResponse)
+                .toList();
+
+        Pagination<CourseResponse> result = new Pagination<>();
+        result.setElements(data);
+
+        Pagination.Meta meta = new Pagination.Meta();
+        meta.setCurrentPage(page.getNumber());
+        meta.setPageSize(page.getSize());
+        meta.setElementTotals(page.getTotalElements());
+        meta.setPageTotals(page.getTotalPages());
+
+        result.setMeta(meta);
+
+        return result;
+    }
+    // return true vì tự động check bên aop
+    @Override
+    @CheckCourseOwner
+    public boolean checkCourseInstructor(String courseId) {
+        return true;
+    }
     
 }

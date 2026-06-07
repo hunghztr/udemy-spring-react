@@ -4,6 +4,7 @@ package com.jwhisper.udemy.repository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.jwhisper.udemy.model.Course;
@@ -16,4 +17,6 @@ public interface RatingRepository extends JpaRepository<Rating,UserCourseKey> {
     Slice<Rating> findByCourse(Course course,Pageable pageable);
     long countByCourse(Course course);
     Rating findByCustomerAndCourse(User user,Course course);
+    @Query("SELECT AVG(r.star) FROM Rating r WHERE r.course.id = :courseId")
+    Double getAverageStar(String courseId);
 }

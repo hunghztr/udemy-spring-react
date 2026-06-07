@@ -21,6 +21,7 @@ import { showToast } from "@/utils/toast";
 import NotifyDropdown from "@/components/notification/notify.dropdown";
 import SearchInput from "../course/search.input";
 import HomeCategoryHeader from "../home/home.category.header";
+import logo from "@/assets/logo-udemy.svg";
 
 export default function Header() {
   const user = useAppSelector((state) => state.currentUser);
@@ -86,7 +87,7 @@ export default function Header() {
           display: "flex",
           justifyContent: "space-between",
           gap: 1,
-          py: { xs: 0.5, md: 1 },
+          py: { xs: 0.5, md: 1 },px: 0
         }}
       >
         {/* LEFT */}
@@ -94,9 +95,9 @@ export default function Header() {
           <Link to="/">
             <Box
               component="img"
-              src="/src/assets/logo-udemy.svg"
+              src={logo}
               alt="Logo"
-              sx={{ height: { xs: 28, md: 40 } }}
+              sx={{ height: { xs: 36, md: 45 } }}
             />
           </Link>
 

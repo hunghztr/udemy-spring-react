@@ -99,6 +99,8 @@ export interface ICourseInfoResponse{
 }
 
 export interface IFilterRequest{
+    startDate?:string;
+    endDate?:string;
     star? : number;
     isFree? : boolean;
     durationFrom? :number;

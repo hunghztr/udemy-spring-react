@@ -1,6 +1,8 @@
 package com.jwhisper.udemy.service;
 
 
+import java.time.LocalDate;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -25,4 +27,6 @@ public interface CourseService {
     CourseDetailResponse getDetail(String id);
     Pagination<CourseResponse> getAllByAuthor(Specification<Course> spec, Pageable pageable);
     Pagination<CourseProject> getAll(Pageable pageable , boolean isActive,String keyword);
+    Pagination<CourseResponse> getDashBoard(Pageable pageable,LocalDate startDate,LocalDate endDate);
+    boolean checkCourseInstructor(String courseId);
 }

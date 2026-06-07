@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-UdemyApplication<udemy>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.jwhisper.udemy.UdemyApplication",
+            "projectName": "udemy",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

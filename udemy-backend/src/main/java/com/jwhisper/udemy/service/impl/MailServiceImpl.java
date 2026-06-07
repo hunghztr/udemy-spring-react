@@ -49,7 +49,12 @@ public class MailServiceImpl implements MailService {
     Context context = new Context();
 
     context.setVariable("name", fullname);
-    context.setVariable("otp", value);
+
+    // 👇 FIX QUAN TRỌNG
+    context.setVariable(templateName, value);
+    // hoặc:
+    // context.setVariable("order", value);
+
     String content = this.springTemplateEngine.process(templateName, context);
     this.sendEmailSync(to, subject, content, false, true);
   }

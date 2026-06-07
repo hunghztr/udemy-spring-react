@@ -107,6 +107,7 @@ public class AuthServiceImpl implements AuthService {
   public LoginResponse setUpLoginResponse(String username) {
     LoginResponse response = new LoginResponse();
     Optional<User> currentUserDB = this.userRepository.findByUsername(username);
+    if(!currentUserDB.get().getIsActive()) throw new ErrorException("Tài khoản của bạn đã bị khoá");
     if (currentUserDB.isPresent()) {
       // create access token
       String accessToken = this.securityHelper.generateToken(currentUserDB.get(), "access_token");

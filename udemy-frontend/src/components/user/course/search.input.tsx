@@ -14,7 +14,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { QueryClient, useQueryClient } from "@tanstack/react-query";
 
 import { useGetAll, useGetById, useSave } from "@/query/use.crud.query";
 import {

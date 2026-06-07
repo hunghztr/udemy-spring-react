@@ -6,7 +6,7 @@ import Loading from "@/components/loading";
 import LoginForm from "@/components/auth/login.form";
 import RegisterForm from "@/components/auth/register.form";
 import { authVariants } from "@/helpers/variants";
-
+import bgLogin from "@/assets/bg-login.png";
 export default function AuthPage() {
   const [mode, setMode] = useState<"login" | "register">("login");
   const isShortScreen = useMediaQuery("(max-height: 500px)");
@@ -66,7 +66,7 @@ export default function AuthPage() {
               },
             }}
           >
-            <img src="/src/assets/bg-login.png" alt="Background" />
+            <img src={bgLogin} alt="Background" />
           </Box>
         </Grid>
 

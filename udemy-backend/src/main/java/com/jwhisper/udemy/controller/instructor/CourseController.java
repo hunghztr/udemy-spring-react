@@ -252,4 +252,10 @@ public class CourseController {
     public ResponseEntity<?> getAllNoPage() {
         return ResponseEntity.ok().body(this.categoryService.getAllNoPage());
     }
+    @GetMapping("check-course-instructor/{courseId}")
+    @ApiMessage("Kiểm tra giảng viên khoá học thành công")
+    // @CheckPermission("check course and instructor")
+    public ResponseEntity<?> check(@PathVariable("courseId") String courseId){
+        return ResponseEntity.ok(this.courseService.checkCourseInstructor(courseId));
+    }
 }

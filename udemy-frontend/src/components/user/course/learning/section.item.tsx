@@ -67,7 +67,7 @@ export default function SectionItem({
             fontSize={13}
             sx={{ color: "text.secondary" }}
           >
-            {finishedLecture} / {section.totalLecture} | {section.hour}min
+            {finishedLecture} / {section.totalLecture} | {section.hour}giờ
           </Typography>
 
         </Box>

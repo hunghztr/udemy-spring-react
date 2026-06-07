@@ -33,7 +33,7 @@ export default function Instructor({
     );
   const avatar =
     `${import.meta.env.VITE_CLOUDINARY_WATCH_IMG}/${profileData?.avatarPath}`;
-
+    console.log(profileData)
   return (
     <Paper
       sx={(theme) => ({

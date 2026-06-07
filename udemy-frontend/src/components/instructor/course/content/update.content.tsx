@@ -103,7 +103,7 @@ export default function UpdateContent({ course }: Props) {
 
 
       {/* ADD SECTION */}
-      <SectionAddForm course={course} setSections={setSections} />
+      <SectionAddForm course={course} />
         <input
           ref={fileInputRef}
           type="file"

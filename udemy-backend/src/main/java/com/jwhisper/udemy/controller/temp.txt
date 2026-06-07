@@ -75,6 +75,7 @@ remove notify, NOTIFY, /api/v1/notifications/{id}, DELETE
 create payment, PAYMENT, /api/v1/payments/vnpay, POST
 save order, PAYMENT, /api/v1/payments , POST
 
+get profile, PROFILE, /api/v1/profiles/{id}, GET
 update profile, PROFILE, /api/v1/profiles/{id}, PUT
 get revenu, PROFILE, /api/v1/profiles/get-pay, GET
 connect bank, PROFILE, /api/v1/profiles/wallet, POST

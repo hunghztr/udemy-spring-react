@@ -91,7 +91,7 @@ export const PayPage = lazy(
 
 /* ================= MISC ================== */
 export const OAuth2Callback = lazy(
-  () => import("../utils/oauth2Callback")
+  () => import("../utils/oauth2.callback")
 );
 
 export const ForbiddenPage = lazy(

@@ -28,7 +28,7 @@ public class QuizzDebounceService {
             oldTask.cancel(false);
         }
 
-        // tạo task mới chạy sau 5s
+        // tạo task mới chạy sau 10s
         ScheduledFuture<?> newTask = scheduler.schedule(
                 () -> quizzService.generateQuiz(sectionId),
                 10,

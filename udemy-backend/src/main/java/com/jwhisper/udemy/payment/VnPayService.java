@@ -31,6 +31,7 @@ import com.jwhisper.udemy.repository.LearningRepository;
 import com.jwhisper.udemy.repository.OrderRepository;
 import com.jwhisper.udemy.repository.UserRepository;
 import com.jwhisper.udemy.security.SecurityHelper;
+import com.jwhisper.udemy.service.MailService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -48,11 +49,13 @@ public class VnPayService implements PayService {
     private final CourseRepository courseRepository;
     private final LearningRepository learningRepository;
     private final CartRepository cartRepository;
+    private final MailService mailService;
     public VnPayService(VnPayConfig vnPayConfig,
         SecurityHelper securityHelper,UserRepository userRepository,
         OrderRepository orderRepository, InstructorPayoutRepository instructorPayoutRepository,
         CouponRepository couponRepository, CourseRepository courseRepository,
-        LearningRepository learningRepository,CartRepository cartRepository
+        LearningRepository learningRepository,CartRepository cartRepository,
+        MailService mailService
     ){
         this.vnPayConfig = vnPayConfig;
         this.securityHelper = securityHelper;
@@ -63,6 +66,7 @@ public class VnPayService implements PayService {
         this.courseRepository = courseRepository;
         this.learningRepository = learningRepository;
         this.cartRepository = cartRepository;
+        this.mailService = mailService;
     }
     public String createPaymentUrl(Double price, HttpServletRequest request) throws Exception {
 
@@ -143,6 +147,8 @@ public class VnPayService implements PayService {
                 courseRepository.increaseSold(c.getId())
         );
         courses.forEach(c -> this.generateLearning(user, c));
+        // send mail
+        this.mailService.sendMail(username, user.getFullname(), "Tạo đơn hàng thành công", "order", order);
     }
     private void makeMonkeyForIns(List<Course> courses, List<ApplyCode> applyCodes) {
 
@@ -173,8 +179,7 @@ public class VnPayService implements PayService {
                 }
             }
 
-            // instructor nhận 80%
-            finalPrice = finalPrice * 0.8;
+            // instructor nhận 100% tiền
 
             InstructorPayout payout = new InstructorPayout();
             payout.setInstructor(author);

@@ -78,7 +78,7 @@ public class HomeController {
     public ResponseEntity<?> getRecommend() {
         return ResponseEntity.ok(this.homeService.getRecommend());
     }
-    @GetMapping("/{id}")
+    @GetMapping("/profiles/{id}")
     @ApiMessage("Lấy thông tin hồ sơ người dùng thành công")
     public ResponseEntity<?> getProfile(@PathVariable("id") String id) {
         return ResponseEntity.ok().body(this.userService.getProfile(id));

@@ -22,21 +22,32 @@ export const getWallet = (userId : string) =>{
         id:userId
     })
 }
-export const getAllWallets = () =>{
-    return getAll<IWalletResponse>({
-        url: `/admin/wallets`
-    })
-}
-
-export const getPay = () =>{
-    return useQuery({
-        queryKey:['pays/get'],
-        queryFn: async () =>{
-            const res : IApiResponse<IBankResponse> = await api.get("/profiles/get-pay");
-            return res.data;
+export const getAllWallets = (params?: {
+  startDate?: string;
+  endDate?: string;
+}) => {
+  return getAll<IWalletResponse>({
+    url: `/admin/wallets`,
+    filters:params
+  });
+};
+export const getPay = (startDate?: string, endDate?: string) => {
+  return useQuery({
+    queryKey: ["pays/get", startDate, endDate],
+    queryFn: async () => {
+      const res: IApiResponse<IBankResponse> = await api.get(
+        "/profiles/get-pay",
+        {
+          params: {
+            startDate,
+            endDate
+          }
         }
-    })
-}
+      );
+      return res.data;
+    }
+  });
+};
 export const connectWallet = () =>{
     return useMutation({
         mutationKey:['pays/connect'],

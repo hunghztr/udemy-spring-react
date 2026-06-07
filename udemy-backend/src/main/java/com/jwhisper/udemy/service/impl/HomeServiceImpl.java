@@ -122,7 +122,9 @@ public class HomeServiceImpl implements HomeService {
         FilterRequest filterRequest) {
         Category category = this.categoryRepository.findById(id)
         .orElseThrow(() -> new ErrorException("Thể loại không tồn tại"));
-        return this.searchService.getCoursesByCategory(category.getName(),pageable, filterRequest);
+        var response = this.searchService
+            .getCoursesByCategory(category.getName(),pageable, filterRequest);
+            return response;
     }
     @Override
     public List<CategoryCourseResponse> getAllChildren() {

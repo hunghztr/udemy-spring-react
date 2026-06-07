@@ -125,7 +125,7 @@ export default function AdminSidebar() {
           <ListItemIcon>
             <AccountBalanceWalletIcon />
           </ListItemIcon>
-          <ListItemText primary="Quản lý ví" />
+          <ListItemText primary="Quản lý doanh thu" />
         </ListItemButton>
 
         {/* Notifications */}

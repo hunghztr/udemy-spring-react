@@ -49,7 +49,10 @@ public class QuizzService {
         .collect(Collectors.joining("\n"));
         String prompt = """
         Tạo 10 câu hỏi trắc nghiệm từ danh sách bài giảng sau.
-
+        Tên khoá học:
+        %s
+        Tên chương học:
+        %s
         Danh sách bài giảng:
         %s
 
@@ -71,7 +74,7 @@ public class QuizzService {
         ]
 
         Chỉ trả JSON. Không giải thích.
-        """.formatted(lectureContent);
+        """.formatted(section.getCourse().getName(),section.getName(),lectureContent);
 
         String result = chatClient.prompt()
                 .user(prompt)
@@ -85,6 +88,7 @@ public class QuizzService {
                     new TypeReference<List<Quizz>>() {}
             );
             quizzs.forEach(q -> q.setSection(section));
+            this.quizzRepository.deleteBySectionId(section.getId());
             this.quizzRepository.saveAll(quizzs);
             log.info("đã lưu quizz vào db");
         } catch (Exception e) {

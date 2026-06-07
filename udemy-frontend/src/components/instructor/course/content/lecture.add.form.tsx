@@ -3,13 +3,13 @@ import type { ICourseDetailResponse, ISectionResponse } from "@/type/course.modu
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Stack, TextField } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
-export default function LectureAddForm({course,setSections,section}:{
+export default function LectureAddForm({course,section}:{
     course:ICourseDetailResponse|null;
       setSections:React.Dispatch<React.SetStateAction<ISectionResponse[]>>,section:ISectionResponse
 }) {
     const {setAddingLectureSectionId,setNewLectureTitle,addingLectureSectionId,
         newLectureTitle,isCreateLecturePending,handleAddLecture,
-    } = useFormLecture(course,setSections);
+    } = useFormLecture(course);
   return (
     <motion.div
         initial={{ opacity: 0 }}
