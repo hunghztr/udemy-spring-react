@@ -34,7 +34,7 @@ export default function CartItem({ course, handleDelete ,handleApply}: Props) {
   };
 
   const handleApplyCoupon = () => {
-    handleApply(course.id,coupon);
+    handleApply(course.id,coupon)
     setShowCoupon(false);
   };
 
@@ -144,12 +144,12 @@ export default function CartItem({ course, handleDelete ,handleApply}: Props) {
                     color: "text.secondary"
                 }}
                 >
-                ₫{course.priceTemp.toLocaleString()}
+                  ₫{Math.round(course.priceTemp).toLocaleString()}
                 </Typography>
             )}
 
             <Typography fontWeight={700} color="secondary">
-                ₫{course.price.toLocaleString()}
+              ₫{Math.round(course.price).toLocaleString()}
             </Typography>
 
             </Stack>

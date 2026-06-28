@@ -105,7 +105,7 @@ public class CartServiceImpl implements CartService {
         Optional<CouponProject> optional = 
         list.stream().filter(c -> c.getCode().equals(code)).findFirst();
         if(optional.isPresent()){
-            return course.getPrice() * (optional.get().getDiscount() / 100.0f);
+            return course.getPrice() * (1 - optional.get().getDiscount() / 100.0f);
         }
         throw new ErrorException("Mã giảm giá không hợp lệ");
     }

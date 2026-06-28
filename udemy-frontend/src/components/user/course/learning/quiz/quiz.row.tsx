@@ -1,4 +1,4 @@
-import { ListItemButton, ListItemText } from "@mui/material";
+import { ListItemButton, ListItemText, Tooltip } from "@mui/material";
 import QuizIcon from "@mui/icons-material/Quiz";
 import { useState } from "react";
 import { useSave } from "@/query/use.crud.query";
@@ -8,9 +8,10 @@ import QuizDialog from "./quiz.dialog";
 
 interface Props {
   sectionId: string;
+  sectionName: string;
 }
 
-export default function QuizRow({ sectionId }: Props) {
+export default function QuizRow({ sectionId, sectionName }: Props) {
 
   const [open,setOpen] = useState(false);
   const [quiz,setQuiz] = useState<IQuizz[]>([]);
@@ -43,11 +44,12 @@ export default function QuizRow({ sectionId }: Props) {
           }
         }}
       >
-        <QuizIcon sx={{ mr: 1.2 }} />
-
+        <Tooltip title="Trải nghiệm bộ câu hỏi do AI tạo theo các chương học" arrow>
+          <QuizIcon sx={{ mr: 1.2 }} />
+        </Tooltip>
         <ListItemText
-          primary="Trắc nghiệm"
-          secondary="Kiểm tra cuối chương"
+          primary="Trắc nghiệm cùng AI"
+          secondary={`Kiểm tra cuối chương`}
           primaryTypographyProps={{
             fontWeight: 500,
             fontSize: 14
@@ -59,6 +61,7 @@ export default function QuizRow({ sectionId }: Props) {
       </ListItemButton>
 
       <QuizDialog
+        sectionName={sectionName}
         open={open}
         onClose={()=>setOpen(false)}
         quiz={quiz}

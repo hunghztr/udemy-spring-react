@@ -215,6 +215,7 @@ public class AuthServiceImpl implements AuthService {
     }
     Optional<User> userOpt = this.userRepository.findByUsername(username);
     if (userOpt.isPresent()) {
+      if(!userOpt.get().getIsActive()) throw new ErrorException("Tài khoản đã bị khoá");
       String accessToken = this.securityHelper.generateToken(userOpt.get(), "access_token");
       return ResponseCookie
         .from("access_token", accessToken)

@@ -99,8 +99,8 @@ export default function CreateCoursePage() {
 
                     <TextField
                       fullWidth
-                      label="Course title"
-                      placeholder="Eg: Spring Boot for Beginners"
+                      label="Tiêu đề khoá học"
+                      placeholder="Ví dụ: Spring Boot for Beginners"
                       value={title}
                       error={!!saveError}
                       helperText={saveError?.response?.data.message}

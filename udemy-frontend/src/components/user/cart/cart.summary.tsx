@@ -50,7 +50,7 @@ export default function CartSummary({courses, total, price }: Props) {
         </Typography>
 
         <Typography fontSize={32} fontWeight={700}>
-          ₫{price.toLocaleString()}
+          ₫{Math.round(price).toLocaleString()}
         </Typography>
 
         <Button

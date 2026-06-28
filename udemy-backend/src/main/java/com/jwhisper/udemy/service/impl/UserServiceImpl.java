@@ -177,7 +177,7 @@ public class UserServiceImpl implements UserService {
           .roleName(user.getRole().getName())
           .totalCourses(totalCourses)
           .totalStudents(totalStudents)
-          .avgRating(Math.round(avgRating * 10.0) / 10.0)
+          .avgRating(Math.floor(avgRating * 100.0) / 100.0)
           .build();
   }
 

@@ -78,21 +78,21 @@ export default function Instructor({
           <Stack direction="row" spacing={1} alignItems="center">
             <StarIcon fontSize="small" />
             <Typography variant="body2">
-              {profileData?.avgRating.toFixed(1)} Instructor Rating
+              {profileData?.avgRating.toFixed(1)} Đánh giá
             </Typography>
           </Stack>
 
           <Stack direction="row" spacing={1} alignItems="center">
             <GroupsIcon fontSize="small" />
             <Typography variant="body2">
-              {profileData?.totalStudents.toLocaleString()} Students
+              {profileData?.totalStudents.toLocaleString()} Học viên
             </Typography>
           </Stack>
 
           <Stack direction="row" spacing={1} alignItems="center">
             <PlayCircleIcon fontSize="small" />
             <Typography variant="body2">
-              {profileData?.totalCourses} Courses
+              {profileData?.totalCourses} Khoá học
             </Typography>
           </Stack>
         </Stack>

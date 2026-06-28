@@ -10,9 +10,11 @@ interface Props {
   open: boolean;
   onClose: () => void;
   quiz: IQuizz[];
+  sectionName: string;
 }
 
 export default function QuizDialog({
+  sectionName,
   open,
   onClose,
   quiz
@@ -26,7 +28,7 @@ export default function QuizDialog({
     >
 
       <DialogTitle>
-        Trắc nghiệm chương
+        Trắc nghiệm chương {sectionName}
       </DialogTitle>
 
       <DialogContent>

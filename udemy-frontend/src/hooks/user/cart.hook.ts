@@ -38,7 +38,12 @@ export const useCartHook = () => {
       { courseId, code },
       {
         onSuccess: (salePrice) => {
-          showToast("Áp dụng mã giảm giá thành công");
+        const currentData = query.getQueryData<ICartResponse>(["carts/get-cart"]);
+        const course = currentData?.courses.find((c) => c.id === courseId);
+        const originalPrice = course?.priceTemp ?? course?.price ?? 0;
+        const discountPercent = Math.round((1 - salePrice / originalPrice) * 100);
+
+        showToast(`Áp dụng mã giảm giá thành công - Giảm ${discountPercent}%`);
 
           query.setQueryData<ICartResponse>(
             ["carts/get-cart"],

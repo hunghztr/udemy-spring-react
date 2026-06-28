@@ -20,6 +20,7 @@ import {
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import { slugify } from "@/helpers/slugify";
+import { showToast } from "@/utils/toast";
 
 export default function AdminRatingPage() {
   const { courseId } = useParams();
@@ -47,7 +48,8 @@ export default function AdminRatingPage() {
       userId,courseId
     },{
       onSuccess:() =>{
-        window.close();
+        showToast("Đã xoá đánh giá thành công",'success')
+        window.location.reload();
       }
     })
   };
@@ -104,7 +106,7 @@ export default function AdminRatingPage() {
                   </Typography>
 
                   <Stack direction="row" spacing={2}>
-                    <Chip label={`Chương: ${course.totalSection}`} />
+                    <Chip label={`Chương học: ${course.totalSection}`} />
                     <Chip label={`Giá: $${course.price}`} color="primary" />
                   </Stack>
 
@@ -131,7 +133,7 @@ export default function AdminRatingPage() {
                   justifyContent="space-between"
                   alignItems="center"
                 >
-                  <Typography variant="h6">User Rating</Typography>
+                  <Typography variant="h6">Đánh giá</Typography>
 
                   <Button
                     variant="contained"
@@ -139,7 +141,7 @@ export default function AdminRatingPage() {
                     startIcon={<DeleteIcon />}
                     onClick={handleDelete}
                   >
-                    Delete
+                    Xoá
                   </Button>
                 </Stack>
 

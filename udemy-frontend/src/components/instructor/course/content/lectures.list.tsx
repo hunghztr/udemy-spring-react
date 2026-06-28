@@ -12,6 +12,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from 'react';
 import { AnimatePresence } from "framer-motion";
 import ConfirmDialog from '@/utils/confirm.dialog';
+import HlsVideoPlayer from './hls.player';
 interface IProps{
     section:ISectionResponse;
     theme:Theme;
@@ -213,17 +214,7 @@ fileInputRef,setUploadingLectureId,uploadingLectureId,percent,handleDestroy}:IPr
                               </DialogTitle>
                               <DialogContent>
                                 {previewUrl && (
-                                  <Box
-                                    component="video"
-                                    src={previewUrl}
-                                    controls
-                                    autoPlay
-                                    sx={{
-                                      width: "100%",
-                                      borderRadius: 2,
-                                      background: "common.black",
-                                    }}
-                                  />
+                                  <HlsVideoPlayer src={previewUrl} />
                                 )}
                               </DialogContent>
                             </Dialog>

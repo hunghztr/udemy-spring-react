@@ -28,7 +28,7 @@ export default function SectionItem({
 
   const finishedLecture =
     section.lectures.filter(l => l.isFinished).length;
-
+  console.log('Check section >>> ',section)
   return (
     <Accordion
       disableGutters
@@ -89,7 +89,7 @@ export default function SectionItem({
         ))}
 
         {section.lectures.length >= 2 && (
-          <QuizRow sectionId={section.id||""} />
+          <QuizRow sectionId={section.id||""} sectionName={section.name}/>
         )}
 
       </List>
