@@ -28,7 +28,6 @@ export default function SectionItem({
 
   const finishedLecture =
     section.lectures.filter(l => l.isFinished).length;
-  console.log('Check section >>> ',section)
   return (
     <Accordion
       disableGutters

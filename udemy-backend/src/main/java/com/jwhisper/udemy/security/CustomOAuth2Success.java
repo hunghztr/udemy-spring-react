@@ -42,6 +42,7 @@ public class CustomOAuth2Success implements AuthenticationSuccessHandler {
         .httpOnly(true)
         .path("/")
         .maxAge(this.refreshTokenExpiration)
+        // .domain("unidev.com")
         .build();
     response.addHeader("Set-Cookie", refreshCookie.toString());
     response.sendRedirect(this.frontendUrl + "/oauth2/callback");

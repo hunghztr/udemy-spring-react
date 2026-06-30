@@ -1,5 +1,13 @@
 version: "3.9"
 
+networks:
+  udemy-net:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  es_data:
+
 services:
 
   mysql:
@@ -13,6 +21,14 @@ services:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - udemy-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   redis:
     image: redis:7
@@ -20,10 +36,18 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    networks:
+      - udemy-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
     container_name: udemy-es
+    restart: always
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
@@ -32,37 +56,46 @@ services:
       - "9200:9200"
     volumes:
       - es_data:/usr/share/elasticsearch/data
-
-  ollama:
-    image: ollama/ollama:latest
-    container_name: udemy-ollama
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama_data:/root/.ollama
+    networks:
+      - udemy-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
 
   backend:
     build: ./udemy-backend
     container_name: udemy-backend
+    restart: always
     depends_on:
-      - mysql
-      - redis
-      - elasticsearch
-      - ollama
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/udemy?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_ELASTICSEARCH_URIS: http://elasticsearch:9200
+    networks:
+      - udemy-net
 
   frontend:
     build: ./udemy-frontend
     container_name: udemy-frontend
+    restart: always
     depends_on:
       - backend
     ports:
-      - "3000:80"
-
-volumes:
-  mysql_data:
-  es_data:
-  ollama_data:
+      - "80:80"
+    networks:
+      - udemy-net

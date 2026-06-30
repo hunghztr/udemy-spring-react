@@ -5,8 +5,9 @@ import {
   Button,
   Grid,
   Paper,
-  TextField,
-  InputAdornment,
+
+  Chip,
+  InputBase,
 } from "@mui/material";
 
 
@@ -43,7 +44,10 @@ import type {
 import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import Loading from "@/components/loading";
-
+import FilterListIcon from "@mui/icons-material/FilterList";
+import CloseIcon from "@mui/icons-material/Close";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 const COLORS = ["#534AB7", "#1D9E75", "#D85A30", "#BA7517", "#378ADD"];
 
 export default function AdminDashBoardPage() {
@@ -104,7 +108,6 @@ export default function AdminDashBoardPage() {
   // ===== SUMMARY =====
   const totalSold =
     data?.elements?.reduce((sum, c) => sum + c.sold, 0) ?? 0;
-    console.log("check data >>> ",data)
   const avgStar =
     data?.elements && data.elements.length > 0
       ? (
@@ -135,7 +138,10 @@ export default function AdminDashBoardPage() {
       month: `T${m.month}`,
       students: m.students,
     })) ?? [];
-
+const fmt = (d: string) => {
+  const [y, m, day] = d.split("-");
+  return `${day}/${m}/${y}`;
+};
   return (
     <Box p={3}>
       <Typography variant="h5" mb={3} fontWeight="bold">
@@ -166,45 +172,79 @@ export default function AdminDashBoardPage() {
         ))}
       </Grid>
 
-      {/* FILTER */}
-      <Box component={Paper} sx={{ p: 2, mb: 3 }}>
-        <Box display="flex" gap={2} flexWrap="wrap">
-          <TextField
-            label="Từ ngày"
-            type="date"
-            size="small"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <CalendarTodayIcon fontSize="small" />
-                </InputAdornment>
-              ),
-            }}
-          />
+{/* FILTER */}
+<Box component={Paper} sx={{ p: "12px 20px", mb: 3, borderRadius: "12px" }}>
+  <Box display="flex" alignItems="center" gap={1.5} flexWrap="wrap">
+    
+    <Box display="flex" alignItems="center" gap={0.75}>
+      <CalendarMonthIcon sx={{ fontSize: 16, color: "text.disabled" }} />
+      <Typography fontSize={13} color="text.disabled" whiteSpace="nowrap">
+        Lọc theo ngày
+      </Typography>
+    </Box>
 
-          <TextField
-            label="Đến ngày"
-            type="date"
-            size="small"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-          />
-
-          <Button variant="contained" onClick={handleFilter}>
-            Lọc
-          </Button>
-
-          {(filterStart || filterEnd) && (
-            <Button color="error" onClick={handleClear}>
-              Xóa
-            </Button>
-          )}
-        </Box>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        border: "0.5px solid",
+        borderColor: "divider",
+        borderRadius: 1,
+        overflow: "hidden",
+        bgcolor: "action.hover",
+      }}
+    >
+      <InputBase
+        type="date"
+        value={startDate}
+        onChange={(e) => setStartDate(e.target.value)}
+        inputProps={{ title: "Từ ngày" }}
+        sx={{ px: 1.25, py: 0.875, fontSize: 13, minWidth: 130, "& input": { cursor: "pointer" } }}
+      />
+      <Box
+        sx={{
+          px: 1, py: 0.875,
+          borderLeft: "0.5px solid", borderRight: "0.5px solid", borderColor: "divider",
+          bgcolor: "background.default",
+          display: "flex", alignItems: "center",
+        }}
+      >
+        <ArrowRightAltIcon sx={{ fontSize: 16, color: "text.disabled" }} />
       </Box>
+      <InputBase
+        type="date"
+        value={endDate}
+        onChange={(e) => setEndDate(e.target.value)}
+        inputProps={{ title: "Đến ngày" }}
+        sx={{ px: 1.25, py: 0.875, fontSize: 13, minWidth: 130, "& input": { cursor: "pointer" } }}
+      />
+    </Box>
+
+    <Button
+      variant="contained"
+      size="small"
+      startIcon={<FilterListIcon sx={{ fontSize: 14 }} />}
+      onClick={handleFilter}
+      sx={{ fontSize: 13, textTransform: "none", borderRadius: 1 }}
+    >
+      Lọc
+    </Button>
+
+    {(filterStart || filterEnd) && (
+      <Chip
+        icon={<CalendarTodayIcon sx={{ fontSize: "13px !important" }} />}
+        label={[filterStart && fmt(filterStart), filterEnd && fmt(filterEnd)].filter(Boolean).join(" – ")}
+        onDelete={handleClear}
+        deleteIcon={<CloseIcon />}
+        size="small"
+        color="primary"
+        variant="outlined"
+        sx={{ fontSize: 12, borderRadius: "999px" }}
+      />
+    )}
+
+  </Box>
+</Box>
 
       {/* CHARTS */}
       <Grid container spacing={3}>

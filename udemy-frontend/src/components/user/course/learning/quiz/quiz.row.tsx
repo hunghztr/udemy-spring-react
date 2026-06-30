@@ -1,5 +1,6 @@
-import { ListItemButton, ListItemText, Tooltip } from "@mui/material";
+import { ListItemButton, ListItemText, Tooltip, Box } from "@mui/material";
 import QuizIcon from "@mui/icons-material/Quiz";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useState } from "react";
 import { useSave } from "@/query/use.crud.query";
 import { getQuizs } from "@/query/learning/learning.query";
@@ -12,24 +13,18 @@ interface Props {
 }
 
 export default function QuizRow({ sectionId, sectionName }: Props) {
+  const [open, setOpen] = useState(false);
+  const [quiz, setQuiz] = useState<IQuizz[]>([]);
 
-  const [open,setOpen] = useState(false);
-  const [quiz,setQuiz] = useState<IQuizz[]>([]);
-
-  const { mutate } = useSave<IQuizz[],string>(
-    "quizs/get-by-section",
-    getQuizs
-  );
+  const { mutate } = useSave<IQuizz[], string>("quizs/get-by-section", getQuizs);
 
   const handle = () => {
-
-    mutate(sectionId,{
-      onSuccess:(data)=>{
+    mutate(sectionId, {
+      onSuccess: (data) => {
         setQuiz(data);
         setOpen(true);
       }
     });
-
   };
 
   return (
@@ -37,33 +32,40 @@ export default function QuizRow({ sectionId, sectionName }: Props) {
       <ListItemButton
         onClick={handle}
         sx={{
-          pl: 4,
-          backgroundColor: "rgba(0,0,0,0.02)",
-          "&:hover": {
-            backgroundColor: "rgba(0,0,0,0.06)"
-          }
+          pl: 2,
+          pr: 2,
+          py: 1.2,
+          mx: 1,
+          borderRadius: 1.5,
+          gap: 1.5,
+          "&:hover": { backgroundColor: "action.hover" }
         }}
       >
-        <Tooltip title="Trải nghiệm bộ câu hỏi do AI tạo theo các chương học" arrow>
-          <QuizIcon sx={{ mr: 1.2 }} />
-        </Tooltip>
+        <Box sx={{
+          width: 32, height: 32, borderRadius: 1,
+          backgroundColor: "primary.50",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          flexShrink: 0
+        }}>
+          <QuizIcon sx={{ fontSize: 18, color: "primary.main" }} />
+        </Box>
+
         <ListItemText
           primary="Trắc nghiệm cùng AI"
-          secondary={`Kiểm tra cuối chương`}
-          primaryTypographyProps={{
-            fontWeight: 500,
-            fontSize: 14
-          }}
-          secondaryTypographyProps={{
-            fontSize: 12
-          }}
+          secondary="Kiểm tra cuối chương"
+          primaryTypographyProps={{ fontWeight: 500, fontSize: 14 }}
+          secondaryTypographyProps={{ fontSize: 12 }}
         />
+
+        <Tooltip title="Câu hỏi do AI tạo theo nội dung chương học" arrow placement="left">
+          <InfoOutlinedIcon sx={{ fontSize: 16, color: "text.disabled" }} />
+        </Tooltip>
       </ListItemButton>
 
       <QuizDialog
         sectionName={sectionName}
         open={open}
-        onClose={()=>setOpen(false)}
+        onClose={() => setOpen(false)}
         quiz={quiz}
       />
     </>
